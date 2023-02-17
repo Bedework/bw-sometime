@@ -17,7 +17,7 @@
 	<description>The root project definition for the Bedework Sometime project.</description>
 
 	<properties>
-		<jasig.resourceserver.version>1.0.24</jasig.resourceserver.version>
+		<jasig.resourceserver.version>1.5.0</jasig.resourceserver.version>
 
 		<javax.annotation.version>1.3.2</javax.annotation.version>
 

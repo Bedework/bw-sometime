@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jasig.schedassist.messaging.PreferencesElement;
-import org.jasig.schedassist.messaging.ScheduleOwnerElement;
+import org.bedework.messaging.PreferencesElement;
+import org.bedework.messaging.ScheduleOwnerElement;
 import org.jasig.schedassist.model.AbstractScheduleOwner;
 import org.jasig.schedassist.model.ICalendarAccount;
 import org.jasig.schedassist.model.Preferences;

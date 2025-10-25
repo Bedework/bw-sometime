@@ -40,31 +40,31 @@ import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.impl.owner.OwnerDao;
 import org.jasig.schedassist.impl.visitor.NotAVisitorException;
 import org.jasig.schedassist.impl.visitor.VisitorDao;
-import org.jasig.schedassist.messaging.AvailableBlockElement;
-import org.jasig.schedassist.messaging.AvailableBlockList;
-import org.jasig.schedassist.messaging.AvailableStatusType;
-import org.jasig.schedassist.messaging.CancelAppointmentRequest;
-import org.jasig.schedassist.messaging.CancelAppointmentResponse;
-import org.jasig.schedassist.messaging.CreateAppointmentRequest;
-import org.jasig.schedassist.messaging.CreateAppointmentResponse;
-import org.jasig.schedassist.messaging.GetRelationshipsRequest;
-import org.jasig.schedassist.messaging.GetRelationshipsResponse;
-import org.jasig.schedassist.messaging.GetScheduleOwnerByIdRequest;
-import org.jasig.schedassist.messaging.GetScheduleOwnerByIdResponse;
-import org.jasig.schedassist.messaging.GetTargetAvailableBlockRequest;
-import org.jasig.schedassist.messaging.GetTargetAvailableBlockResponse;
-import org.jasig.schedassist.messaging.IsEligibleRequest;
-import org.jasig.schedassist.messaging.IsEligibleResponse;
-import org.jasig.schedassist.messaging.PreferencesElement;
-import org.jasig.schedassist.messaging.PreferencesSet;
-import org.jasig.schedassist.messaging.RelationshipElement;
-import org.jasig.schedassist.messaging.RelationshipList;
-import org.jasig.schedassist.messaging.ScheduleOwnerElement;
-import org.jasig.schedassist.messaging.VisibleScheduleRequest;
-import org.jasig.schedassist.messaging.VisibleScheduleResponse;
-import org.jasig.schedassist.messaging.VisitorConflictsRequest;
-import org.jasig.schedassist.messaging.VisitorConflictsResponse;
-import org.jasig.schedassist.messaging.XMLDataUtils;
+import org.bedework.messaging.AvailableBlockElement;
+import org.bedework.messaging.AvailableBlockList;
+import org.bedework.messaging.AvailableStatusType;
+import org.bedework.messaging.CancelAppointmentRequest;
+import org.bedework.messaging.CancelAppointmentResponse;
+import org.bedework.messaging.CreateAppointmentRequest;
+import org.bedework.messaging.CreateAppointmentResponse;
+import org.bedework.messaging.GetRelationshipsRequest;
+import org.bedework.messaging.GetRelationshipsResponse;
+import org.bedework.messaging.GetScheduleOwnerByIdRequest;
+import org.bedework.messaging.GetScheduleOwnerByIdResponse;
+import org.bedework.messaging.GetTargetAvailableBlockRequest;
+import org.bedework.messaging.GetTargetAvailableBlockResponse;
+import org.bedework.messaging.IsEligibleRequest;
+import org.bedework.messaging.IsEligibleResponse;
+import org.bedework.messaging.PreferencesElement;
+import org.bedework.messaging.PreferencesSet;
+import org.bedework.messaging.RelationshipElement;
+import org.bedework.messaging.RelationshipList;
+import org.bedework.messaging.ScheduleOwnerElement;
+import org.bedework.messaging.VisibleScheduleRequest;
+import org.bedework.messaging.VisibleScheduleResponse;
+import org.bedework.messaging.VisitorConflictsRequest;
+import org.bedework.messaging.VisitorConflictsResponse;
+import org.bedework.messaging.XMLDataUtils;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableStatus;
 import org.jasig.schedassist.model.ICalendarAccount;
@@ -144,7 +144,7 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#isEligible(org.jasig.schedassist.messaging.IsEligibleRequest)
+	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#isEligible(org.bedework.messaging.IsEligibleRequest)
 	 */
 	@Override
 	@PayloadRoot(localPart="IsEligibleRequest", namespace = "https://source.jasig.org/schemas/sched-assist")
@@ -166,7 +166,7 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 	}
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#getTargetAvailableBlock(org.jasig.schedassist.messaging.GetTargetAvailableBlockRequest)
+	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#getTargetAvailableBlock(org.bedework.messaging.GetTargetAvailableBlockRequest)
 	 */
 	@Override
 	@PayloadRoot(localPart = "GetTargetAvailableBlockRequest", namespace = "https://source.jasig.org/schemas/sched-assist")
@@ -196,7 +196,7 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#getVisibleSchedule(org.jasig.schedassist.messaging.VisibleScheduleRequest)
+	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#getVisibleSchedule(org.bedework.messaging.VisibleScheduleRequest)
 	 */
 	@Override
 	@PayloadRoot(localPart = "VisibleScheduleRequest", namespace = "https://source.jasig.org/schemas/sched-assist")
@@ -292,7 +292,7 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#scheduleAppointment(org.jasig.schedassist.messaging.CreateAppointmentRequest)
+	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#scheduleAppointment(org.bedework.messaging.CreateAppointmentRequest)
 	 */
 	@Override
 	@PayloadRoot(localPart = "CreateAppointmentRequest", namespace = "https://source.jasig.org/schemas/sched-assist")
@@ -332,7 +332,7 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#cancelAppointment(org.jasig.schedassist.messaging.CancelAppointmentRequest)
+	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#cancelAppointment(org.bedework.messaging.CancelAppointmentRequest)
 	 */
 	@Override
 	@PayloadRoot(localPart = "CancelAppointmentRequest", namespace = "https://source.jasig.org/schemas/sched-assist")
@@ -381,7 +381,7 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#getRelationships(org.jasig.schedassist.messaging.GetRelationshipsRequest)
+	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#getRelationships(org.bedework.messaging.GetRelationshipsRequest)
 	 */
 	@Override
 	@PayloadRoot(localPart = "GetRelationshipsRequest", namespace = "https://source.jasig.org/schemas/sched-assist")
@@ -419,7 +419,7 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#getScheduleOwnerById(org.jasig.schedassist.messaging.GetScheduleOwnerByIdRequest)
+	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#getScheduleOwnerById(org.bedework.messaging.GetScheduleOwnerByIdRequest)
 	 */
 	@Override
 	@PayloadRoot(localPart = "GetScheduleOwnerByIdRequest", namespace = "https://source.jasig.org/schemas/sched-assist")
@@ -438,7 +438,7 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#getVisitorConflicts(org.jasig.schedassist.messaging.VisitorConflictsRequest)
+	 * @see org.jasig.schedassist.remoting.soap.SOAPSchedulingAssistantOperations#getVisitorConflicts(org.bedework.messaging.VisitorConflictsRequest)
 	 */
 	@Override
 	@PayloadRoot(localPart = "VisitorConflictsRequest", namespace = "https://source.jasig.org/schemas/sched-assist")

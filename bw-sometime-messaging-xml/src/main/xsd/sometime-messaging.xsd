@@ -20,10 +20,10 @@
 
 -->
 
-<xs:schema 	xmlns="https://source.jasig.org/schemas/sched-assist" 
+<xs:schema 	xmlns="urn:org:bedework:sometime:messaging"
 			xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-			elementFormDefault="qualified" 
-			targetNamespace="https://source.jasig.org/schemas/sched-assist">
+			elementFormDefault="qualified"
+			targetNamespace="urn:org:bedework:sometime:messaging">
 	
 	<xs:simpleType name="AvailableStatusType">
 		<xs:restriction base="xs:string">

@@ -22,7 +22,7 @@
 		<javax.annotation.version>1.3.2</javax.annotation.version>
 
 		<javax.validation.version>2.0.1.Final</javax.validation.version>
-		<quartz.version>2.3.2</quartz.version>
+		<quartz.version>2.5.0</quartz.version>
 		<wsdl4j.version>1.6.3</wsdl4j.version>
 	</properties>
 

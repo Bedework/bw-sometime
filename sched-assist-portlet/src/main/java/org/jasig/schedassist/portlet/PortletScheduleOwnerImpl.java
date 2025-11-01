@@ -56,7 +56,7 @@ class PortletScheduleOwnerImpl extends AbstractScheduleOwner {
 		Map<Preferences, String> prefs = new HashMap<Preferences, String>();
 		for(PreferencesElement prefElement : element.getPreferencesSet().getPreferencesElement()) {
 			Preferences pref = Preferences.fromKey(prefElement.getKey());
-			if(pref != null) {
+			if (pref != null) {
 				prefs.put(pref, prefElement.getValue());
 			}
 		}

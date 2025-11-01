@@ -19,7 +19,7 @@
 package org.jasig.schedassist.web.security;
 
 import org.jasig.schedassist.model.IDelegateCalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,13 +38,13 @@ public final class SecurityConstants {
 	public static final GrantedAuthority DELEGATE_REGISTER =
 					new SimpleGrantedAuthority("ROLE_DELEGATE_REGISTER");
 	/**
-	 * Role that grants access to {@link IScheduleOwner} features for delegate calendar accoutnts.
+	 * Role that grants access to {@link ScheduleOwner} features for delegate calendar accoutnts.
 	 */
 	public static final GrantedAuthority DELEGATE_OWNER =
 					new SimpleGrantedAuthority("ROLE_DELEGATE_OWNER");
 
 	/**
-	 * Role that grants access to {@link IScheduleOwner} features for customer accounts.
+	 * Role that grants access to {@link ScheduleOwner} features for customer accounts.
 	 */
 	public static final GrantedAuthority OWNER =
 					new SimpleGrantedAuthority("ROLE_OWNER");

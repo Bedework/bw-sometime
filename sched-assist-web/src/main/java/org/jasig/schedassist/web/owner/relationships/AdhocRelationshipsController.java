@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.jasig.schedassist.MutableRelationshipDao;
 import org.jasig.schedassist.impl.owner.NotRegisteredException;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.Relationship;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Controller that displays an {@link IScheduleOwner}'s
+ * Controller that displays an {@link ScheduleOwner}'s
  * adhoc relationships.
  *  
  * @author Nicholas Blair, nblair@doit.wisc.edu
@@ -71,7 +71,7 @@ public class AdhocRelationshipsController {
 	@RequestMapping(method=RequestMethod.GET)
 	public String getAdhocRelationships(final ModelMap model) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		
 		List<Relationship> relationships = mutableRelationshipDao.forOwner(owner);
 		model.addAttribute("relationships", relationships);

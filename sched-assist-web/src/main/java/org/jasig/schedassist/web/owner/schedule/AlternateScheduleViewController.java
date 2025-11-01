@@ -38,7 +38,7 @@ import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableBlockBuilder;
 import org.jasig.schedassist.model.AvailableSchedule;
 import org.jasig.schedassist.model.CommonDateOperations;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -50,7 +50,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * This {@link Controller} returns the schedule data for 
- * the current authenticated {@link IScheduleOwner}. It's intended to
+ * the current authenticated {@link ScheduleOwner}. It's intended to
  * be used with the non-Javascript enabled view (schedule-noscript.jsp).
  *  
  * @author Nicholas Blair, nblair@doit.wisc.edu
@@ -88,11 +88,11 @@ public class AlternateScheduleViewController {
 	@RequestMapping(method=RequestMethod.GET)
 	public ModelAndView displaySchedule(@RequestParam(value="startDate", required=false) String startParam, HttpServletResponse response) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		
 		// grab the intended date period from the request
 		Date startDate = new Date();
-		if(null != startParam) {
+		if (null != startParam) {
 			SimpleDateFormat df = CommonDateOperations.getDateFormat();
 			try {
 				startDate = df.parse(startParam);

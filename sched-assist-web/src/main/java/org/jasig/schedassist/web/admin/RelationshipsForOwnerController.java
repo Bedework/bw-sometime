@@ -29,7 +29,7 @@ import org.jasig.schedassist.impl.owner.OwnerDao;
 import org.jasig.schedassist.impl.visitor.NotAVisitorException;
 import org.jasig.schedassist.impl.visitor.VisitorDao;
 import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.model.Relationship;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Controller to display relationships for the selected
- * {@link IScheduleOwner}.
+ * {@link ScheduleOwner}.
  * 
  * @author Nicholas Blair, nblair@doit.wisc.edu
  * @version $Id: RelationshipsForOwnerController.java 2978 2011-01-25 19:20:51Z npblair $
@@ -119,9 +119,9 @@ public class RelationshipsForOwnerController {
 	@RequestMapping(method=RequestMethod.GET)
 	protected String showRelationships(@RequestParam(value="id", required=false, defaultValue="0") long ownerId, final ModelMap model) throws NotAVisitorException {
 		model.addAttribute("id", ownerId);
-		if(ownerId != 0) {
-			IScheduleOwner owner = this.ownerDao.locateOwnerByAvailableId(ownerId);
-			if(null != owner) {
+		if (ownerId != 0) {
+			ScheduleOwner owner = this.ownerDao.locateOwnerByAvailableId(ownerId);
+			if (null != owner) {
 				model.addAttribute("owner", owner);
 				List<Relationship> relationships = this.mutableRelationshipDao.forOwner(owner);
 				model.addAttribute("relationships", relationships);
@@ -140,11 +140,11 @@ public class RelationshipsForOwnerController {
 	 */
 	@RequestMapping(method=RequestMethod.POST)
 	protected String destroyAdhocRelationship(ModifyAdhocRelationshipFormBackingObject fbo, final ModelMap model) throws CalendarAccountNotFoundException, NotAVisitorException {
-		IScheduleOwner owner = this.ownerDao.locateOwnerByAvailableId(fbo.getOwnerId());
-		if(null != owner) {
+		ScheduleOwner owner = this.ownerDao.locateOwnerByAvailableId(fbo.getOwnerId());
+		if (null != owner) {
 			model.addAttribute("owner", owner);
 			ICalendarAccount visitorUser = calendarAccountDao.getCalendarAccount(fbo.getVisitorUsername());
-			if(null == visitorUser) {
+			if (null == visitorUser) {
 				throw new CalendarAccountNotFoundException(fbo.getVisitorUsername() + " does not exist or is not eligible for WiscCal");
 			}
 			IScheduleVisitor visitor = visitorDao.toVisitor(visitorUser);

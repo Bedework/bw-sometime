@@ -34,7 +34,7 @@ import org.jasig.schedassist.impl.visitor.NotAVisitorException;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.CommonDateOperations;
 import org.jasig.schedassist.model.IEventUtils;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.model.InputFormatException;
 import org.jasig.schedassist.model.PublicProfile;
@@ -188,18 +188,18 @@ public class CreateAppointmentFormController {
 		CalendarAccountUserDetailsImpl currentUser = (CalendarAccountUserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		IScheduleVisitor visitor = currentUser.getScheduleVisitor();
 	
-		IScheduleOwner selectedOwner = null;
-		if(StringUtils.isNumeric(ownerIdentifier)) {
+		ScheduleOwner selectedOwner = null;
+		if (StringUtils.isNumeric(ownerIdentifier)) {
 			Long ownerId = Long.parseLong(ownerIdentifier);
 			selectedOwner = findOwnerForVisitor(visitor, ownerId);
 		} else {
 			PublicProfile profile = publicProfileDao.locatePublicProfileByKey(ownerIdentifier);
-			if(null != profile) {
+			if (null != profile) {
 				selectedOwner = ownerDao.locateOwnerByAvailableId(profile.getOwnerId());
 			}
 		}
 		
-		if(null == selectedOwner) {
+		if (null == selectedOwner) {
 			throw new OwnerNotFoundException("no owner found for " + ownerIdentifier);
 		}
 		model.put("owner", selectedOwner);
@@ -207,14 +207,14 @@ public class CreateAppointmentFormController {
 		validateChosenStartTime(selectedOwner.getPreferredVisibleWindow(), startTime);
 		
 		AvailableBlock targetBlock = availableScheduleDao.retrieveTargetBlock(selectedOwner, startTime);
-		if(null == targetBlock) {
+		if (null == targetBlock) {
 			throw new SchedulingException("requested time is not available");
 		} 
 		
-		if(selectedOwner.hasMeetingLimit()) {
+		if (selectedOwner.hasMeetingLimit()) {
 			VisibleSchedule sched = schedulingAssistantService.getVisibleSchedule(visitor, selectedOwner);
 			int attendingCount = sched.getAttendingCount();
-			if(selectedOwner.isExceedingMeetingLimit(attendingCount)) {
+			if (selectedOwner.isExceedingMeetingLimit(attendingCount)) {
 				// visitor has already matched owner's appointment limit
 				log.warn("blocked attempt to use create form by visitor: " + visitor + ", target owner: " + selectedOwner);
 				return "redirect:view.html";
@@ -222,9 +222,9 @@ public class CreateAppointmentFormController {
 		}
 		
 		VEvent event = schedulingAssistantService.getExistingAppointment(targetBlock, selectedOwner);
-		if(event != null) {
+		if (event != null) {
 			model.put("event", event);
-			if(this.eventUtils.isAttendingAsVisitor(event, visitor.getCalendarAccount())) {
+			if (this.eventUtils.isAttendingAsVisitor(event, visitor.getCalendarAccount())) {
 				// redirect the visitor to the cancel form 
 				StringBuilder redirect = new StringBuilder("redirect:cancel.html?r=true&startTime=");
 				SimpleDateFormat dateFormat = CommonDateOperations.getDateTimeFormat();
@@ -236,7 +236,7 @@ public class CreateAppointmentFormController {
 			
 			Integer visitorLimit = this.eventUtils.getEventVisitorLimit(event);
 			model.put("visitorLimit", visitorLimit);
-			if(this.eventUtils.getScheduleVisitorCount(event) >= visitorLimit) {
+			if (this.eventUtils.getScheduleVisitorCount(event) >= visitorLimit) {
 				return "visitor/appointment-full";
 			}
 		}
@@ -266,36 +266,36 @@ public class CreateAppointmentFormController {
 		CalendarAccountUserDetailsImpl currentUser = (CalendarAccountUserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		IScheduleVisitor visitor = currentUser.getScheduleVisitor();
 		
-		if(bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors()) {
 			return "visitor/create-appointment-form";
 		}
 		
-		IScheduleOwner selectedOwner = null;
-		if(StringUtils.isNumeric(ownerIdentifier)) {
+		ScheduleOwner selectedOwner = null;
+		if (StringUtils.isNumeric(ownerIdentifier)) {
 			Long ownerId = Long.parseLong(ownerIdentifier);
 			selectedOwner = findOwnerForVisitor(visitor, ownerId);
 		} else {
 			PublicProfile profile = publicProfileDao.locatePublicProfileByKey(ownerIdentifier);
-			if(null != profile) {
+			if (null != profile) {
 				selectedOwner = ownerDao.locateOwnerByAvailableId(profile.getOwnerId());
 			}
 		}
 		
-		if(null == selectedOwner) {
+		if (null == selectedOwner) {
 			throw new OwnerNotFoundException("no owner found for " + ownerIdentifier);
 		}
 		
 		validateChosenStartTime(selectedOwner.getPreferredVisibleWindow(), fbo.getTargetBlock().getStartTime());
 		
 		AvailableBlock finalAppointmentBlock = fbo.getTargetBlock();
-		if(fbo.isDoubleLengthAvailable()) {
+		if (fbo.isDoubleLengthAvailable()) {
 			// check if selected meeting duration matches meeting durations maxLength
 			// if it's greater, then we need to look up the next block in the schedule and attempt to combine
-			if(fbo.getSelectedDuration() == fbo.getMeetingDurations().getMaxLength()) {
+			if (fbo.getSelectedDuration() == fbo.getMeetingDurations().getMaxLength()) {
 				finalAppointmentBlock = availableScheduleDao.retrieveTargetDoubleLengthBlock(selectedOwner, finalAppointmentBlock.getStartTime());
 			}
 		}
-		if(null == finalAppointmentBlock) {
+		if (null == finalAppointmentBlock) {
 			throw new SchedulingException("requested time is not available");
 		}
 		
@@ -316,7 +316,7 @@ public class CreateAppointmentFormController {
 	protected void validateChosenStartTime(VisibleWindow window, Date startTime) throws SchedulingException {
 		final Date currentWindowStart = window.calculateCurrentWindowStart();
 		final Date currentWindowEnd = window.calculateCurrentWindowEnd();
-		if(startTime.before(currentWindowStart) || startTime.equals(currentWindowEnd) || startTime.after(currentWindowEnd)) {
+		if (startTime.before(currentWindowStart) || startTime.equals(currentWindowEnd) || startTime.after(currentWindowEnd)) {
 			throw new SchedulingException("requested time is no longer within visible window");
 		}
 	}
@@ -327,10 +327,10 @@ public class CreateAppointmentFormController {
 	 * @return
 	 * @throws OwnerNotFoundException
 	 */
-	private IScheduleOwner findOwnerForVisitor(final IScheduleVisitor visitor, final long ownerId) throws OwnerNotFoundException {
+	private ScheduleOwner findOwnerForVisitor(final IScheduleVisitor visitor, final long ownerId) throws OwnerNotFoundException {
 		List<Relationship> relationships = relationshipDao.forVisitor(visitor);
 		for(Relationship potential : relationships) {
-			if(potential.getOwner().getId() == ownerId) {
+			if (potential.getOwner().getId() == ownerId) {
 				return potential.getOwner();
 			}
 		}

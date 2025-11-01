@@ -167,10 +167,10 @@ padding-right: 10px;
                  	helpTextElem.append('Complete!&nbsp;');
                  	$('<img src="${tickPng}" alt=""/>').appendTo(helpTextElem);
               		var hasConflicts = false;
-                 	if(data.conflicts) {
+                 	if (data.conflicts) {
         				jQuery.each(data.conflicts, function(i,conflict) {
         					elem = $('#' + conflict);
-        					if(elem.hasClass('free')) {
+        					if (elem.hasClass('free')) {
         						elem.removeClass('free');
         						elem.addClass('conflict');
         						elem.attr('title', '<spring:message code="conflict.help"/>');
@@ -180,7 +180,7 @@ padding-right: 10px;
         					}
         				});
                  	}
-                 	if(hasConflicts) {
+                 	if (hasConflicts) {
                      	window.setTimeout(function() {
         					// show conflicts help
         					helpTextElem.removeClass('inprogress');
@@ -201,10 +201,10 @@ padding-right: 10px;
 
     	$.ajaxSetup({
     		"error": function(XMLHttpRequest,textStatus, errorThrown) {   
-    			if(null != XMLHttpRequest) {
+    			if (null != XMLHttpRequest) {
         			helpTextElem.removeClass();
         			helpTextElem.addClass('alert');
-    				if(XMLHttpRequest.status >= 500) {
+    				if (XMLHttpRequest.status >= 500) {
     					helpTextElem.text('<spring:message code="visible.schedule.error.continue"/>');
     				} else {
     					helpTextElem.text('<spring:message code="unexpected.error"/> Status code: ' + XMLHttpRequest.status);
@@ -212,7 +212,7 @@ padding-right: 10px;
     			}
     		}
     	});
-    	if(!${ownerVisitorSamePerson} && ${visibleSchedule.size} != 0) {
+    	if (!${ownerVisitorSamePerson} && ${visibleSchedule.size} != 0) {
     		loadConflicts();
     	}
     });

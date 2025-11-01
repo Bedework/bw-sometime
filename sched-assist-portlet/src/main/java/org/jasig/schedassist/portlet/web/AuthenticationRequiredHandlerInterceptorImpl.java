@@ -52,10 +52,10 @@ public class AuthenticationRequiredHandlerInterceptorImpl extends
 	@Override
 	public boolean preHandleAction(ActionRequest request,
 			ActionResponse response, Object handler) throws Exception {
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("in preHandleAction, remoteUser: " + request.getRemoteUser());
 		}
-		if(StringUtils.isBlank(request.getRemoteUser())) {
+		if (StringUtils.isBlank(request.getRemoteUser())) {
 			throw new AuthenticationRequiredException();
 		}
 		return true;
@@ -67,10 +67,10 @@ public class AuthenticationRequiredHandlerInterceptorImpl extends
 	@Override
 	public boolean preHandleRender(RenderRequest request,
 			RenderResponse response, Object handler) throws Exception {
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("in preHandleRender, remoteUser: " + request.getRemoteUser());
 		}
-		if(StringUtils.isBlank(request.getRemoteUser())) {
+		if (StringUtils.isBlank(request.getRemoteUser())) {
 			throw new AuthenticationRequiredException();
 		}
 		return true;

@@ -14,7 +14,7 @@
 
 	<dependencies>
 		<dependency>
-			<artifactId>sched-assist-spi</artifactId>
+			<artifactId>bw-sometime-spi</artifactId>
 			<groupId>${project.groupId}</groupId>
 			<version>${project.version}</version>
 		</dependency>

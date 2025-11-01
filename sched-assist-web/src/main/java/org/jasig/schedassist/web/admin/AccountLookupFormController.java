@@ -96,7 +96,7 @@ public class AccountLookupFormController {
 		// q parameter is set, execute non-interactive search
 		model.addAttribute("searchText", qValue);
 		List<ICalendarAccount> results = new ArrayList<ICalendarAccount>();
-		if(qValue.length() > 2) {
+		if (qValue.length() > 2) {
 			// alter search text before submitting to calendarUserDao
 			final String searchText = StringUtils.replace(qValue, " ", "*");
 			results = calendarAccountDao.searchForCalendarAccounts(searchText);
@@ -116,7 +116,7 @@ public class AccountLookupFormController {
 		// q parameter is set, execute non-interactive search
 		model.addAttribute("searchText", qValue);
 		List<IDelegateCalendarAccount> results = new ArrayList<IDelegateCalendarAccount>();
-		if(qValue.length() > 2) {
+		if (qValue.length() > 2) {
 			// alter search text before submitting to calendarUserDao
 			final String searchText = StringUtils.replace(qValue, " ", "*");
 			results = delegateCalendarAccountDao.searchForDelegates(searchText);
@@ -135,34 +135,34 @@ public class AccountLookupFormController {
 	protected String interactiveSearch(@ModelAttribute("command") AccountLookupFormBackingObject fbo, final ModelMap model) {
 		List<ICalendarAccount> results = new ArrayList<ICalendarAccount>();
 
-		if(StringUtils.isNotBlank(fbo.getCtcalxitemid())) {
+		if (StringUtils.isNotBlank(fbo.getCtcalxitemid())) {
 			ICalendarAccount account = this.calendarAccountDao.getCalendarAccountFromUniqueId(fbo.getCtcalxitemid());
-			if(null != account) {
+			if (null != account) {
 				results.add(account);
 			}
 		} 
-		if(StringUtils.isNotBlank(fbo.getUsername())) {
+		if (StringUtils.isNotBlank(fbo.getUsername())) {
 			ICalendarAccount account = this.calendarAccountDao.getCalendarAccount(fbo.getUsername());
-			if(null != account) {
+			if (null != account) {
 				results.add(account);
 			}
 		} 
 		
-		if(StringUtils.isNotBlank(fbo.getResourceName())) {
+		if (StringUtils.isNotBlank(fbo.getResourceName())) {
 			IDelegateCalendarAccount delegate = this.delegateCalendarAccountDao.getDelegate(fbo.getResourceName());
-			if(null != delegate) {
+			if (null != delegate) {
 				results.add(delegate);
 			}
 		} 
 			
-		if(StringUtils.isNotBlank(fbo.getSearchText()) && fbo.getSearchText().length() > 2) {
+		if (StringUtils.isNotBlank(fbo.getSearchText()) && fbo.getSearchText().length() > 2) {
 			// alter search text before submitting to calendarUserDao
 			final String searchText = StringUtils.replace(fbo.getSearchText(), " ", "*");
 			results.addAll(calendarAccountDao.searchForCalendarAccounts(searchText));
 			results.addAll(delegateCalendarAccountDao.searchForDelegates(searchText));
 		}
 		
-		if(results.size() == 1) {
+		if (results.size() == 1) {
 			// redirect to that 1 result
 			ICalendarAccount account = results.get(0);
 			return "redirect:/admin/account-details.html?id=" + account.getCalendarUniqueId();

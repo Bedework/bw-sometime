@@ -20,7 +20,7 @@
 package org.jasig.schedassist.portlet;
 
 /**
- * Exception raised when an action requiring an {@link IScheduleOwner} doesn't have
+ * Exception raised when an action requiring an {@link ScheduleOwner} doesn't have
  * enough information for the owner or the information points to an owner that doesn't exist.
  *  
  * @author Nicholas Blair, nblair@doit.wisc.edu

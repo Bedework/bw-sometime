@@ -107,7 +107,7 @@ public class CreateAppointmentFormBackingObject {
 	public List<Integer> getMeetingDurationsAsList() {
 		List<Integer> result = new ArrayList<Integer>();
 		result.add(meetingDurations.getMinLength());
-		if(meetingDurations.isDoubleLength()) {
+		if (meetingDurations.isDoubleLength()) {
 			result.add(meetingDurations.getMaxLength());
 		}
 		return result;

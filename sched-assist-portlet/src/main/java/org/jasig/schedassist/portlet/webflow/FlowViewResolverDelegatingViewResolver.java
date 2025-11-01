@@ -59,7 +59,7 @@ public class FlowViewResolverDelegatingViewResolver implements ViewResolver {
 	public View resolveViewName(String viewId, Locale arg1) throws Exception {
 		try {
 			View result = flowViewResolver.resolveView(viewId, RequestContextHolder.getRequestContext());
-			if(LOG.isDebugEnabled()) {
+			if (LOG.isDebugEnabled()) {
 				LOG.debug("viewId " + viewId + " resolved to " + result);
 			}
 			return result;

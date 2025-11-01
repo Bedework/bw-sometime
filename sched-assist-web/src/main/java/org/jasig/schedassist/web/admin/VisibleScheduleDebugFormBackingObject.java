@@ -20,7 +20,7 @@
 
 package org.jasig.schedassist.web.admin;
 
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 
 /**
@@ -34,7 +34,7 @@ public class VisibleScheduleDebugFormBackingObject {
 
 	private AccountLookupFormBackingObject visitorLookup = new AccountLookupFormBackingObject();
 	private AccountLookupFormBackingObject ownerLookup = new AccountLookupFormBackingObject();
-	private IScheduleOwner scheduleOwner;
+	private ScheduleOwner scheduleOwner;
 	private IScheduleVisitor scheduleVisitor;
 	/**
 	 * @return the visitorLookup
@@ -63,13 +63,13 @@ public class VisibleScheduleDebugFormBackingObject {
 	/**
 	 * @return the scheduleOwner
 	 */
-	public IScheduleOwner getScheduleOwner() {
+	public ScheduleOwner getScheduleOwner() {
 		return scheduleOwner;
 	}
 	/**
 	 * @param scheduleOwner the scheduleOwner to set
 	 */
-	public void setScheduleOwner(IScheduleOwner scheduleOwner) {
+	public void setScheduleOwner(ScheduleOwner scheduleOwner) {
 		this.scheduleOwner = scheduleOwner;
 	}
 	/**

@@ -28,7 +28,7 @@ import java.util.List;
 import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.model.ICalendarAccount;
 import org.jasig.schedassist.model.IDelegateCalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
@@ -47,7 +47,7 @@ public class DelegateCalendarAccountUserDetailsImpl implements CalendarAccountUs
 	private static final String EMPTY = "";
 	
 	private final IDelegateCalendarAccount delegateCalendarAccount;
-	private IScheduleOwner scheduleOwner;
+	private ScheduleOwner scheduleOwner;
 	/**
 	 * 
 	 * @param delegateCalendarAccount
@@ -62,7 +62,7 @@ public class DelegateCalendarAccountUserDetailsImpl implements CalendarAccountUs
 	 */
 	public DelegateCalendarAccountUserDetailsImpl(
 			IDelegateCalendarAccount delegateCalendarAccount,
-			IScheduleOwner delegateScheduleOwner) {
+			ScheduleOwner delegateScheduleOwner) {
 		this.delegateCalendarAccount = delegateCalendarAccount;
 		this.scheduleOwner = delegateScheduleOwner;
 	}
@@ -73,11 +73,11 @@ public class DelegateCalendarAccountUserDetailsImpl implements CalendarAccountUs
 	 */
 	public Collection<GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		if(null != this.delegateCalendarAccount && this.delegateCalendarAccount.isEligible()) {
+		if (null != this.delegateCalendarAccount && this.delegateCalendarAccount.isEligible()) {
 			authorities.add(SecurityConstants.DELEGATE_REGISTER);
 		}
 		
-		if(null != this.scheduleOwner) {
+		if (null != this.scheduleOwner) {
 			authorities.add(SecurityConstants.DELEGATE_OWNER);
 			authorities.remove(SecurityConstants.DELEGATE_REGISTER);
 		}
@@ -163,8 +163,8 @@ public class DelegateCalendarAccountUserDetailsImpl implements CalendarAccountUs
 	 * @see org.jasig.schedassist.web.security.CalendarAccountUserDetails#getScheduleOwner()
 	 */
 	@Override
-	public IScheduleOwner getScheduleOwner() throws NotRegisteredException {
-		if(null == this.scheduleOwner) {
+	public ScheduleOwner getScheduleOwner() throws NotRegisteredException {
+		if (null == this.scheduleOwner) {
 			throw new NotRegisteredException(this.delegateCalendarAccount + " is not registered");
 		} else {
 			return this.scheduleOwner;
@@ -181,10 +181,10 @@ public class DelegateCalendarAccountUserDetailsImpl implements CalendarAccountUs
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.web.security.CalendarAccountUserDetails#updateScheduleOwner(org.jasig.schedassist.model.IScheduleOwner)
+	 * @see org.jasig.schedassist.web.security.CalendarAccountUserDetails#updateScheduleOwner(org.jasig.schedassist.model.ScheduleOwner)
 	 */
 	@Override
-	public void updateScheduleOwner(IScheduleOwner owner) {
+	public void updateScheduleOwner(ScheduleOwner owner) {
 		this.scheduleOwner = owner;
 	}
 }

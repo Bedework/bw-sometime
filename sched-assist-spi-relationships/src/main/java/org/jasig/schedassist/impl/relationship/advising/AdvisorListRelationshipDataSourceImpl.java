@@ -215,11 +215,11 @@ public class AdvisorListRelationshipDataSourceImpl implements RelationshipDataSo
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		if(advisorListResource == null) {
+		if (advisorListResource == null) {
 			throw new IllegalStateException("advisorListResource is required");
 		}
 		
-		if(jdbcTemplate == null) {
+		if (jdbcTemplate == null) {
 			throw new IllegalStateException("dataSource is required");
 		}
 	}
@@ -262,7 +262,7 @@ public class AdvisorListRelationshipDataSourceImpl implements RelationshipDataSo
 		if (Boolean.getBoolean("org.jasig.schedassist.runScheduledTasks")) {
 			String currentTerm = TermCalculator.getCurrentTerm();
 
-			if(isResourceUpdated(advisorListResource)) {
+			if (isResourceUpdated(advisorListResource)) {
 				LOG.info("resource updated, reloading advisorList data");
 				List<StudentAdvisorAssignment> records = readResource(advisorListResource, currentTerm);
 
@@ -335,7 +335,7 @@ public class AdvisorListRelationshipDataSourceImpl implements RelationshipDataSo
 		LOG.debug("parseLine: " + line);
 		String[] tokens = line.split(";");
 
-		if(tokens.length != 25 && tokens.length != 26) {
+		if (tokens.length != 25 && tokens.length != 26) {
 			LOG.debug("returning null for malformed line (tokens length " + tokens.length +"): " + line);
 			return null;
 		}
@@ -348,7 +348,7 @@ public class AdvisorListRelationshipDataSourceImpl implements RelationshipDataSo
 		record.setTermNumber(tokens[getTermNumberFieldNumber()]);
 		record.setTermDescription(tokens[getTermDescriptionFieldNumber()]);
 		record.setAdvisorType(tokens[getAdvisorTypeFieldNumber()]);
-		if(tokens.length == 26) {
+		if (tokens.length == 26) {
 			record.setCommitteeRole(tokens[getCommitteeRoleFieldNumber()]);
 		}
 		LOG.debug("parseLine result: " + record);
@@ -363,7 +363,7 @@ public class AdvisorListRelationshipDataSourceImpl implements RelationshipDataSo
 	 */
 	private String nullSafeGetLowerCase(final String [] tokens, final int field) {
 		String value = tokens[field];
-		if(value == null) {
+		if (value == null) {
 			 return null;
 		}
 		
@@ -393,8 +393,8 @@ public class AdvisorListRelationshipDataSourceImpl implements RelationshipDataSo
 			String currentLine = reader.readLine();
 			while(null != currentLine) {
 				StudentAdvisorAssignment record = parseLine(currentLine);
-				if(null != record) {
-					if(TermCalculator.termGreaterThanOrEquals(record.getTermNumber(), term)) {
+				if (null != record) {
+					if (TermCalculator.termGreaterThanOrEquals(record.getTermNumber(), term)) {
 						results.add(record);
 					}
 				}

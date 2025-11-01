@@ -71,7 +71,7 @@ public class DefaultCredentialsProviderImpl implements CredentialsProvider {
 	 */
 	@Override
 	public Credentials getCredentials(AuthScope authscope) {
-		if(!targetAuthScope.equals(authscope)) {
+		if (!targetAuthScope.equals(authscope)) {
 			return null;
 		}
 		return adminCredentials;

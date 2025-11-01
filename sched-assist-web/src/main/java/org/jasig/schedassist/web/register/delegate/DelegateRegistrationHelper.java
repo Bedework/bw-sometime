@@ -32,7 +32,7 @@ import org.jasig.schedassist.impl.owner.OwnerDao;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableBlockBuilder;
 import org.jasig.schedassist.model.IDelegateCalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.InputFormatException;
 import org.jasig.schedassist.model.Preferences;
 import org.jasig.schedassist.web.register.Registration;
@@ -89,7 +89,7 @@ public class DelegateRegistrationHelper {
 		SecurityContext context = SecurityContextHolder.getContext();
 		Authentication authentication = context.getAuthentication();
 		DelegateCalendarAccountUserDetailsImpl currentUser = (DelegateCalendarAccountUserDetailsImpl) authentication.getPrincipal();
-		IScheduleOwner delegateOwner = ownerDao.register(currentUser.getCalendarAccount());
+		ScheduleOwner delegateOwner = ownerDao.register(currentUser.getCalendarAccount());
 		delegateOwner = ownerDao.updatePreference(delegateOwner, Preferences.LOCATION, registration.getLocation());
 		
 		delegateOwner = ownerDao.updatePreference(delegateOwner, Preferences.DURATIONS, registration.durationPreferenceValue());
@@ -101,7 +101,7 @@ public class DelegateRegistrationHelper {
 		delegateOwner = ownerDao.updatePreference(delegateOwner, Preferences.REFLECT_SCHEDULE, Boolean.toString(registration.isReflectSchedule()));
 		delegateOwner = ownerDao.updatePreference(delegateOwner, Preferences.REMINDERS, registration.emailReminderPreferenceKey());
 		
-		if(registration.isScheduleSet()) {
+		if (registration.isScheduleSet()) {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 			Set<AvailableBlock> blocks = AvailableBlockBuilder.createBlocks(registration.getStartTimePhrase(), 
 					registration.getEndTimePhrase(),
@@ -112,7 +112,7 @@ public class DelegateRegistrationHelper {
 			availableScheduleDao.addToSchedule(delegateOwner, blocks);
 		}
 		
-		if(registration.isReflectSchedule()) {
+		if (registration.isReflectSchedule()) {
 			reflectionService.reflectAvailableSchedule(delegateOwner);
 		}
 	}
@@ -139,7 +139,7 @@ public class DelegateRegistrationHelper {
 		Authentication authentication = context.getAuthentication();
 		DelegateCalendarAccountUserDetailsImpl currentUser = (DelegateCalendarAccountUserDetailsImpl) authentication.getPrincipal();
 		String accountLocation = currentUser.getDelegateCalendarAccount().getLocation();
-		if(StringUtils.isNotBlank(accountLocation)) {
+		if (StringUtils.isNotBlank(accountLocation)) {
 			return accountLocation;
 		} else {
 			return Preferences.LOCATION.getDefaultValue();

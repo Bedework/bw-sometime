@@ -22,7 +22,7 @@ package org.jasig.schedassist.web.security;
 
 import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -46,7 +46,7 @@ public class CalendarAccountUserDetailsImpl implements CalendarAccountUserDetail
 
 	private final ICalendarAccount calendarAccount;
 	private IScheduleVisitor scheduleVisitor;
-	private IScheduleOwner scheduleOwner;
+	private ScheduleOwner scheduleOwner;
 	private boolean administrator = false;
 	private String activeDisplayNameAttribute = "uid";
 	private static final String EMPTY = "";
@@ -65,11 +65,11 @@ public class CalendarAccountUserDetailsImpl implements CalendarAccountUserDetail
 		this.calendarAccount = calendarAccount;
 	}
 	
-	CalendarAccountUserDetailsImpl(final ICalendarAccount calendarAccount, final IScheduleOwner scheduleOwner) {
+	CalendarAccountUserDetailsImpl(final ICalendarAccount calendarAccount, final ScheduleOwner scheduleOwner) {
 		this.calendarAccount = calendarAccount;
 		this.scheduleOwner = scheduleOwner;
 	}
-	CalendarAccountUserDetailsImpl(final ICalendarAccount calendarAccount, final IScheduleOwner scheduleOwner, String activeDisplayNameAttribute) {
+	CalendarAccountUserDetailsImpl(final ICalendarAccount calendarAccount, final ScheduleOwner scheduleOwner, String activeDisplayNameAttribute) {
 		this.calendarAccount = calendarAccount;
 		this.scheduleOwner = scheduleOwner;
 		this.activeDisplayNameAttribute = activeDisplayNameAttribute;
@@ -94,7 +94,7 @@ public class CalendarAccountUserDetailsImpl implements CalendarAccountUserDetail
 	 * <ol>
 	 * <li>if the "unregistered" {@link ICalendarAccount} is set and {@link ICalendarAccount#isEligible()}, adds {@link SecurityConstants#REGISTER}.</li>
 	 * <li>if the {@link IScheduleVisitor} field is set and is eligible, adds {@link SecurityConstants#VISITOR}.</li>
-	 * <li>if the {@link IScheduleOwner} field is set and is eligible, adds {@link SecurityConstants#OWNER}.</li>
+	 * <li>if the {@link ScheduleOwner} field is set and is eligible, adds {@link SecurityConstants#OWNER}.</li>
 	 * </ol>
 	 * 
 	 * @see org.springframework.security.core.userdetails.UserDetails#getAuthorities()
@@ -114,14 +114,14 @@ public class CalendarAccountUserDetailsImpl implements CalendarAccountUserDetail
 			}
 		}
 
-		if(null != this.scheduleOwner) {
-			if(this.scheduleOwner.getCalendarAccount().isEligible()) {
+		if (null != this.scheduleOwner) {
+			if (this.scheduleOwner.getCalendarAccount().isEligible()) {
 				authorities.add(SecurityConstants.OWNER);
 				authorities.remove(SecurityConstants.REGISTER);
 			}
 		}
 		
-		if(this.administrator) {
+		if (this.administrator) {
 			authorities.add(SecurityConstants.AVAILABLE_ADMINISTRATOR);
 		}
 
@@ -189,8 +189,8 @@ public class CalendarAccountUserDetailsImpl implements CalendarAccountUserDetail
 	 * @see org.jasig.schedassist.web.security.CalendarAccountUserDetails#getScheduleOwner()
 	 */
 	@Override
-	public IScheduleOwner getScheduleOwner() throws NotRegisteredException {
-		if(null == this.scheduleOwner) {
+	public ScheduleOwner getScheduleOwner() throws NotRegisteredException {
+		if (null == this.scheduleOwner) {
 			throw new NotRegisteredException(this.calendarAccount + " is not registered");
 		} else {
 			return this.scheduleOwner;
@@ -215,7 +215,7 @@ public class CalendarAccountUserDetailsImpl implements CalendarAccountUserDetail
 	/**
 	 * @param scheduleOwner the scheduleOwner to set
 	 */
-	void setScheduleOwner(IScheduleOwner scheduleOwner) {
+	void setScheduleOwner(ScheduleOwner scheduleOwner) {
 		this.scheduleOwner = scheduleOwner;
 	}	
 
@@ -234,10 +234,10 @@ public class CalendarAccountUserDetailsImpl implements CalendarAccountUserDetail
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.web.security.CalendarAccountUserDetails#updateScheduleOwner(org.jasig.schedassist.model.IScheduleOwner)
+	 * @see org.jasig.schedassist.web.security.CalendarAccountUserDetails#updateScheduleOwner(org.jasig.schedassist.model.ScheduleOwner)
 	 */
 	@Override
-	public void updateScheduleOwner(IScheduleOwner scheduleOwner) {
+	public void updateScheduleOwner(ScheduleOwner scheduleOwner) {
 		this.scheduleOwner = scheduleOwner;
 	}
 	public boolean isScheduleOwnerSet() {

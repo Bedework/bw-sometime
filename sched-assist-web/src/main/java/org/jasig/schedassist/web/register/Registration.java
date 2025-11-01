@@ -168,7 +168,7 @@ public class Registration implements Serializable {
 	 * @return a possibly empty, but never null noteboard as an array of sentences
 	 */
 	public String [] getNoteboardSentences() {
-		if(StringUtils.isBlank(noteboard)) {
+		if (StringUtils.isBlank(noteboard)) {
 			return new String[]{};
 		} else {
 			String [] noteboardSentences = noteboard.split("\n");
@@ -339,7 +339,7 @@ public class Registration implements Serializable {
 	 */
 	public void setMeetingLimitValue(int meetingLimitValue) {
 		this.meetingLimitValue = meetingLimitValue;
-		if(meetingLimitValue == -1) {
+		if (meetingLimitValue == -1) {
 			setEnableMeetingLimit(false);
 		} else {
 			setEnableMeetingLimit(true);
@@ -359,7 +359,7 @@ public class Registration implements Serializable {
 	public String durationPreferenceValue() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(this.meetingLength);
-		if(this.allowDoubleLength) {
+		if (this.allowDoubleLength) {
 			int duration = Integer.parseInt(this.meetingLength);
 			builder.append(",");
 			builder.append(2*duration);
@@ -432,7 +432,7 @@ public class Registration implements Serializable {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(command, "registration");
 		preferencesValidator.validate(command, errors);
 		
-		if(errors.hasErrors()) {
+		if (errors.hasErrors()) {
 			for(FieldError error: errors.getFieldErrors()){
 				messages.addMessage(new MessageBuilder().error().source(error.getField())
 						.defaultText(error.getDefaultMessage()).build());	
@@ -454,7 +454,7 @@ public class Registration implements Serializable {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(command, "registration");
 		validator.validate(command, errors);
 		
-		if(errors.hasErrors()) {
+		if (errors.hasErrors()) {
 			for(FieldError error: errors.getFieldErrors()){
 				messages.addMessage(new MessageBuilder().error().source(error.getField())
 						.defaultText(error.getDefaultMessage()).build());	

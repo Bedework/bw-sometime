@@ -47,7 +47,7 @@ public class ClearAvailableScheduleFormBackingObjectValidator implements
 	 */
 	public void validate(Object command, Errors errors) {
 		ClearAvailableScheduleFormBackingObject fbo = (ClearAvailableScheduleFormBackingObject) command;
-		if(fbo.isConfirmedCancelWeek()) {
+		if (fbo.isConfirmedCancelWeek()) {
 			try {
 				SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 				df.parse(fbo.getWeekOfPhrase());

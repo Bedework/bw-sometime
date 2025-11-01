@@ -44,18 +44,18 @@ public class CreateAppointmentFormBackingObjectValidator {
 	 */
 	public void validateShowCreateForm(CreateAppointmentFormBackingObject fbo, ValidationContext context) {
 		MessageContext messages = context.getMessageContext();
-		if(fbo.isMultipleVisitors()) {
-			if(!fbo.isConfirmJoin()) {
+		if (fbo.isMultipleVisitors()) {
+			if (!fbo.isConfirmJoin()) {
 				messages.addMessage(new MessageBuilder().error().source("confirmJoin").
 						defaultText("Please check the box to confirm your intent to join this appointment.").build());
 			}
 		} else {
-			if(StringUtils.isBlank(fbo.getReason())) {
+			if (StringUtils.isBlank(fbo.getReason())) {
 				messages.addMessage(new MessageBuilder().error().source("reason").
 						defaultText("Reason cannot be left blank.").build());
 			}	
 			
-			if(!fbo.getMeetingDurationsAsList().contains(fbo.getSelectedDuration())) {
+			if (!fbo.getMeetingDurationsAsList().contains(fbo.getSelectedDuration())) {
 				messages.addMessage(new MessageBuilder().error().source("selectedDuration").
 						defaultText("Unacceptable value for meeting duration.").build());
 			}

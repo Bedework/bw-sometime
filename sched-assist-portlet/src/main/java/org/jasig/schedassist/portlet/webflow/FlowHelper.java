@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jasig.schedassist.SchedulingException;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.CommonDateOperations;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.Preferences;
 import org.jasig.schedassist.model.Relationship;
 import org.jasig.schedassist.model.VisibleSchedule;
@@ -100,7 +100,7 @@ public class FlowHelper {
 	public void setAvailableWebBaseUrl(String availableWebBaseUrl) {
 		Validate.notEmpty(availableWebBaseUrl, "availableWebBaseUrl property must not be empty");
 		this.availableWebBaseUrl = availableWebBaseUrl;
-		if(!this.availableWebBaseUrl.endsWith("/")) {
+		if (!this.availableWebBaseUrl.endsWith("/")) {
 			this.availableWebBaseUrl += "/";
 		}
 		this.advisorUrl = this.availableWebBaseUrl + "public/advisors.html";
@@ -136,7 +136,7 @@ public class FlowHelper {
 	 * @throws ParseException
 	 */
 	public Date convertDateTime(String dateTimePhrase) throws ParseException {
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("convertDateTime called on " + dateTimePhrase);
 		}
 		SimpleDateFormat df = CommonDateOperations.getDateTimeFormat();
@@ -162,7 +162,7 @@ public class FlowHelper {
 	public boolean isCurrentVisitorEligible() {
 		IPortletScheduleVisitor visitor = getCurrentVisitor();
 		boolean result = visitor.isEligible();
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug(visitor + " has eligibility: " + result);
 		}
 		return result;
@@ -172,12 +172,12 @@ public class FlowHelper {
 	 * @return
 	 */
 	public List<Relationship> getRelationshipsForCurrentVisitor() {
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("enter getRelationshipsForCurrentVisitor");
 		}
 		final String visitorUsername = getCurrentVisitor().getAccountId();
 		List<Relationship> relationships = this.schedulingAssistantService.relationshipsForVisitor(visitorUsername);
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("found " + relationships.size() + " relationships");
 		}
 		return relationships;
@@ -188,7 +188,7 @@ public class FlowHelper {
 	 * @param owner
 	 * @return
 	 */
-	public boolean isOwnerSamePersonAsCurrentVisitor(IScheduleOwner owner) {
+	public boolean isOwnerSamePersonAsCurrentVisitor(ScheduleOwner owner) {
 		return owner.getCalendarAccount().getUsername().equals(getCurrentVisitor().getAccountId());
 	}
 	/**
@@ -197,20 +197,20 @@ public class FlowHelper {
 	 * @return
 	 * @throws ScheduleOwnerNotFoundException
 	 */
-	public IScheduleOwner identifyTargetOwner(long ownerId) throws ScheduleOwnerNotFoundException {
+	public ScheduleOwner identifyTargetOwner(long ownerId) throws ScheduleOwnerNotFoundException {
 		List<Relationship> relationships = getRelationshipsForCurrentVisitor(); 
-		IScheduleOwner target = null;
+		ScheduleOwner target = null;
 		for(Relationship r : relationships) {
-			if(r.getOwner().getId() == ownerId) {
+			if (r.getOwner().getId() == ownerId) {
 				target = r.getOwner();
-				if(LOG.isInfoEnabled()) {
+				if (LOG.isInfoEnabled()) {
 					LOG.info(getCurrentVisitor() + " requested schedule of " + target);
 				}
 				break;
 			}
 		}
 
-		if(null == target) {
+		if (null == target) {
 			LOG.error(getCurrentVisitor() + " requested schedule for ownerId= " + ownerId + " and does not have a relationship, throwing ScheduleOwnerNotFoundException");
 			throw new ScheduleOwnerNotFoundException(ownerId + " not found");
 		}
@@ -222,8 +222,8 @@ public class FlowHelper {
 	 * @param owner
 	 * @return
 	 */
-	public String getOwnerNoteboard(final IScheduleOwner owner) {
-		if(null == owner) {
+	public String getOwnerNoteboard(final ScheduleOwner owner) {
+		if (null == owner) {
 			return "";
 		}
 		return owner.getPreference(Preferences.NOTEBOARD);
@@ -234,8 +234,8 @@ public class FlowHelper {
 	 * @param owner
 	 * @return the owner's noteboard preference as a {@link List} of sentences
 	 */
-	public List<String> getOwnerNoteboardSentences(final IScheduleOwner owner) {
-		if(null == owner) {
+	public List<String> getOwnerNoteboardSentences(final ScheduleOwner owner) {
+		if (null == owner) {
 			return Collections.emptyList();
 		}
 		final String ownerNoteboard =  owner.getPreference(Preferences.NOTEBOARD);
@@ -248,14 +248,14 @@ public class FlowHelper {
 	 * @param weekStart
 	 * @return
 	 */
-	public String testExceededMeetingLimit(IScheduleOwner owner) {
-		if(LOG.isDebugEnabled()) {
+	public String testExceededMeetingLimit(ScheduleOwner owner) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("enter testExceededMeetingLimit for " + owner);
 		}
 		final String visitorUsername = getCurrentVisitor().getAccountId();
-		if(owner.hasMeetingLimit()) {
+		if (owner.hasMeetingLimit()) {
 			VisibleSchedule schedule = this.schedulingAssistantService.getVisibleSchedule(visitorUsername, owner.getId());
-			if(owner.isExceedingMeetingLimit(schedule.getAttendingCount())) {
+			if (owner.isExceedingMeetingLimit(schedule.getAttendingCount())) {
 				return YES;
 			} else {
 				return NO;
@@ -274,7 +274,7 @@ public class FlowHelper {
 	 * @return
 	 * @throws ScheduleOwnerNotFoundException
 	 */
-	public VisibleSchedule getVisibleSchedule(IScheduleOwner owner, String weekStartParam) throws ScheduleOwnerNotFoundException {
+	public VisibleSchedule getVisibleSchedule(ScheduleOwner owner, String weekStartParam) throws ScheduleOwnerNotFoundException {
 		return getVisibleSchedule(owner, safeConvertWeekStartParam(weekStartParam));
 	}
 	/**
@@ -284,8 +284,8 @@ public class FlowHelper {
 	 * @return
 	 * @throws ScheduleOwnerNotFoundException
 	 */
-	public VisibleSchedule getVisibleSchedule(IScheduleOwner owner, int weekStart) throws ScheduleOwnerNotFoundException {
-		if(LOG.isDebugEnabled()) {
+	public VisibleSchedule getVisibleSchedule(ScheduleOwner owner, int weekStart) throws ScheduleOwnerNotFoundException {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("enter getVisibleSchedule, weekstart: " + weekStart + ", owner: " + owner);
 		}
 		final String visitorUsername = getCurrentVisitor().getAccountId();
@@ -299,9 +299,9 @@ public class FlowHelper {
 	 * @param weekStart
 	 * @return
 	 */
-	public VisibleScheduleRequestConstraints getVisibleScheduleRequestConstraints(IScheduleOwner owner, int weekStart) {
+	public VisibleScheduleRequestConstraints getVisibleScheduleRequestConstraints(ScheduleOwner owner, int weekStart) {
 		VisibleScheduleRequestConstraints result = VisibleScheduleRequestConstraints.newInstance(owner, weekStart);
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug(result);
 		}
 		return result;
@@ -313,16 +313,16 @@ public class FlowHelper {
 	 * @return
 	 * @throws SchedulingException
 	 */
-	public CreateAppointmentFormBackingObject constructCreateAppointmentFormBackingObject(IScheduleOwner owner, Date startDateTime) throws SchedulingException {
-		if(LOG.isDebugEnabled()) {
+	public CreateAppointmentFormBackingObject constructCreateAppointmentFormBackingObject(ScheduleOwner owner, Date startDateTime) throws SchedulingException {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("enter constructCreateAppointmentFormBackingObject, start: " + startDateTime + ", owner: " + owner);
 		}
 		// can skip call to validateChosenStartTime as the flow will enforce the check
 		AvailableBlock targetBlock = this.schedulingAssistantService.getTargetBlock(owner, startDateTime);
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("getTargetBlock, startTime= " + startDateTime + " returns " + targetBlock);
 		}
-		if(targetBlock == null) {
+		if (targetBlock == null) {
 			throw new SchedulingException("requested time is not available");
 		}
 
@@ -337,26 +337,26 @@ public class FlowHelper {
 	 * @return
 	 * @throws SchedulingException
 	 */
-	public VEvent createAppointment(CreateAppointmentFormBackingObject fbo, IScheduleOwner owner) throws SchedulingException {
+	public VEvent createAppointment(CreateAppointmentFormBackingObject fbo, ScheduleOwner owner) throws SchedulingException {
 		final IPortletScheduleVisitor currentVisitor = getCurrentVisitor();
 		final String visitorUsername = currentVisitor.getAccountId();
 		AvailableBlock targetBlock = fbo.getTargetBlock();
-		if(NO.equals(validateChosenStartTime(owner.getPreferredVisibleWindow(), targetBlock.getStartTime()))) {
+		if (NO.equals(validateChosenStartTime(owner.getPreferredVisibleWindow(), targetBlock.getStartTime()))) {
 			throw new SchedulingException("requested time is no longer within visible window");
 		}
-		if(fbo.isDoubleLengthAvailable()) {
+		if (fbo.isDoubleLengthAvailable()) {
 			LOG.debug("entering doubleLengthAvailable test");
         	// check if selected meeting duration matches meeting durations maxLength
 			// if it's greater, then we need to look up the next block in the schedule and attempt to combine
-			if(fbo.getSelectedDuration() == fbo.getMeetingDurations().getMaxLength()) {
+			if (fbo.getSelectedDuration() == fbo.getMeetingDurations().getMaxLength()) {
 				LOG.debug("selected duration matches double length");
 				targetBlock = this.schedulingAssistantService.getTargetDoubleLengthBlock(owner, targetBlock.getStartTime());
-				if(targetBlock == null) {
+				if (targetBlock == null) {
 					throw new SchedulingException("second half of request time is not available");
 				}
 			}
 		}
-		if(LOG.isInfoEnabled()) {
+		if (LOG.isInfoEnabled()) {
 			LOG.info(currentVisitor + " submitting scheduleAppointment request with " + owner + " at " + targetBlock);
 		}
 		VEvent event = this.schedulingAssistantService.scheduleAppointment(visitorUsername, owner.getId(), targetBlock, fbo.getReason());
@@ -372,7 +372,7 @@ public class FlowHelper {
 	 */
 	public String validateChosenStartTime(VisibleWindow window, Date startTime)  {
 		final Date currentWindowEnd = window.calculateCurrentWindowEnd();
-		if(startTime.before(window.calculateCurrentWindowStart()) || startTime.equals(currentWindowEnd) || startTime.after(currentWindowEnd)) {
+		if (startTime.before(window.calculateCurrentWindowStart()) || startTime.equals(currentWindowEnd) || startTime.after(currentWindowEnd)) {
 			LOG.debug("selected startTime (" + startTime + ") is no longer within window " + window.getKey());
 			return NO;
 		}
@@ -388,20 +388,20 @@ public class FlowHelper {
 	 * @return
 	 * @throws SchedulingException
 	 */
-	public CancelAppointmentFormBackingObject constructCancelAppointmentFormBackingObject(IScheduleOwner owner, Date startTime, Date endTime) throws SchedulingException {
-		if(LOG.isDebugEnabled()) {
+	public CancelAppointmentFormBackingObject constructCancelAppointmentFormBackingObject(ScheduleOwner owner, Date startTime, Date endTime) throws SchedulingException {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("enter constructCancelAppointmentFormBackingObject, start: " + startTime + ", end: " + endTime + " owner: " + owner);
 		}
 		// try to get the minimum size first
 		AvailableBlock targetBlock = this.schedulingAssistantService.getTargetBlock(owner, startTime);
-		if(null == targetBlock) {
+		if (null == targetBlock) {
 			throw new SchedulingException("requested time is not available in schedule");
 		} 
 
-		if(!targetBlock.getEndTime().equals(endTime)) {
+		if (!targetBlock.getEndTime().equals(endTime)) {
 			// the returned block doesn't match the specified end time - try grabbing doublelength
 			targetBlock = this.schedulingAssistantService.getTargetDoubleLengthBlock(owner, startTime);
-			if(null != targetBlock && targetBlock.getEndTime().equals(endTime)) {
+			if (null != targetBlock && targetBlock.getEndTime().equals(endTime)) {
 				CancelAppointmentFormBackingObject fbo = new CancelAppointmentFormBackingObject(targetBlock);
 				return fbo;
 			} else {
@@ -421,10 +421,10 @@ public class FlowHelper {
 	 * @return the event cancellation details
 	 * @throws SchedulingException
 	 */
-	public EventCancellation cancelAppointment(CancelAppointmentFormBackingObject fbo, IScheduleOwner owner) throws SchedulingException {
+	public EventCancellation cancelAppointment(CancelAppointmentFormBackingObject fbo, ScheduleOwner owner) throws SchedulingException {
 		final IPortletScheduleVisitor currentVisitor = getCurrentVisitor();
 		final String visitorUsername = currentVisitor.getAccountId();
-		if(LOG.isInfoEnabled()) {
+		if (LOG.isInfoEnabled()) {
 			LOG.info(currentVisitor + " submitting cancelAppointment request with " + owner + " at " + fbo.getTargetBlock());
 		}
 		EventCancellation result = this.schedulingAssistantService.cancelAppointment(visitorUsername, owner.getId(), fbo.getTargetBlock(), fbo.getReason());
@@ -439,7 +439,7 @@ public class FlowHelper {
 	protected int safeConvertWeekStartParam(String weekStartParam) {
 		try {
 			int result = Integer.parseInt(weekStartParam);
-			if(result < 1 ) {
+			if (result < 1 ) {
 				return 0;
 			} else {
 				return result;

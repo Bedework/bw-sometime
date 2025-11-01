@@ -32,7 +32,7 @@ var MSEC_PER_DAY = 86400000;
  */
 function addDays(date, daysToAdd) {
 	var laterDate = new Date(date.getTime() + daysToAdd*MSEC_PER_DAY);
-	if(laterDate.getHours() == 23) {
+	if (laterDate.getHours() == 23) {
 		// we hit the switch to standard time
 		// cheat and increment by an hour
 		laterDate = new Date(laterDate.getTime() + 60*60*1000);
@@ -55,22 +55,22 @@ function convertElementIdToDate(elementId, weekOfDate) {
 	//calculate the target day from the Element id
 	var dayString = elementId.substring(0,3);
 	//alert('dayString: ' + dayString);
-	if(dayString == "Mon") {
+	if (dayString == "Mon") {
 		localDate = addDays(localDate, 1);
 	}
-	else if(dayString == "Tue") {
+	else if (dayString == "Tue") {
 		localDate = addDays(localDate, 2);
 	}
-	else if(dayString == "Wed") {
+	else if (dayString == "Wed") {
 		localDate = addDays(localDate, 3);
 	}
-	else if(dayString == "Thu") {
+	else if (dayString == "Thu") {
 		localDate = addDays(localDate, 4);
 	}
-	else if(dayString == "Fri") {
+	else if (dayString == "Fri") {
 		localDate = addDays(localDate, 5);
 	}
-	else if(dayString == "Sat") {
+	else if (dayString == "Sat") {
 		localDate = addDays(localDate, 6);
 	}
 	localDate.setHours(elementId.substring(3,5));
@@ -90,13 +90,13 @@ function convertElementIdToDate(elementId, weekOfDate) {
  */
 function formatDateForBlockForm(date) {
 	var hourString = "";
-	if(date.getHours() < 10) {
+	if (date.getHours() < 10) {
 		hourString += "0";
 	}
 	hourString += date.getHours();
 
 	var minuteString = "";
-	if(date.getMinutes() < 10) {
+	if (date.getMinutes() < 10) {
 		minuteString += "0";
 	} 
 	minuteString += date.getMinutes();
@@ -136,12 +136,12 @@ function formatShort(date) {
 function formatYearMonthDay(date) {
 	var monthString = "";
 	var monthNumber = date.getMonth() + 1;
-	if(monthNumber < 10) {
+	if (monthNumber < 10) {
 		monthString = "0";
 	}
 	monthString += monthNumber;
 	var dayString = "";
-	if(date.getDate() < 10) {
+	if (date.getDate() < 10) {
 		dayString = "0";
 	}
 	dayString += date.getDate();
@@ -170,14 +170,14 @@ function add15(blockToken) {
 	startTimeAsInt = parseInt(blockStartTime, 10);
 	startTimeAsInt += 15;
 	minutesOnly = startTimeAsInt % 100;
-	if(minutesOnly % 60 == 0) {
+	if (minutesOnly % 60 == 0) {
 		// move up one hour
 		startTimeAsInt += 40;
 	}
-	if(startTimeAsInt == 2400) {
+	if (startTimeAsInt == 2400) {
 		startTimeAsInt = 2359;
 	}
-	if(startTimeAsInt < 100) {
+	if (startTimeAsInt < 100) {
 		return blockDayOfWeek + '00' + startTimeAsInt;
 	} else if (startTimeAsInt >= 100 && startTimeAsInt < 1000) {
 		return blockDayOfWeek + '0' + startTimeAsInt;

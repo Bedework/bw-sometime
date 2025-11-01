@@ -122,7 +122,7 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 		RenderResponse renderResponse = (RenderResponse) pageContext.getRequest().getAttribute(PORTLET_RESPONSE);
 		
 		final Date scheduleStart = visibleSchedule.getScheduleStart();
-		if(null == scheduleStart) {
+		if (null == scheduleStart) {
 			// the visibleSchedule is empty, short circuit
 			try {
 				StringBuilder noappointments = new StringBuilder();
@@ -155,13 +155,13 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 				Date eventStartDate = block.getStartTime();
 				LOG.debug("event start date: " + eventStartDate);
 				Date mapKey = DateUtils.truncate(eventStartDate, java.util.Calendar.DATE);
-				if(CommonDateOperations.equalsOrAfter(eventStartDate, scheduleStart) && dailySchedules.containsKey(mapKey)) {
+				if (CommonDateOperations.equalsOrAfter(eventStartDate, scheduleStart) && dailySchedules.containsKey(mapKey)) {
 					dailySchedules.get(mapKey).add(block);
 					numberOfEventsToDisplay++;
 				}
 			}
 			LOG.debug("number of events to display: " + numberOfEventsToDisplay);
-			if(numberOfEventsToDisplay == 0) {
+			if (numberOfEventsToDisplay == 0) {
 				// no available times in this range!
 				StringBuilder noappointments = new StringBuilder();
 				noappointments.append("<span class=\"none-available\">");
@@ -177,7 +177,7 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 				boolean renderAnotherWeek = true;
 				
 				while(renderAnotherWeek) {
-					if(LOG.isDebugEnabled()) {
+					if (LOG.isDebugEnabled()) {
 						LOG.debug("will render another week using currentWeekStart " + currentWeekStart + " and currentWeekFinish " + currentWeekFinish);
 					}
 					SortedMap<Date, List<AvailableBlock>> subMap = dailySchedules.subMap(currentWeekStart, currentWeekFinish);
@@ -187,11 +187,11 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 					currentWeekFinish = DateUtils.addDays(currentWeekStart, 7);
 					currentWeekFinish = DateUtils.addMinutes(currentWeekFinish, -1);
 
-					if(LOG.isDebugEnabled()) {
+					if (LOG.isDebugEnabled()) {
 						LOG.debug("recalculated currentWeekStart " + currentWeekStart + ", currentWeekFinish " + currentWeekFinish);
 					}
 					
-					if(currentWeekStart.after(lastMapKey)) {
+					if (currentWeekStart.after(lastMapKey)) {
 						renderAnotherWeek = false;
 						LOG.debug("will not render another week");
 					}
@@ -218,7 +218,7 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 
 		for(Map.Entry<Date, List<AvailableBlock>> entry: dailySchedules.entrySet()) {
 			final List<AvailableBlock> daySchedule = entry.getValue();
-			if(daySchedule.size() > 0) {
+			if (daySchedule.size() > 0) {
 				return true;
 			}
 		}
@@ -238,20 +238,20 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 	 */
 	protected void renderWeek(final JspWriter writer, final int weekNumber, final SortedMap<Date, List<AvailableBlock>> dailySchedules,
 			final SortedMap<AvailableBlock, AvailableStatus> scheduleBlockMap, final RenderRequest renderRequest, final RenderResponse renderResponse) throws IOException {
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("begin renderWeek for " + weekNumber);
 		}
 		final boolean hasBlocks = doesWeekHaveBlocks(dailySchedules);
-		if(hasBlocks) {
+		if (hasBlocks) {
 			final SimpleDateFormat headFormat = new SimpleDateFormat("EEE M/d");
 			writer.write("<div class=\"weekcontainer\" id=\"week" + weekNumber + "\">");
 			for(Map.Entry<Date, List<AvailableBlock>> entry: dailySchedules.entrySet()) {
 				final Date day = entry.getKey();
 				final List<AvailableBlock> daySchedule = entry.getValue();
-				if(LOG.isDebugEnabled()) {
+				if (LOG.isDebugEnabled()) {
 					LOG.debug("in renderWeek weeknumber: " + weekNumber + ", day: " + day);
 				}
-				if(daySchedule.size() > 0) {
+				if (daySchedule.size() > 0) {
 					writer.write("<div class=\"weekday\">");
 					writer.write("<ul>");
 
@@ -260,11 +260,11 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 					writer.write("</li>");
 					for(AvailableBlock event : daySchedule) {
 						AvailableStatus eventStatus = scheduleBlockMap.get(event);
-						if(AvailableStatus.BUSY.equals(eventStatus)) {
+						if (AvailableStatus.BUSY.equals(eventStatus)) {
 							renderBusyBlock(writer, event);
-						} else if(AvailableStatus.FREE.equals(eventStatus)) {
+						} else if (AvailableStatus.FREE.equals(eventStatus)) {
 							renderFreeBlock(writer, event, renderRequest, renderResponse);
-						} else if(AvailableStatus.ATTENDING.equals(eventStatus)) {
+						} else if (AvailableStatus.ATTENDING.equals(eventStatus)) {
 							renderAttendingBlock(writer, event,renderRequest, renderResponse);
 						}
 					}
@@ -276,7 +276,7 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 
 			writer.write("</div> <!-- end weekcontainer -->");
 		} else {
-			if(LOG.isDebugEnabled()) {
+			if (LOG.isDebugEnabled()) {
 				LOG.debug("renderWeek has no blocks for weekNumber: " + weekNumber);
 			}
 		}
@@ -319,7 +319,7 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 		SimpleDateFormat readableFormat = new SimpleDateFormat("EEE MMM d");
 		String appointmentTitle;
 		
-		if(event.getVisitorLimit() > 1) {
+		if (event.getVisitorLimit() > 1) {
 			appointmentTitle = getMessageSource().getMessage("join.appointment.for", new Object[] { 
 					readableFormat.format(event.getStartTime()),
 					Integer.toString(event.getVisitorLimit() - event.getVisitorsAttending()),
@@ -331,7 +331,7 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 				}, null);
 		}
 		writer.write("<li id=\"" + idFormat.format(event.getStartTime()) + "\" class=\"free\" title=\"" + appointmentTitle.toString() + "\">");
-		if(!previewMode) {
+		if (!previewMode) {
 			PortletURL createUrl = renderResponse.createRenderURL();
 			createUrl.setParameter("_eventId", "create");
 			createUrl.setParameter("execution", flowExecutionKey);
@@ -339,7 +339,7 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 			createUrl.setParameter("ownerId", renderRequest.getParameter("ownerId"));
 			writer.write("<a href=\"" + createUrl.toString() + "\">");
 		}
-		if(event.getVisitorLimit() > 1) {
+		if (event.getVisitorLimit() > 1) {
 			writer.write("<img src=\"" + getSilkIconPrefix() + "group.png\" alt=\"\"/>&nbsp;");
 		} else {
 			writer.write("<img src=\"" + getSilkIconPrefix() + "calendar_add.png\" alt=\"\"/>&nbsp;");
@@ -350,7 +350,7 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 		writer.write(timeFormat.format(event.getEndTime()));
 		writer.write("</span>");
 		
-		if(!previewMode) {
+		if (!previewMode) {
 			writer.write("</a>");
 		}
 		writer.write("</li>");
@@ -373,7 +373,7 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 		String endTimeFormatted = stpFormat.format(event.getEndTime());
 		String cancelTitle = getMessageSource().getMessage("cancel.my.appointment", null, null);
 		writer.write("<li id=\"" + idFormat.format(event.getStartTime()) + "\" class=\"attending\" title=\"" + cancelTitle + "\">");
-		if(!previewMode) {
+		if (!previewMode) {
 			PortletURL cancelUrl = renderResponse.createRenderURL();
 			cancelUrl.setParameter("execution", flowExecutionKey);
 			cancelUrl.setParameter("_eventId", "cancel");
@@ -388,7 +388,7 @@ public class VisibleScheduleTag extends RequestContextAwareTag {
 		writer.write(" - ");
 		writer.write(timeFormat.format(event.getEndTime()));
 		writer.write("</span>");
-		if(!previewMode) {
+		if (!previewMode) {
 			writer.write("</a>");
 		}
 		writer.write("</li>");

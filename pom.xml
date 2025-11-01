@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.bedework</groupId>
 		<artifactId>bedework-parent</artifactId>
-		<version>25-SNAPSHOT</version>
+		<version>249-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.bedework.sometime</groupId>
@@ -48,22 +48,48 @@
 	</developers>
 
 	<modules>
-		<module>sched-assist-api</module>
+		<module>bw-sometime-api</module>
+		<module>bw-sometime-database</module>
+		<module>bw-sometime-doc</module>
+		<module>bw-sometime-jpa</module>
+		<module>bw-sometime-messaging-xml</module>
 		<module>sched-assist-mock</module>
-		<module>sched-assist-spi</module>
+		<module>bw-sometime-spi</module>
 		<module>sched-assist-spi-caldav</module>
 		<module>sched-assist-spi-relationships</module>
 		<module>sched-assist-web</module>
 		<module>sched-assist-war</module>
 		<module>sched-assist-portlet</module>
 		<module>sched-assist-spi-caldav-integrationtest</module>
-		<module>bw-sometime-database</module>
 		<module>bw-sched-assist-ear</module>
-		<module>bw-sometime-doc</module>
 	</modules>
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.bedework.sometime</groupId>
+				<artifactId>bw-sometime-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.bedework.sometime</groupId>
+				<artifactId>bw-sometime-spi</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.bedework.sometime</groupId>
+				<artifactId>bw-sometime-database</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.bedework.sometime</groupId>
+				<artifactId>bw-sometime-messaging-xml</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>org.jasig.resourceserver</groupId>
 				<artifactId>resource-server-content</artifactId>
@@ -93,12 +119,6 @@
 				<groupId>com.googlecode.ehcache-spring-annotations</groupId>
 				<artifactId>ehcache-spring-annotations</artifactId>
 				<version>1.1.2</version>
-			</dependency>
-
-			<dependency>
-				<groupId>javax.inject</groupId>
-				<artifactId>javax.inject</artifactId>
-				<version>1</version>
 			</dependency>
 
 			<dependency>
@@ -207,7 +227,7 @@
 				<configuration>
 					<excludes>
 						<exclude>bootstrap/local-hsqldb/*.*</exclude>
-						<exclude>sched-assist-spi/src/main/sql/*.ddl</exclude>
+						<exclude>bw-sometime-spi/src/main/sql/*.ddl</exclude>
 						<exclude>sched-assist-war/src/main/webapp/css/jquery.autocomplete.css</exclude>
 						<exclude>sched-assist-war/src/main/webapp/css/jquery.lightbox-0.5.css</exclude>
 						<exclude>sched-assist-war/src/main/webapp/js/jquery.autocomplete.min.js</exclude>

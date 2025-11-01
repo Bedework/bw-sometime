@@ -19,6 +19,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.bedework.sometime</groupId>
+			<artifactId>bw-sometime-messaging-xml</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>

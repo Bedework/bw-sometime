@@ -43,7 +43,7 @@ import org.jasig.schedassist.model.AppointmentRole;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.DefaultEventUtilsImpl;
 import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,7 +58,7 @@ import org.springframework.beans.factory.annotation.Value;
  * container; only call this method explicitly specifically if not being constructed by Spring).
  * 
  * When true and the timezone can be resolved, the behavior of {@link #wrapEventInCalendar(VEvent)} and
- * {@link #constructAvailableAppointment(AvailableBlock, IScheduleOwner, IScheduleVisitor, String)} will change.
+ * {@link #constructAvailableAppointment(AvailableBlock, ScheduleOwner, IScheduleVisitor, String)} will change.
  * 
  * The explicitSetTimeZone and timeZone properties are encouraged when integrating with an Oracle Communications Suite 
  * environment.
@@ -109,11 +109,11 @@ public class CaldavEventUtilsImpl extends DefaultEventUtilsImpl implements Initi
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		if(isExplicitSetTimeZone()) {
+		if (isExplicitSetTimeZone()) {
 			Validate.notEmpty(this.timeZone, "timeZone field cannot be empty if explicitSetTimeZone is true");
 			TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
 			_timeZone = registry.getTimeZone(this.timeZone);
-			if(null == _timeZone) {
+			if (null == _timeZone) {
 				throw new IllegalStateException("no timezone found for " + timeZone);
 			}
 		}
@@ -126,15 +126,15 @@ public class CaldavEventUtilsImpl extends DefaultEventUtilsImpl implements Initi
 	 * @see #constructOrganizer(ICalendarAccount)
 	 * @see #generateNewUid()
 	 *  (non-Javadoc)
-	 * @see org.jasig.schedassist.model.DefaultEventUtilsImpl#constructAvailableAppointment(org.jasig.schedassist.model.AvailableBlock, org.jasig.schedassist.model.IScheduleOwner, org.jasig.schedassist.model.IScheduleVisitor, java.lang.String)
+	 * @see org.jasig.schedassist.model.DefaultEventUtilsImpl#constructAvailableAppointment(org.jasig.schedassist.model.AvailableBlock, org.jasig.schedassist.model.ScheduleOwner, org.jasig.schedassist.model.IScheduleVisitor, java.lang.String)
 	 */
 	@Override
 	public VEvent constructAvailableAppointment(AvailableBlock block,
-			IScheduleOwner owner, IScheduleVisitor visitor,
+			ScheduleOwner owner, IScheduleVisitor visitor,
 			String eventDescription) {
 		VEvent event = super.constructAvailableAppointment(block, owner, visitor,
 				eventDescription);
-		if(isExplicitSetTimeZone() && _timeZone != null) {
+		if (isExplicitSetTimeZone() && _timeZone != null) {
 			DtStart start = event.getStartDate();
 			start.setTimeZone(_timeZone);
 			
@@ -150,17 +150,17 @@ public class CaldavEventUtilsImpl extends DefaultEventUtilsImpl implements Initi
 	@Override
 	public boolean willEventCauseConflict(ICalendarAccount calendarAccount,
 			VEvent event) {
-		if(event == null) {
+		if (event == null) {
 			return false;
 		}
 		
 		Status status = event.getStatus();
-		if(status != null && Status.VEVENT_CANCELLED.equals(status)) {
+		if (status != null && Status.VEVENT_CANCELLED.equals(status)) {
 			return false;
 		}
 		
 		Transp transp = event.getTransparency();
-		if(null == transp) {
+		if (null == transp) {
 			return true;
 		} else {
 			return Transp.OPAQUE.equals(transp);
@@ -174,7 +174,7 @@ public class CaldavEventUtilsImpl extends DefaultEventUtilsImpl implements Initi
 	public Attendee constructSchedulingAssistantAttendee(
 			ICalendarAccount calendarAccount, AppointmentRole role) {
 		Attendee attendee = super.constructSchedulingAssistantAttendee(calendarAccount, role);
-		if(AppointmentRole.VISITOR.equals(role)) {
+		if (AppointmentRole.VISITOR.equals(role)) {
 			attendee.getParameters().add(Role.REQ_PARTICIPANT);
 		} else if (AppointmentRole.OWNER.equals(role)) {
 			attendee.getParameters().add(Role.CHAIR);

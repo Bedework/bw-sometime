@@ -68,7 +68,7 @@ public class PublicProfilesBrowseController {
 	@RequestMapping(value="/public/browse.html", method=RequestMethod.GET)
 	public String retrieveAllProfiles(final ModelMap model, @RequestParam(value="startIndex",required=false,defaultValue="0") int startIndex) {
 		List<PublicProfileId> profileIds = publicProfileDao.getPublicProfileIds();
-		if(profileIds.isEmpty()) {
+		if (profileIds.isEmpty()) {
 			// short circuit
 			model.addAttribute("titleSuffix", "");
 			return "profiles/public-listing";
@@ -86,7 +86,7 @@ public class PublicProfilesBrowseController {
 	@RequestMapping(value="/public/advisors.html", method=RequestMethod.GET)
 	public String retrieveAdvisorProfiles(final ModelMap model, @RequestParam(value="startIndex",required=false,defaultValue="0") int startIndex) {
 		List<PublicProfileId> profileIds = publicProfileDao.getAdvisorPublicProfileIds();
-		if(profileIds.isEmpty()) {
+		if (profileIds.isEmpty()) {
 			// short circuit for empty list
 			model.addAttribute("titleSuffix", "");
 			return "profiles/public-advisor-listing";
@@ -104,7 +104,7 @@ public class PublicProfilesBrowseController {
 	@RequestMapping(value="/public/instructors.html", method=RequestMethod.GET)
 	public String retrieveInstructorProfiles(final ModelMap model, @RequestParam(value="startIndex",required=false,defaultValue="0") int startIndex) {
 		List<PublicProfileId> profileIds = publicProfileDao.getInstructorPublicProfileIds();
-		if(profileIds.isEmpty()) {
+		if (profileIds.isEmpty()) {
 			// short circuit for empty list
 			model.addAttribute("titleSuffix", "");
 			return "profiles/public-instructor-listing";

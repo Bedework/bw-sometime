@@ -72,14 +72,14 @@ public class VisitorConflictsController {
 	@RequestMapping("/ajax/visitor-conflicts.json")
 	public String getVisitorConflicts(@RequestParam("ownerId") long ownerId, @RequestParam("weekStart") int weekStart, 
 			final ModelMap model, final WebRequest request) {
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("enter getVisitorConflicts, ownerId: "  + ownerId + ", weekStart: " + weekStart);
 		}
 		final String visitorUsername = (String) request.getAttribute(FlowHelper.CURRENT_USER_ATTR, PortletSession.APPLICATION_SCOPE);
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("visitorUsername: " + visitorUsername);
 		}
-		if(StringUtils.isBlank(visitorUsername)) {
+		if (StringUtils.isBlank(visitorUsername)) {
 			model.addAttribute("soup for you", "none");
 			// short-circuit for unauthenticated
 			return "jsonView";
@@ -94,7 +94,7 @@ public class VisitorConflictsController {
 		}
 		
 		model.addAttribute("conflicts", conflictBlocks);
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("exit getVisitorConflicts");
 		}
 		return "jsonView";

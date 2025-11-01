@@ -35,7 +35,7 @@ import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableSchedule;
 import org.jasig.schedassist.model.CommonDateOperations;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.InputFormatException;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 /**
- * {@link Controller} implementation that allows an {@link IScheduleOwner}
+ * {@link Controller} implementation that allows an {@link ScheduleOwner}
  * to remove a week of {@link AvailableBlock}s from their {@link AvailableSchedule}.
  * 
  * @author Nicholas Blair, nblair@doit.wisc.edu
@@ -94,7 +94,7 @@ public class ClearWeekFormController {
 	@RequestMapping(method=RequestMethod.GET)
 	protected String setupForm(@RequestParam(value="weekOf",required=false) String weekOfPhrase, final ModelMap model) {
 		ClearAvailableScheduleFormBackingObject fbo = new ClearAvailableScheduleFormBackingObject();
-		if(StringUtils.isBlank(weekOfPhrase)) {	
+		if (StringUtils.isBlank(weekOfPhrase)) {	
 			setWeekOfDefault(fbo);
 		} else {
 			safeInterpretWeekOfPhrase(weekOfPhrase, fbo);
@@ -149,9 +149,9 @@ public class ClearWeekFormController {
 	@RequestMapping(method=RequestMethod.POST)
 	protected ModelAndView clearWeek(@Valid ClearAvailableScheduleFormBackingObject fbo) throws NotRegisteredException, InputFormatException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		
-		if(fbo.isConfirmedCancelWeek()) {
+		if (fbo.isConfirmedCancelWeek()) {
 			Date weekOf = CommonDateOperations.parseDatePhrase(fbo.getWeekOfPhrase());
 			AvailableSchedule scheduleWeekOf = availableScheduleDao.retrieveWeeklySchedule(owner, weekOf);
 			availableScheduleDao.removeFromSchedule(owner, scheduleWeekOf.getAvailableBlocks());

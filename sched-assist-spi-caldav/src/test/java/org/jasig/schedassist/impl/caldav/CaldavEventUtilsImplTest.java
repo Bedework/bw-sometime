@@ -376,7 +376,7 @@ public class CaldavEventUtilsImplTest {
 		Assert.assertEquals(2, wrapped.getComponents().size());
 		for(Object o: wrapped.getComponents()) {
 			Component c = (Component) o;
-			if(VEvent.VEVENT.equals(c.getName())) {
+			if (VEvent.VEVENT.equals(c.getName())) {
 				//ok
 			} else if (VTimeZone.VTIMEZONE.equals(c.getName())) {
 				Assert.assertEquals("America/Chicago", c.getProperty(TzId.TZID).getValue());

@@ -62,17 +62,17 @@ public class ModifyAdhocRelationshipFormBackingObjectValidator implements Valida
 	public void validate(Object target, Errors errors) {
 		ModifyAdhocRelationshipFormBackingObject fbo = (ModifyAdhocRelationshipFormBackingObject) target;
 		Matcher m = VALID_USERNAME_PATTERN.matcher(fbo.getVisitorUsername());
-		if(StringUtils.isBlank(fbo.getVisitorUsername())) {
+		if (StringUtils.isBlank(fbo.getVisitorUsername())) {
 			errors.rejectValue("visitorUsername", "visitor.notfound", "Account not found or not eligible for Calendar Service.");
-		} else if(!m.matches()) {
+		} else if (!m.matches()) {
 			errors.rejectValue("visitorUsername", "visitor.notfound", "Account not found or not eligible for Calendar Service.");
 		} else {
 			ICalendarAccount account = calendarAccountDao.getCalendarAccount(fbo.getVisitorUsername());
-			if(null == account) {
+			if (null == account) {
 				errors.rejectValue("visitorUsername", "visitor.notfound", "Account not found or not eligible for Calendar Service.");
 			}
 		}
-		if(StringUtils.isBlank(fbo.getRelationship())) {
+		if (StringUtils.isBlank(fbo.getRelationship())) {
 			errors.rejectValue("relationship", "relationship.empty", "You must specify a description for your relationship.");
 		} else if (fbo.getRelationship().length() > 64) {
 			errors.rejectValue("relationship", "relationship.toolong", "Relationship description is too long, please shorten to less than 64 characters.");

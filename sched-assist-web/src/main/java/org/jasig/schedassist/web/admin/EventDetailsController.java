@@ -85,7 +85,7 @@ public class EventDetailsController {
 	 */
 	@RequestMapping(method=RequestMethod.GET)
 	protected String getEventsForDate(@RequestParam(value="date",required=false) Date date, final ModelMap model) {
-		if(null != date) {
+		if (null != date) {
 			model.addAttribute("date", date);
 			List<AppointmentEvent> events = this.statisticsDao.getEvents(
 					CommonDateOperations.beginningOfDay(date), 

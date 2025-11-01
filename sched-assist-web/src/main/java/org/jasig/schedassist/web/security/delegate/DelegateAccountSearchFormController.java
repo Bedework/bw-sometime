@@ -76,7 +76,7 @@ public class DelegateAccountSearchFormController {
 	 */
 	@RequestMapping(method=RequestMethod.GET)
 	protected String onGet(@RequestParam(value="q",required=false) final String qValue, final ModelMap model) {
-		if(StringUtils.isBlank(qValue)) {
+		if (StringUtils.isBlank(qValue)) {
 			DelegateAccountSearchFormBackingObject fbo = new DelegateAccountSearchFormBackingObject();
 			model.addAttribute("command", fbo);
 			return "security/delegate-search-form";
@@ -85,7 +85,7 @@ public class DelegateAccountSearchFormController {
 		ICalendarAccount currentAccount = currentUser.getCalendarAccount();
 		model.addAttribute("searchText", qValue);
 		List<IDelegateCalendarAccount> matches = new ArrayList<IDelegateCalendarAccount>();
-		if(null != qValue && qValue.length() > 2) {
+		if (null != qValue && qValue.length() > 2) {
 			final String searchText = StringUtils.replace(qValue, " ", "*");
 			matches = this.delegateCalendarAccountDao.searchForDelegates(searchText, currentAccount);
 		}
@@ -106,7 +106,7 @@ public class DelegateAccountSearchFormController {
 		ICalendarAccount currentAccount = currentUser.getCalendarAccount();
 		model.addAttribute("searchText", fbo.getSearchText());
 		List<IDelegateCalendarAccount> matches = new ArrayList<IDelegateCalendarAccount>();
-		if(null != fbo.getSearchText() && fbo.getSearchText().length() > 2) {
+		if (null != fbo.getSearchText() && fbo.getSearchText().length() > 2) {
 			final String searchText = StringUtils.replace(fbo.getSearchText(), " ", "*");
 			matches = this.delegateCalendarAccountDao.searchForDelegates(searchText, currentAccount);
 		}
@@ -124,7 +124,7 @@ public class DelegateAccountSearchFormController {
 	protected List<IDelegateCalendarAccount> filterForEligible(List<IDelegateCalendarAccount> matches) {
 		List<IDelegateCalendarAccount> results = new ArrayList<IDelegateCalendarAccount>();
 		for(IDelegateCalendarAccount a: matches) {
-			if(a.isEligible()) {
+			if (a.isEligible()) {
 				results.add(a);
 			}
 		}

@@ -20,5 +20,7 @@ include::introduction.adoc[]
 == Overview
 
 include::{overview-dir}overview.adoc[]
+
 include::{overview-dir}homepage.adoc[]
+
 include::{overview-dir}postavailability.adoc[]

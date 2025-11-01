@@ -31,7 +31,7 @@ import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableBlockBuilder;
 import org.jasig.schedassist.model.AvailableSchedule;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.InputFormatException;
 import org.jasig.schedassist.model.Preferences;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
@@ -49,7 +49,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * {@link Controller} implementation that can be invoked by
- * {@link IScheduleOwner}s to add a single {@link AvailableBlock} to their {@link AvailableSchedule}.
+ * {@link ScheduleOwner}s to add a single {@link AvailableBlock} to their {@link AvailableSchedule}.
  * 
  * @author Nicholas Blair, nblair@doit.wisc.edu
  * @version $Id: AddAvailableBlockFormController.java 2051 2010-04-30 16:03:17Z npblair $
@@ -89,7 +89,7 @@ public class AddAvailableBlockFormController {
 	@RequestMapping(method=RequestMethod.GET)
 	protected String setupForm(final ModelMap model, @RequestParam(value="interactive", required=false, defaultValue="false") boolean interactive) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		int defaultVisitorLimit = Integer.parseInt(owner.getPreference(Preferences.DEFAULT_VISITOR_LIMIT));
 		AvailableBlockFormBackingObject fbo = new AvailableBlockFormBackingObject();
 		fbo.setVisitorLimit(defaultVisitorLimit);
@@ -110,10 +110,10 @@ public class AddAvailableBlockFormController {
 	protected String addAvailableBlock(@Valid @ModelAttribute("command") AvailableBlockFormBackingObject fbo, BindingResult bindingResult, 
 			final ModelMap model) throws NotRegisteredException, InputFormatException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		
-		if(bindingResult.hasErrors()) {
-			if(fbo.isInteractive()) {
+		if (bindingResult.hasErrors()) {
+			if (fbo.isInteractive()) {
 				return "owner-schedule/add-form";
 			} else {
 				model.addAttribute("reason", "An unexpected error occurred; refresh the page and try again.");
@@ -122,11 +122,11 @@ public class AddAvailableBlockFormController {
 		}
 		
 		int visitorLimit = fbo.getVisitorLimit();
-		if(!fbo.isInteractive()) {
+		if (!fbo.isInteractive()) {
 			visitorLimit = owner.getPreferredDefaultVisitorLimit();
 		}
 		AvailableBlock block = AvailableBlockBuilder.createSmallestAllowedBlock(fbo.getStartTimePhrase(), visitorLimit);
-		if(StringUtils.isNotBlank(fbo.getEndTimePhrase())) {
+		if (StringUtils.isNotBlank(fbo.getEndTimePhrase())) {
 			block = AvailableBlockBuilder.createBlock(fbo.getStartTimePhrase(), fbo.getEndTimePhrase(), visitorLimit);
 		}
 		
@@ -137,7 +137,7 @@ public class AddAvailableBlockFormController {
 		model.addAttribute("blockEnd", formatDate(block.getEndTime()));
 		model.addAttribute("blockId", formatBlockId(block.getStartTime()));
 		model.addAttribute("visitorLimit", block.getVisitorLimit());
-		if(fbo.isInteractive()) {
+		if (fbo.isInteractive()) {
 			return "owner-schedule/add-block-success";
 		} else {
 			return "jsonView";

@@ -68,7 +68,7 @@ import org.bedework.messaging.XMLDataUtils;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableStatus;
 import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.model.InputFormatException;
 import org.jasig.schedassist.model.MeetingDurations;
@@ -152,7 +152,7 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 		boolean eligible = false;
 		IsEligibleResponse response = new IsEligibleResponse();
 		ICalendarAccount account = this.calendarAccountDao.getCalendarAccount(request.getVisitorNetid());
-		if(null != account) {
+		if (null != account) {
 			try {
 				this.visitorDao.toVisitor(account);
 				eligible = true;
@@ -172,17 +172,17 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 	@PayloadRoot(localPart = "GetTargetAvailableBlockRequest", namespace = "https://source.jasig.org/schemas/sched-assist")
 	public GetTargetAvailableBlockResponse getTargetAvailableBlock(
 			GetTargetAvailableBlockRequest request) throws NotRegisteredException, SchedulingException {
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug(request);
 		}
-		IScheduleOwner owner = ownerDao.locateOwnerByAvailableId(request.getOwnerId());
-		if(null == owner) {
+		ScheduleOwner owner = ownerDao.locateOwnerByAvailableId(request.getOwnerId());
+		if (null == owner) {
 			throw new NotRegisteredException("no schedule owner found with id " + request.getOwnerId());
 		}
 		Date startTime = XMLDataUtils.convertXMLGregorianCalendarToDate(request.getStartTime());
 		
 		AvailableBlock targetBlock;
-		if(request.isDoubleLength()) {
+		if (request.isDoubleLength()) {
 			targetBlock = availableScheduleDao.retrieveTargetDoubleLengthBlock(owner, startTime);
 		} else {
 			targetBlock = availableScheduleDao.retrieveTargetBlock(owner, startTime);
@@ -201,15 +201,15 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 	@Override
 	@PayloadRoot(localPart = "VisibleScheduleRequest", namespace = "https://source.jasig.org/schemas/sched-assist")
 	public VisibleScheduleResponse getVisibleSchedule(final VisibleScheduleRequest request) throws NotAVisitorException, CalendarAccountNotFoundException, NotRegisteredException {	
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug(request);
 		}
 		ICalendarAccount visitorCalendarUser = calendarAccountDao.getCalendarAccount(
 				request.getVisitorNetid());
 		IScheduleVisitor visitor = visitorDao.toVisitor(visitorCalendarUser);
 		
-		IScheduleOwner owner = ownerDao.locateOwnerByAvailableId(request.getOwnerId());
-		if(null == owner) {
+		ScheduleOwner owner = ownerDao.locateOwnerByAvailableId(request.getOwnerId());
+		if (null == owner) {
 			throw new NotRegisteredException(request.getOwnerId()  + " not currently registered as a schedule owner");
 		}
 	
@@ -223,11 +223,11 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 		response.setOwnerMeetingDurationsPreference(durationsElement);
 		
 		VisibleSchedule schedule;
-		if(owner.hasMeetingLimit()) {
+		if (owner.hasMeetingLimit()) {
 			// we have to look at the whole visible schedule for attendings
 			schedule = schedulingAssistantService.getVisibleSchedule(
 					visitor, owner);
-			if(owner.isExceedingMeetingLimit(schedule.getAttendingCount())) {	
+			if (owner.isExceedingMeetingLimit(schedule.getAttendingCount())) {
 				List<AvailableBlockElement> blockElementList = new ArrayList<AvailableBlockElement>();
 				// return ONLY the attendings
 				List<AvailableBlock> attendingList = schedule.getAttendingList();
@@ -284,7 +284,7 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 		
 		response.setAvailableBlockList(listWrapper);
 		
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("visitor " + visitor + " requested visible schedule for owner " + owner);
 		}
 		return response;
@@ -301,18 +301,18 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 				request.getVisitorNetid());
 		IScheduleVisitor visitor = visitorDao.toVisitor(visitorCalendarUser);
 		
-		IScheduleOwner owner = ownerDao.locateOwnerByAvailableId(request.getOwnerId());
-		if(null == owner) {
+		ScheduleOwner owner = ownerDao.locateOwnerByAvailableId(request.getOwnerId());
+		if (null == owner) {
 			throw new NotRegisteredException(request.getOwnerId()  + " not currently registered as a schedule owner");
 		}
 		
 		AvailableBlock block = availableScheduleDao.retrieveTargetBlock(owner, XMLDataUtils.convertXMLGregorianCalendarToDate(request.getStartTime()));
-		if(null != block && block.getVisitorLimit() == 1 && owner.getPreferredMeetingDurations().isDoubleLength()) {
-			if(request.getSelectedDuration() == owner.getPreferredMeetingDurations().getMaxLength()) {
+		if (null != block && block.getVisitorLimit() == 1 && owner.getPreferredMeetingDurations().isDoubleLength()) {
+			if (request.getSelectedDuration() == owner.getPreferredMeetingDurations().getMaxLength()) {
 				block = availableScheduleDao.retrieveTargetDoubleLengthBlock(owner, XMLDataUtils.convertXMLGregorianCalendarToDate(request.getStartTime()));
 			}
 		}
-		if(null == block) {
+		if (null == block) {
 			throw new SchedulingException("requested time is not available");
 		}
 		
@@ -341,30 +341,30 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 				request.getVisitorNetid());
 		IScheduleVisitor visitor = visitorDao.toVisitor(visitorCalendarUser);
 		
-		IScheduleOwner owner = ownerDao.locateOwnerByAvailableId(request.getOwnerId());
-		if(null == owner) {
+		ScheduleOwner owner = ownerDao.locateOwnerByAvailableId(request.getOwnerId());
+		if (null == owner) {
 			throw new NotRegisteredException(request.getOwnerId()  + " not currently registered as a schedule owner");
 		}
 		
-		if(null == request.getStartTime() || null == request.getEndTime()) {
+		if (null == request.getStartTime() || null == request.getEndTime()) {
 			throw new InputFormatException("start and/or end time not properly set");
 		}
 		Date startTime = XMLDataUtils.convertXMLGregorianCalendarToDate(request.getStartTime());
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("start time: " + startTime);
 		}
 		Date endTime = XMLDataUtils.convertXMLGregorianCalendarToDate(request.getEndTime());
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("end time: " + endTime);
 		}
 		AvailableBlock targetBlock = availableScheduleDao.retrieveTargetBlock(owner, startTime);
-		if(null == targetBlock) {
+		if (null == targetBlock) {
 			throw new SchedulingException("requested time is not available in schedule");
 		}
-		if(!targetBlock.getEndTime().equals(endTime)) {
+		if (!targetBlock.getEndTime().equals(endTime)) {
 			// the returned block doesn't match the specified end time - try grabbing doublelength
 			targetBlock = availableScheduleDao.retrieveTargetDoubleLengthBlock(owner, startTime);
-			if(null == targetBlock || !targetBlock.getEndTime().equals(endTime)) {
+			if (null == targetBlock || !targetBlock.getEndTime().equals(endTime)) {
 				throw new SchedulingException("requested time is not available in schedule");
 			} 
 		}
@@ -396,7 +396,7 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 		
 		List<RelationshipElement> elements = new ArrayList<RelationshipElement>();
 		for(Relationship relationship : relationships) {
-			IScheduleOwner owner = relationship.getOwner();
+			ScheduleOwner owner = relationship.getOwner();
 			ScheduleOwnerElement ownerElement = createScheduleOwnerElement(owner);
 
 			RelationshipElement element = new RelationshipElement();
@@ -405,7 +405,7 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 			elements.add(element);
 		}
 		
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("visitor: " + visitor + ", relationships: " + relationships);
 		}
 		RelationshipList relationshipList = new RelationshipList();
@@ -425,9 +425,9 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 	@PayloadRoot(localPart = "GetScheduleOwnerByIdRequest", namespace = "https://source.jasig.org/schemas/sched-assist")
 	public GetScheduleOwnerByIdResponse getScheduleOwnerById(
 			GetScheduleOwnerByIdRequest request) throws CalendarAccountNotFoundException, NotRegisteredException {
-		IScheduleOwner owner = ownerDao.locateOwnerByAvailableId(request.getId());
+		ScheduleOwner owner = ownerDao.locateOwnerByAvailableId(request.getId());
 		GetScheduleOwnerByIdResponse response = new GetScheduleOwnerByIdResponse();
-		if(null != owner) {
+		if (null != owner) {
 			ScheduleOwnerElement element = createScheduleOwnerElement(owner);
 			response.setScheduleOwnerElement(element);
 			return response;
@@ -444,14 +444,14 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 	@PayloadRoot(localPart = "VisitorConflictsRequest", namespace = "https://source.jasig.org/schemas/sched-assist")
 	public VisitorConflictsResponse getVisitorConflicts(
 			VisitorConflictsRequest request) throws NotAVisitorException, NotRegisteredException {
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug(request);
 		}
 		ICalendarAccount visitorCalendarUser = calendarAccountDao.getCalendarAccount(
 				request.getVisitorNetid());
 		IScheduleVisitor visitor = visitorDao.toVisitor(visitorCalendarUser);
-		IScheduleOwner owner = ownerDao.locateOwnerByAvailableId(request.getOwnerId());
-		if(null == owner) {
+		ScheduleOwner owner = ownerDao.locateOwnerByAvailableId(request.getOwnerId());
+		if (null == owner) {
 			throw new NotRegisteredException(request.getOwnerId()  + " not currently registered as a schedule owner");
 		}
 		
@@ -482,7 +482,7 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 	 * @return
 	 */
 	protected AvailableBlockElement createAvailableBlockElement(final AvailableBlock block) {
-		if(null == block) {
+		if (null == block) {
 			return null;
 		}
 		AvailableBlockElement element = new AvailableBlockElement();
@@ -493,12 +493,12 @@ public class SOAPSchedulingAssistantServiceEndpoint implements SOAPSchedulingAss
 		return element;
 	}
 	/**
-	 * Convert a {@link IScheduleOwner} into a {@link ScheduleOwnerElement}.
+	 * Convert a {@link ScheduleOwner} into a {@link ScheduleOwnerElement}.
 	 * 
 	 * @param owner
 	 * @return
 	 */
-	protected static ScheduleOwnerElement createScheduleOwnerElement(final IScheduleOwner owner) {
+	protected static ScheduleOwnerElement createScheduleOwnerElement(final ScheduleOwner owner) {
 		ScheduleOwnerElement element = new ScheduleOwnerElement();
 		element.setFullName(owner.getCalendarAccount().getDisplayName());
 		element.setId(owner.getId());

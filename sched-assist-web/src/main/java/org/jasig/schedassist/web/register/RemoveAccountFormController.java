@@ -29,7 +29,7 @@ import org.jasig.schedassist.impl.owner.AvailableScheduleDao;
 import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.impl.owner.OwnerDao;
 import org.jasig.schedassist.model.AvailableSchedule;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Form tied to {@link OwnerDao#removeAccount(IScheduleOwner)}.
+ * Form tied to {@link OwnerDao#removeAccount(ScheduleOwner)}.
  *  
  * @author Nicholas Blair, nblair@doit.wisc.edu
  * @version $Id: RemoveAccountFormController.java 2696 2010-09-24 14:05:05Z npblair $
@@ -114,10 +114,10 @@ public class RemoveAccountFormController  {
 	}
 	/**
 	 * For a {@link Valid} {@link RemoveAccountFormBackingObject}, remove
-	 * the current authenticated {@link IScheduleOwner} account.
+	 * the current authenticated {@link ScheduleOwner} account.
 	 * Destroy the current authenticated credentials, and redirect to an appropriate view.
 	 * If the {@link RemoveAccountFormBackingObject} is not valid, redirect to the schedule view.
-	 * @see OwnerDao#removeAccount(IScheduleOwner)
+	 * @see OwnerDao#removeAccount(ScheduleOwner)
 	 * @param fbo
 	 * @param result
 	 * @return 
@@ -126,16 +126,16 @@ public class RemoveAccountFormController  {
 	@RequestMapping(method=RequestMethod.POST)
 	protected String removeAccount(@Valid @ModelAttribute RemoveAccountFormBackingObject fbo, BindingResult result) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
-		if(null == owner) {
+		ScheduleOwner owner = currentUser.getScheduleOwner();
+		if (null == owner) {
 			throw new NotRegisteredException("action requires registration");
 		}
-		if(result.hasErrors()) {
+		if (result.hasErrors()) {
 			return "remove-account-form";
 		}
 		
-		if(fbo.isConfirmed()) {
-			if(owner.isReflectSchedule()) {
+		if (fbo.isConfirmed()) {
+			if (owner.isReflectSchedule()) {
 				AvailableSchedule schedule = this.availableScheduleDao.retrieve(owner);
 				this.availableScheduleReflectionService.purgeReflections(owner, new Date(), schedule.getScheduleEndTime());
 			}

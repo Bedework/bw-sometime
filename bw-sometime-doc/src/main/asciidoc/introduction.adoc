@@ -2,8 +2,8 @@
 
 Bedework Sometime, at its most basic, provides a way for students to book time with faculty.
 
-The application provides means to manage and use the relationships between students and their advisors. This allows the system to limit the list of advisors when a student wishes to book time.
+The application provides the means to manage and use the relationships between students and their advisors. This allows the system to limit the list of advisors when a student wishes to book time.
 
-Once a student has booked time with an advisor that meeting will appear in the students and the advisors calendars, with the student as an attendee and the advisor as organizer. This allows the advisor to change the time or duration of the meeting or to cancel it altogether. The student is limited to simply mnarking thenselves as unavailable.
+Once a student has booked time with an advisor, that meeting will appear in the students and the advisors calendars, with the student as an attendee and the advisor as organizer. This allows the advisor to change the time or duration of the meeting or to cancel it altogether. The student is limited to simply marking themselves as unavailable.
 
-The resulting calendar events are stored in bedework which is fully CalDAV compliant. This means that - if made available - students and faculty can subscribe to their calendars from any CalDAV compliant client, e.g. iPhone.
+The resulting calendar events are stored in bedework which is fully CalDAV compliant. This means that - if made available - students and faculty can subscribe to their calendars from any CalDAV compliant client, e.g., iPhone.

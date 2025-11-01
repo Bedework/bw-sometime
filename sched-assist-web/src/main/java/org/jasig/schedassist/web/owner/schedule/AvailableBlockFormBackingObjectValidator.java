@@ -55,7 +55,7 @@ public class AvailableBlockFormBackingObjectValidator implements Validator {
 		Date startTime = null;
 		Date endTime = null;
 		// validate startTimePhrase (if present)
-		if(StringUtils.isNotBlank(fbo.getStartTimePhrase())) {
+		if (StringUtils.isNotBlank(fbo.getStartTimePhrase())) {
 			try {
 				startTime = CommonDateOperations.parseDateTimePhrase(fbo.getStartTimePhrase());
 			} catch (InputFormatException e) {
@@ -63,21 +63,21 @@ public class AvailableBlockFormBackingObjectValidator implements Validator {
 			}
 		}
 		// validate endTimePhrase if present
-		if(StringUtils.isNotBlank(fbo.getEndTimePhrase())) {
+		if (StringUtils.isNotBlank(fbo.getEndTimePhrase())) {
 			try {
 				endTime = CommonDateOperations.parseDateTimePhrase(fbo.getEndTimePhrase());
 			} catch (InputFormatException e) {
 				errors.rejectValue("endTimePhrase", "field.parseexception", "End time does not match expected format (YYYYmmDD-hhmm)");
 			}
 		}
-		if(fbo.getVisitorLimit() < 1) {
+		if (fbo.getVisitorLimit() < 1) {
 			errors.rejectValue("visitorLimit", "visitorLimit.toosmall", "Visitor limit must be greater than or equal to 1.");
 		}
-		if(fbo.getVisitorLimit() > 99) {
+		if (fbo.getVisitorLimit() > 99) {
 			errors.rejectValue("visitorLimit", "visitorLimit.toolarge", "Maximum value for visitor limit is 99.");
 		}
 
-		if(null != startTime && null != endTime) {
+		if (null != startTime && null != endTime) {
 			// validate AvailabilityBlock construction
 			try {
 				AvailableBlockBuilder.createBlock(fbo.getStartTimePhrase(), fbo.getEndTimePhrase());

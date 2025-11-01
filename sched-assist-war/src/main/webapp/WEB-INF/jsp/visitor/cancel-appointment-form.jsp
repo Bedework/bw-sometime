@@ -80,7 +80,7 @@ $(document).ready(function(){
 	}
 			
 	$('#confirmCancel').change(function() {
-		if($(this).is(':checked')) {
+		if ($(this).is(':checked')) {
 			$(':submit').removeAttr('disabled');
 		} else {
 			$(':submit').attr('disabled','disabled');

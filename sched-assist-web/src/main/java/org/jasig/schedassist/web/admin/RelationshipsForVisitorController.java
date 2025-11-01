@@ -101,9 +101,9 @@ public class RelationshipsForVisitorController {
 	@RequestMapping(method=RequestMethod.GET)
 	protected String showRelationships(@RequestParam(value="id", required=false, defaultValue="") String ctcalxitemid, final ModelMap model) throws NotAVisitorException {
 		model.addAttribute("id", ctcalxitemid);
-		if(StringUtils.isNotBlank(ctcalxitemid)) {
+		if (StringUtils.isNotBlank(ctcalxitemid)) {
 			ICalendarAccount account = this.calendarAccountDao.getCalendarAccountFromUniqueId(ctcalxitemid);
-			if(null != account) {
+			if (null != account) {
 				IScheduleVisitor visitor = this.visitorDao.toVisitor(account);
 				model.addAttribute("visitor", visitor);
 				List<Relationship> relationships = this.relationshipDao.forVisitor(visitor);

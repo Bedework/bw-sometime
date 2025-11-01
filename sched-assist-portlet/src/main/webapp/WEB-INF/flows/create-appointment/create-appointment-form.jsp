@@ -109,7 +109,7 @@ ${n}.jQuery = jQuery.noConflict(true);
 ${n}.jQuery(function(){
 	var $ = ${n}.jQuery;
 	$(':submit').lockSubmit();
-	if(${createAppointmentFormBackingObject.multipleVisitors}) {
+	if (${createAppointmentFormBackingObject.multipleVisitors}) {
 		if ($.browser.msie) {
 			// IE is ridiculous and doesn't fire the change event until you click elsewhere in the page AFTER changing a checkbox or radio
 			// so, deal with this by doing what IE should be doing and simulate the change event on the 'click' event
@@ -119,7 +119,7 @@ ${n}.jQuery(function(){
 			});
 		}
 		$('#confirmJoin').change(function() {
-			if($(this).is(':checked')) {
+			if ($(this).is(':checked')) {
 				$(':submit').removeAttr('disabled');
 			} else {
 				$(':submit').attr('disabled','disabled');

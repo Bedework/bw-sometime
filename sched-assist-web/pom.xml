@@ -22,6 +22,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.bedework.sometime</groupId>
+			<artifactId>bw-sometime-messaging-xml</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>sched-assist-api</artifactId>
 			<version>${project.version}</version>
@@ -29,7 +35,7 @@
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>sched-assist-spi</artifactId>
+			<artifactId>bw-sometime-spi</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

@@ -26,7 +26,7 @@ import java.util.Map;
 import org.jasig.schedassist.SchedulingAssistantService;
 import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.impl.owner.OwnerDao;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.model.Preferences;
 import org.jasig.schedassist.model.VisibleSchedule;
@@ -42,7 +42,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * This {@link Controller} implementation generates a preview
- * for the {@link IScheduleOwner} of the display of their current {@link VisibleSchedule}
+ * for the {@link ScheduleOwner} of the display of their current {@link VisibleSchedule}
  * shown to the {@link IScheduleVisitor}.
  * 
  * Requires a {@link OwnerDao} and {@link AvailableService} be set.
@@ -81,7 +81,7 @@ public class PreviewVisibleScheduleController {
 	protected ModelAndView previewVisibleSchedule(@RequestParam(value="highContrast",required=false,defaultValue="false") boolean highContrast,
 			@RequestParam(value="weekStart", required=false, defaultValue="0") int weekStart) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		VisibleScheduleRequestConstraints requestConstraints = VisibleScheduleRequestConstraints.newInstance(owner, weekStart);
 
 		// only pull start->end of schedule

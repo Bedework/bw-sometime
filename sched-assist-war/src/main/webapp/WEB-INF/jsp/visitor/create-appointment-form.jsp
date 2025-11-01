@@ -68,7 +68,7 @@ padding: 2px 11px;
 <script type="text/javascript">
 $(document).ready(function(){
 	$(':submit').lockSubmit();
-	if(${command.multipleVisitors}) {
+	if (${command.multipleVisitors}) {
 		if ($.browser.msie) {
 			// IE is ridiculous and doesn't fire the change event until you click elsewhere in the page AFTER changing a checkbox or radio
 			// so, deal with this by doing what IE should be doing and simulate the change event on the 'click' event
@@ -78,7 +78,7 @@ $(document).ready(function(){
 			});
 		}
 		$('#confirmJoin').change(function() {
-			if($(this).is(':checked')) {
+			if ($(this).is(':checked')) {
 				$(':submit').removeAttr('disabled');
 			} else {
 				$(':submit').attr('disabled','disabled');

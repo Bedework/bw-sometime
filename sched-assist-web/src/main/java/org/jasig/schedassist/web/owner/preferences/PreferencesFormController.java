@@ -27,7 +27,7 @@ import org.jasig.schedassist.impl.owner.AvailableScheduleDao;
 import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.impl.owner.OwnerDao;
 import org.jasig.schedassist.model.AvailableSchedule;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.MeetingDurations;
 import org.jasig.schedassist.model.Preferences;
 import org.jasig.schedassist.model.Reminders;
@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 /**
- * Form controller that invokes the method {@link OwnerDao#updatePreference(IScheduleOwner, Preferences, String)}.
+ * Form controller that invokes the method {@link OwnerDao#updatePreference(ScheduleOwner, Preferences, String)}.
  *  
  * @author Nicholas Blair, nblair@doit.wisc.edu
  * @version $Id: PreferencesFormController.java 2985 2011-01-26 21:58:45Z npblair $
@@ -132,7 +132,7 @@ public class PreferencesFormController {
 	@RequestMapping(method = RequestMethod.GET)
 	protected String setupForm(final ModelMap model) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		
 		PreferencesFormBackingObject fbo = new PreferencesFormBackingObject();
 		MeetingDurations meetingDurations = owner.getPreferredMeetingDurations();
@@ -170,42 +170,42 @@ public class PreferencesFormController {
 	@RequestMapping(method = RequestMethod.POST)
 	protected String updatePreferences(@Valid @ModelAttribute("command") PreferencesFormBackingObject fbo, BindingResult bindingResult) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
-		if(bindingResult.hasErrors()) {
+		ScheduleOwner owner = currentUser.getScheduleOwner();
+		if (bindingResult.hasErrors()) {
 			return "owner-preferences/preferences-form";
 		}
 		// only update preferences that change
-		if(!owner.getPreference(Preferences.DURATIONS).equals(fbo.durationPreferenceValue())) {
+		if (!owner.getPreference(Preferences.DURATIONS).equals(fbo.durationPreferenceValue())) {
 			owner = ownerDao.updatePreference(owner, Preferences.DURATIONS, fbo.durationPreferenceValue());
 		}
-		if(!owner.getPreference(Preferences.LOCATION).equals(fbo.getLocation())) {
+		if (!owner.getPreference(Preferences.LOCATION).equals(fbo.getLocation())) {
 			owner = ownerDao.updatePreference(owner, Preferences.LOCATION, fbo.getLocation());
 		}
-		if(!owner.getPreference(Preferences.MEETING_PREFIX).equals(fbo.getTitlePrefix())) {
+		if (!owner.getPreference(Preferences.MEETING_PREFIX).equals(fbo.getTitlePrefix())) {
 			owner = ownerDao.updatePreference(owner, Preferences.MEETING_PREFIX, fbo.getTitlePrefix());
 		}
-		if(!owner.getPreference(Preferences.NOTEBOARD).equals(fbo.getNoteboard())) {
+		if (!owner.getPreference(Preferences.NOTEBOARD).equals(fbo.getNoteboard())) {
 			owner = ownerDao.updatePreference(owner, Preferences.NOTEBOARD, fbo.getNoteboard());
 		}
-		if(!owner.getPreference(Preferences.VISIBLE_WINDOW).equals(fbo.visibleWindowPreferenceKey())) {
+		if (!owner.getPreference(Preferences.VISIBLE_WINDOW).equals(fbo.visibleWindowPreferenceKey())) {
 			owner = ownerDao.updatePreference(owner, Preferences.VISIBLE_WINDOW, fbo.visibleWindowPreferenceKey());
 		}
-		if(!owner.getPreference(Preferences.DEFAULT_VISITOR_LIMIT).equals(Integer.toString(fbo.getDefaultVisitorsPerAppointment()))) {
+		if (!owner.getPreference(Preferences.DEFAULT_VISITOR_LIMIT).equals(Integer.toString(fbo.getDefaultVisitorsPerAppointment()))) {
 			owner = ownerDao.updatePreference(owner, Preferences.DEFAULT_VISITOR_LIMIT, Integer.toString(fbo.getDefaultVisitorsPerAppointment()));
 		}
-		if(!owner.getPreference(Preferences.MEETING_LIMIT).equals(Integer.toString(fbo.getMeetingLimitValue()))) {
+		if (!owner.getPreference(Preferences.MEETING_LIMIT).equals(Integer.toString(fbo.getMeetingLimitValue()))) {
 			owner = ownerDao.updatePreference(owner, Preferences.MEETING_LIMIT, Integer.toString(fbo.getMeetingLimitValue()));
 		}	
-		if(!owner.getPreference(Preferences.REMINDERS).equals(fbo.emailReminderPreferenceKey())) {
+		if (!owner.getPreference(Preferences.REMINDERS).equals(fbo.emailReminderPreferenceKey())) {
 			owner = ownerDao.updatePreference(owner, Preferences.REMINDERS, fbo.emailReminderPreferenceKey());
 		}
-		if(owner.isReflectSchedule() != fbo.isReflectSchedule()) {
+		if (owner.isReflectSchedule() != fbo.isReflectSchedule()) {
 			owner = ownerDao.updatePreference(owner, Preferences.REFLECT_SCHEDULE, Boolean.toString(fbo.isReflectSchedule()));
-			if(fbo.isReflectSchedule()) {
+			if (fbo.isReflectSchedule()) {
 				this.reflectionService.reflectAvailableSchedule(owner);
 			} else {
 				AvailableSchedule schedule = this.availableScheduleDao.retrieve(owner);
-				if(!schedule.isEmpty()) {
+				if (!schedule.isEmpty()) {
 					this.reflectionService.purgeReflections(owner, schedule.getScheduleStartTime(), schedule.getScheduleEndTime());
 				}
 			}

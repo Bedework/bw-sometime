@@ -63,7 +63,7 @@ public class OracleCommsCredentialsProviderImpl extends
 	 */
 	@Override
 	public Credentials getCredentials(AuthScope authscope) {
-		if(!getTargetAuthScope().equals(authscope)) {
+		if (!getTargetAuthScope().equals(authscope)) {
 			return null;
 		}
 		

@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jasig.schedassist.IDelegateCalendarAccountDao;
 import org.jasig.schedassist.impl.owner.OwnerDao;
 import org.jasig.schedassist.model.IDelegateCalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.context.SecurityContext;
@@ -73,17 +73,17 @@ public class DelegateCalendarAccountUserDetailsServiceImpl implements
 	 */
 	public UserDetails loadUserByUsername(final String username)
 			throws UsernameNotFoundException, DataAccessException {
-		if(NONE_PROVIDED.equals(username)) {
+		if (NONE_PROVIDED.equals(username)) {
 			LOG.debug("caught NONE_PROVIDED being passed into loadUserByUsername");
 			throw new UsernameNotFoundException(NONE_PROVIDED);
 		}
 		
 		CalendarAccountUserDetailsImpl currentUser = (CalendarAccountUserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		IDelegateCalendarAccount delegate = this.delegateCalendarAccountDao.getDelegate(username, currentUser.getCalendarAccount());
-		if(null == delegate) {
+		if (null == delegate) {
 			throw new UsernameNotFoundException("no delegate account found with name " + username);
 		}
-		IScheduleOwner delegateOwner = ownerDao.locateOwner(delegate);
+		ScheduleOwner delegateOwner = ownerDao.locateOwner(delegate);
 		DelegateCalendarAccountUserDetailsImpl result = new DelegateCalendarAccountUserDetailsImpl(delegate, delegateOwner);
 		return result;
 	}

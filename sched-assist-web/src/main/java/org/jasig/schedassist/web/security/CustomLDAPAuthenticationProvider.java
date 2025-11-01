@@ -93,7 +93,7 @@ public class CustomLDAPAuthenticationProvider extends DaoAuthenticationProvider 
 
         try {
             DirContextOperations userData = getAuthenticator().authenticate(authentication);
-            if(userData == null) {
+            if (userData == null) {
             	throw new BadCredentialsException(messages.getMessage(
                         "LdapAuthenticationProvider.badCredentials", "Bad credentials"));
             }

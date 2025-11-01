@@ -68,7 +68,7 @@ public class TaggedPublicProfileController {
 			@RequestParam(value="startIndex",required=false,defaultValue="0") int startIndex) throws UnsupportedEncodingException {
 		String decoded = decode(tag);
 		List<PublicProfileId> profileIds = this.publicProfileDao.getPublicProfileIdsWithTag(decoded);
-		if(profileIds.isEmpty()) {
+		if (profileIds.isEmpty()) {
 			// short circuit
 			return "profiles/public-listing";
 		}

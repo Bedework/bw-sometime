@@ -65,7 +65,7 @@ public class TermCalculator {
 		
 		int month = calendar.get(Calendar.MONTH);
 		String monthDigit;
-		if(month >= Calendar.JANUARY && month <= Calendar.MAY) {
+		if (month >= Calendar.JANUARY && month <= Calendar.MAY) {
 			monthDigit = "4";
 		} else if (month >= Calendar.JUNE && month <= Calendar.AUGUST) {
 			monthDigit = "6";
@@ -74,7 +74,7 @@ public class TermCalculator {
 		}
 		
 		int year = calendar.get(Calendar.YEAR);
-		if("2".equals(monthDigit)) {
+		if ("2".equals(monthDigit)) {
 			// increment year by one for fall semester
 			year++;
 		}

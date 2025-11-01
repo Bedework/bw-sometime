@@ -27,7 +27,7 @@ import org.jasig.schedassist.impl.owner.AvailableScheduleDao;
 import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableSchedule;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,7 +40,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 /**
- * {@link Controller} implementation that allows an {@link IScheduleOwner} to
+ * {@link Controller} implementation that allows an {@link ScheduleOwner} to
  * remove ALL {@link AvailableBlock}s from their {@link AvailableSchedule}.
  * 
  * @author Nicholas Blair, nblair@doit.wisc.edu
@@ -100,11 +100,11 @@ public class ClearEntireAvailableScheduleFormController {
 	@RequestMapping(method=RequestMethod.POST)
 	protected ModelAndView clearSchedule(@ModelAttribute ClearAvailableScheduleFormBackingObject fbo) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		
-		if(fbo.isConfirmedCancelAll()) {
+		if (fbo.isConfirmedCancelAll()) {
 			AvailableSchedule schedule = availableScheduleDao.retrieve(owner);
-			if(!schedule.isEmpty()) {
+			if (!schedule.isEmpty()) {
 				availableScheduleDao.clearAllBlocks(owner);
 				reflectionService.purgeReflections(owner, 
 					schedule.getScheduleStartTime(), schedule.getScheduleEndTime());

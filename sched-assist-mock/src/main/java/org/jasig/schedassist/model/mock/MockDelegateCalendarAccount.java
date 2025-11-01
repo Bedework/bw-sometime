@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jasig.schedassist.model.AbstractCalendarAccount;
-import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IDelegateCalendarAccount;
+import org.bedework.sometime.model.AbstractCalendarAccount;
+import org.bedework.sometime.model.ICalendarAccount;
+import org.bedework.sometime.model.IDelegateCalendarAccount;
 
 /**
  * Mock {@link IDelegateCalendarAccount} implementation.

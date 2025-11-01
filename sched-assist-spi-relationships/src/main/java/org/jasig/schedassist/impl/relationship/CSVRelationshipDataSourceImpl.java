@@ -106,7 +106,7 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		if(csvResource == null) {
+		if (csvResource == null) {
 			throw new IllegalStateException("advisorListResource is required");
 		}
 		
@@ -149,8 +149,8 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 	@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW)
 	public synchronized void reloadData() {
 		final String propertyValue = System.getProperty("org.jasig.schedassist.runScheduledTasks", "true");
-		if(Boolean.parseBoolean(propertyValue)) {
-			if(isResourceUpdated(csvResource)) {
+		if (Boolean.parseBoolean(propertyValue)) {
+			if (isResourceUpdated(csvResource)) {
 				LOG.info("resource updated, reloading advisorList data");
 				//List<StudentAdvisorAssignment> records = readResource(advisorListResource, currentTerm);
 				List<CSVRelationship> records = new ArrayList<>();
@@ -161,7 +161,7 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 					return;
 				}
 
-				if(records.isEmpty()) {
+				if (records.isEmpty()) {
 					LOG.warn("resource returned empty set, skipping reloadData");
 					return;
 				}
@@ -227,7 +227,7 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 						new InputStreamReader(resource.getInputStream()));
 		String [] tokens = lineReader.readNext();
 		while(null != tokens) {
-			if(tokens.length == 3) {
+			if (tokens.length == 3) {
 				final CSVRelationship relationship = new CSVRelationship();
 				relationship.setOwnerIdentifier(tokens[0]);
 				relationship.setVisitorIdentifier(tokens[1]);

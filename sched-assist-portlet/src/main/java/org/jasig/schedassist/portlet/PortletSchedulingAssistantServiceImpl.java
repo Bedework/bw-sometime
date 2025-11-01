@@ -55,7 +55,7 @@ import org.bedework.messaging.VisitorConflictsResponse;
 import org.bedework.messaging.XMLDataUtils;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableBlockBuilder;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.model.MeetingDurations;
 import org.jasig.schedassist.model.Relationship;
@@ -63,7 +63,7 @@ import org.jasig.schedassist.model.VisibleSchedule;
 import org.springframework.ws.soap.client.SoapFaultClientException;
 
 /**
- * Mimics {@link SchedulingAssistantService} and {@link RelationshipDao}, however {@link IScheduleOwner} 
+ * Mimics {@link SchedulingAssistantService} and {@link RelationshipDao}, however {@link ScheduleOwner}
  * and {@link IScheduleVisitor} arguments are replaced with {@link String}s containing solely the username.
  *  
  * @author Nicholas Blair, nblair@doit.wisc.edu
@@ -86,11 +86,11 @@ public final class PortletSchedulingAssistantServiceImpl extends WebServicesDaoS
 	public boolean isEligible(String visitorUsername) {
 		IsEligibleRequest request = new IsEligibleRequest();
 		request.setVisitorNetid(visitorUsername);
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("sending isEligible request for " + visitorUsername);
 		}
 		IsEligibleResponse response = (IsEligibleResponse) this.doSendAndReceive(request);
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("isEligible for " + visitorUsername + " returns " + response.isEligible());
 		}
 		return response.isEligible();
@@ -103,7 +103,7 @@ public final class PortletSchedulingAssistantServiceImpl extends WebServicesDaoS
 	public EventCancellation cancelAppointment(final String visitorUsername, final long ownerId,
 			final AvailableBlock block, final String cancelReason) throws SchedulingException {
 		
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("sending cancelAppointment request, visitor: " + visitorUsername + ", owner: " + ownerId + ", block: " + block);
 		}
 		CancelAppointmentRequest request = new CancelAppointmentRequest();
@@ -121,7 +121,7 @@ public final class PortletSchedulingAssistantServiceImpl extends WebServicesDaoS
 					XMLDataUtils.convertXMLGregorianCalendarToDate(response.getEndTime()));
 			return result;
 		} catch (SoapFaultClientException e) {
-			if(CANCEL_FAILED_MESSAGE.equals(e.getFaultStringOrReason())) {
+			if (CANCEL_FAILED_MESSAGE.equals(e.getFaultStringOrReason())) {
 				LOG.info("cancelAppointment request for visitor " + visitorUsername + " and owner " + ownerId + " failed since appointment no longer exists");
 				throw new NoAppointmentExistsException(CANCEL_FAILED_MESSAGE, e);
 			} else {
@@ -148,14 +148,14 @@ public final class PortletSchedulingAssistantServiceImpl extends WebServicesDaoS
 	public VisibleSchedule getVisibleSchedule(String visitorUsername,
 			long ownerId, int weekStart) {
 		
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("sending getVisibleSchedule request, visitor: " + visitorUsername + ", owner: " + ownerId);
 		}
 		VisibleScheduleRequest request = new VisibleScheduleRequest();
 		request.setOwnerId(ownerId);
 		request.setVisitorNetid(visitorUsername);
 		request.setWeekStart(weekStart);
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug(request);
 		}
 		VisibleScheduleResponse response = (VisibleScheduleResponse) this.doSendAndReceive(request);
@@ -195,14 +195,14 @@ public final class PortletSchedulingAssistantServiceImpl extends WebServicesDaoS
 	public List<AvailableBlock> calculateVisitorConflicts(
 			String visitorUsername, long ownerId, int weekStart) {
 		
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("calculateVisitorConflicts, visitor: " + visitorUsername + ", owner: " + ownerId);
 		}
 		VisitorConflictsRequest request = new VisitorConflictsRequest();
 		request.setOwnerId(ownerId);
 		request.setVisitorNetid(visitorUsername);
 		request.setWeekStart(weekStart);
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug(request);
 		}
 		VisitorConflictsResponse response = (VisitorConflictsResponse) this.doSendAndReceive(request);
@@ -215,7 +215,7 @@ public final class PortletSchedulingAssistantServiceImpl extends WebServicesDaoS
 					blockElement.getEndTime().toGregorianCalendar().getTime());
 			results.add(block);
 		}
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("calculateVisitorConflicts result has " + results.size() + " elements");
 		}
 		return results;
@@ -223,18 +223,18 @@ public final class PortletSchedulingAssistantServiceImpl extends WebServicesDaoS
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.portlet.PortletSchedulingAssistantService#getTargetBlock(org.jasig.schedassist.model.IScheduleOwner, java.util.Date)
+	 * @see org.jasig.schedassist.portlet.PortletSchedulingAssistantService#getTargetBlock(org.jasig.schedassist.model.ScheduleOwner, java.util.Date)
 	 */
 	@Override
-	public AvailableBlock getTargetBlock(IScheduleOwner owner, Date startTime) {
+	public AvailableBlock getTargetBlock(ScheduleOwner owner, Date startTime) {
 		return getTargetBlockInternal(owner, startTime, false);
 	}
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.portlet.PortletSchedulingAssistantService#getTargetDoubleLengthBlock(org.jasig.schedassist.model.IScheduleOwner, java.util.Date)
+	 * @see org.jasig.schedassist.portlet.PortletSchedulingAssistantService#getTargetDoubleLengthBlock(org.jasig.schedassist.model.ScheduleOwner, java.util.Date)
 	 */
 	@Override
-	public AvailableBlock getTargetDoubleLengthBlock(IScheduleOwner owner,
+	public AvailableBlock getTargetDoubleLengthBlock(ScheduleOwner owner,
 			Date startTime) {
 		return getTargetBlockInternal(owner, startTime, true);
 	}
@@ -246,7 +246,7 @@ public final class PortletSchedulingAssistantServiceImpl extends WebServicesDaoS
 	 * @param doubleLength
 	 * @return
 	 */
-	protected AvailableBlock getTargetBlockInternal(IScheduleOwner owner,
+	protected AvailableBlock getTargetBlockInternal(ScheduleOwner owner,
 			Date startTime, boolean doubleLength) {
 		
 		GetTargetAvailableBlockRequest request = new GetTargetAvailableBlockRequest();
@@ -257,7 +257,7 @@ public final class PortletSchedulingAssistantServiceImpl extends WebServicesDaoS
 		//GetTargetAvailableBlockResponse response = (GetTargetAvailableBlockResponse) this.webServiceTemplate.marshalSendAndReceive(request);
 		GetTargetAvailableBlockResponse response = (GetTargetAvailableBlockResponse) this.doSendAndReceive(request);
 		
-		if(null == response.getAvailableBlockElement()) {
+		if (null == response.getAvailableBlockElement()) {
 			return null;
 		} else {
 			AvailableBlock result = convertAvailableBlockElement(response.getAvailableBlockElement());
@@ -285,7 +285,7 @@ public final class PortletSchedulingAssistantServiceImpl extends WebServicesDaoS
 		try {
 			//CreateAppointmentResponse response = (CreateAppointmentResponse) webServiceTemplate.marshalSendAndReceive(request);
 			CreateAppointmentResponse response = (CreateAppointmentResponse) this.doSendAndReceive(request);
-			if(null == response) {
+			if (null == response) {
 				LOG.error("response was null!");
 			}
 			LOG.debug("received response; start: " + response.getStartTime() + ", end: " + response.getEndTime() + ", location: " + response.getEventLocation() + ", title: " + response.getEventTitle());
@@ -300,7 +300,7 @@ public final class PortletSchedulingAssistantServiceImpl extends WebServicesDaoS
 			return vevent;
 		} catch (SoapFaultClientException e) {
 			LOG.error("caught SOAP Fault in scheduleAppointment: ", e);
-			if(e.getFaultStringOrReason().contains(CONFLICT_MESSAGE) || e.getFaultStringOrReason().contains(TIME_NOT_AVAILABLE_MESSAGE)) {
+			if (e.getFaultStringOrReason().contains(CONFLICT_MESSAGE) || e.getFaultStringOrReason().contains(TIME_NOT_AVAILABLE_MESSAGE)) {
 				throw new ConflictExistsException("a conflict exists for " + block, e);
 			} else {
 				throw e;
@@ -325,7 +325,7 @@ public final class PortletSchedulingAssistantServiceImpl extends WebServicesDaoS
 		List<RelationshipElement> relationshipElements = response.getRelationshipList().getRelationshipElement();
 		LOG.debug("getRelationships response received with size " + relationshipElements.size());
 		for(RelationshipElement relationshipElement : relationshipElements) {
-			IScheduleOwner owner = convertOwnerElement(relationshipElement.getScheduleOwnerElement());
+			ScheduleOwner owner = convertOwnerElement(relationshipElement.getScheduleOwnerElement());
 			LOG.debug("-> " + visitorUsername + ", " + owner.getCalendarAccount().getUsername());
 
 			Relationship relationship = new Relationship();
@@ -339,12 +339,12 @@ public final class PortletSchedulingAssistantServiceImpl extends WebServicesDaoS
 	
 
 	/**
-	 * Convert a {@link ScheduleOwnerElement} into an {@link IScheduleOwner}.
+	 * Convert a {@link ScheduleOwnerElement} into an {@link ScheduleOwner}.
 	 * 
 	 * @param element
 	 * @return
 	 */
-	protected static IScheduleOwner convertOwnerElement(ScheduleOwnerElement element) {
+	protected static ScheduleOwner convertOwnerElement(ScheduleOwnerElement element) {
 		PortletScheduleOwnerImpl owner = new PortletScheduleOwnerImpl(element);
 		return owner;
 	}

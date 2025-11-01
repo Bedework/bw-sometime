@@ -47,7 +47,7 @@
      | Instructors and which accounts are Advisors.
      | Need one instance defined; the default says no one is eligible for those features.
      +-->      
-    <bean id="affiliationSource" class="org.jasig.schedassist.NullAffiliationSourceImpl"/>
+    <bean id="affiliationSource" class="org.bedework.sometime.NullAffiliationSourceImpl"/>
   
    	<!-- All HTTP Components are defined in this file -->
     <import resource="integration/http.xml"/>

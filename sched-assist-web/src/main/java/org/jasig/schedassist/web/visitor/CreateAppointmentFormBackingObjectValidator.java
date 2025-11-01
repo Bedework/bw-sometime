@@ -47,8 +47,8 @@ public class CreateAppointmentFormBackingObjectValidator implements Validator {
 	public void validate(Object command, Errors errors) {
 		CreateAppointmentFormBackingObject fbo = (CreateAppointmentFormBackingObject) command;
 
-		if(fbo.isMultipleVisitors()) {
-			if(!fbo.isConfirmJoin()) {
+		if (fbo.isMultipleVisitors()) {
+			if (!fbo.isConfirmJoin()) {
 				errors.rejectValue("confirmJoin", "confirmJoin.false", "Please mark the checkbox to confirm you wish to join the appointment.");
 			}
 		} else {
@@ -56,7 +56,7 @@ public class CreateAppointmentFormBackingObjectValidator implements Validator {
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "reason", "field.required", "Reason for the meeting is required.");
 			
 			// selectedDuration only present if 1 visitor
-			if(!fbo.getMeetingDurationsAsList().contains(fbo.getSelectedDuration())) {
+			if (!fbo.getMeetingDurationsAsList().contains(fbo.getSelectedDuration())) {
 				errors.rejectValue("selectedDuration", "selectedDuration.outofbounds", "Unacceptable value for meeting duration");
 			}
 		}

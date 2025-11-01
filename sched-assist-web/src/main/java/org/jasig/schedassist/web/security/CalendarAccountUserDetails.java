@@ -22,7 +22,7 @@ package org.jasig.schedassist.web.security;
 
 import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -47,10 +47,10 @@ public interface CalendarAccountUserDetails extends UserDetails {
 	
 	/**
 	 * 
-	 * @return the {@link IScheduleOwner} for this account (if registered)
+	 * @return the {@link ScheduleOwner} for this account (if registered)
 	 * @throws NotRegisteredException if the is account is not yet registered
 	 */
-	IScheduleOwner getScheduleOwner() throws NotRegisteredException;
+	ScheduleOwner getScheduleOwner() throws NotRegisteredException;
 	
 	/**
 	 * 
@@ -59,10 +59,10 @@ public interface CalendarAccountUserDetails extends UserDetails {
 	boolean isDelegate();
 	
 	/**
-	 * Update the {@link IScheduleOwner} instance stored internally.
+	 * Update the {@link ScheduleOwner} instance stored internally.
 	 * Future calls to {@link #getScheduleOwner()} should retrieve this new instance.
 	 * 
 	 * @param owner
 	 */
-	void updateScheduleOwner(IScheduleOwner owner);
+	void updateScheduleOwner(ScheduleOwner owner);
 }

@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.jasig.schedassist.RelationshipDao;
 import org.jasig.schedassist.impl.owner.NotRegisteredException;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.Relationship;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,11 +88,11 @@ public class AdhocRelationshipsDataController {
 	@RequestMapping(method=RequestMethod.GET)
 	public String getRelationshipsData(final ModelMap model) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 
 		List<Relationship> relationships = relationshipDao.forOwner(owner);
 		List<AdhocRelationshipVisitorDataBean> beans = new ArrayList<AdhocRelationshipsDataController.AdhocRelationshipVisitorDataBean>();
-		if(relationships.size() > 0) {	
+		if (relationships.size() > 0) {
 			for(Relationship r: relationships) {
 				beans.add(convert(r));
 			}

@@ -52,7 +52,7 @@ $(function() {
 		$(elem).submit(function(event) {
 			event.preventDefault();
 			var confirmed = confirm('<spring:message code="confirm.revoke.relationship"/>');
-			if(confirmed) {
+			if (confirmed) {
 				$(elem).unbind();
 				$(elem).submit();
 			}

@@ -41,7 +41,7 @@ import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableBlockBuilder;
 import org.jasig.schedassist.model.AvailableSchedule;
 import org.jasig.schedassist.model.CommonDateOperations;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,7 +52,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * {@link Controller} implementation that returns the {@link IScheduleOwner}'s
+ * {@link Controller} implementation that returns the {@link ScheduleOwner}'s
  * {@link AvailableSchedule} for the 7 days starting at the "startDate" parameter.
  * 
  * @author Nicholas Blair, nblair@doit.wisc.edu
@@ -92,10 +92,10 @@ public class AvailableScheduleDataController {
 	public String getAvailableSchedule(@RequestParam(value="startDate",required=false) String startParam,
 			final ModelMap model, HttpServletResponse response) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		
 		Date startDate = new Date();
-		if(StringUtils.isNotBlank(startParam)) {
+		if (StringUtils.isNotBlank(startParam)) {
 			SimpleDateFormat df = CommonDateOperations.getDateFormat();
 			try {
 				startDate = df.parse(startParam);
@@ -146,7 +146,7 @@ public class AvailableScheduleDataController {
 		int toRemove = minutesField % 15;
 		
 		Date result = date;
-		if(toRemove != 0) {
+		if (toRemove != 0) {
 			result = DateUtils.addMinutes(result, -toRemove);
 		}
 		
@@ -200,7 +200,7 @@ public class AvailableScheduleDataController {
 			Set<AvailableBlock> expanded = AvailableBlockBuilder.expand(block, 15);
 			int blockSize = expanded.size();
 			
-			if(!block.getStartTime().equals(startTimeRounded)) {
+			if (!block.getStartTime().equals(startTimeRounded)) {
 				// start time was rounded
 				// since we're showing an earlier start time, we have to add a block to get the right end date
 				blockSize++;

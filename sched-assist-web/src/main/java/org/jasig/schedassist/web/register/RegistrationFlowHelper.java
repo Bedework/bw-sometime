@@ -33,7 +33,7 @@ import org.jasig.schedassist.model.AffiliationImpl;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableBlockBuilder;
 import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.InputFormatException;
 import org.jasig.schedassist.model.Preferences;
 import org.jasig.schedassist.web.owner.preferences.PreferencesFormBackingObjectValidator;
@@ -116,7 +116,7 @@ public class RegistrationFlowHelper {
 		SecurityContext context = SecurityContextHolder.getContext();
 		Authentication authentication = context.getAuthentication();
 		CalendarAccountUserDetailsImpl currentUser = (CalendarAccountUserDetailsImpl) authentication.getPrincipal();
-		IScheduleOwner owner = ownerDao.register(currentUser.getCalendarAccount());
+		ScheduleOwner owner = ownerDao.register(currentUser.getCalendarAccount());
 		owner = ownerDao.updatePreference(owner, Preferences.DURATIONS, registration.durationPreferenceValue());
 		owner = ownerDao.updatePreference(owner, Preferences.LOCATION, registration.getLocation());
 		owner = ownerDao.updatePreference(owner, Preferences.MEETING_PREFIX, registration.getTitlePrefix());
@@ -127,15 +127,15 @@ public class RegistrationFlowHelper {
 		owner = ownerDao.updatePreference(owner, Preferences.REFLECT_SCHEDULE, Boolean.toString(registration.isReflectSchedule()));
 		owner = ownerDao.updatePreference(owner, Preferences.REMINDERS, registration.emailReminderPreferenceKey());
 		
-		if(affiliationSource.doesAccountHaveAffiliation(owner.getCalendarAccount(), AffiliationImpl.ADVISOR)) {
+		if (affiliationSource.doesAccountHaveAffiliation(owner.getCalendarAccount(), AffiliationImpl.ADVISOR)) {
 			// set ADVISOR_SHARE_WITH_STUDENTS by default for all academic advisors
 			owner = ownerDao.updatePreference(owner, Preferences.ADVISOR_SHARE_WITH_STUDENTS, "true");
 		}
-		if(affiliationSource.doesAccountHaveAffiliation(owner.getCalendarAccount(), AffiliationImpl.INSTRUCTOR)) {
+		if (affiliationSource.doesAccountHaveAffiliation(owner.getCalendarAccount(), AffiliationImpl.INSTRUCTOR)) {
 			// set INSTRUCTOR_SHARE_WITH_STUDENTS by default for all instructors
 			owner = ownerDao.updatePreference(owner, Preferences.INSTRUCTOR_SHARE_WITH_STUDENTS, "true");
 		}
-		if(registration.isScheduleSet()) {
+		if (registration.isScheduleSet()) {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 			Set<AvailableBlock> blocks = AvailableBlockBuilder.createBlocks(registration.getStartTimePhrase(), 
 					registration.getEndTimePhrase(),
@@ -146,7 +146,7 @@ public class RegistrationFlowHelper {
 			availableScheduleDao.addToSchedule(owner, blocks);
 		}
 		
-		if(registration.isReflectSchedule()) {
+		if (registration.isReflectSchedule()) {
 			reflectionService.reflectAvailableSchedule(owner);
 		}
 		

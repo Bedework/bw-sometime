@@ -29,7 +29,7 @@ import org.jasig.schedassist.impl.owner.OwnerDao;
 import org.jasig.schedassist.impl.visitor.NotAVisitorException;
 import org.jasig.schedassist.impl.visitor.VisitorDao;
 import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -99,14 +99,14 @@ public class VisibleScheduleDebugFormBackingObjectValidator implements
 		VisibleScheduleDebugFormBackingObject command = (VisibleScheduleDebugFormBackingObject) target;
 
 		IScheduleVisitor visitor = locateVisitor(command.getVisitorLookup());
-		if(visitor == null) {
+		if (visitor == null) {
 			errors.rejectValue("visitorLookup", "visitor.notfound", "Schedule Visitor not found");
 		} else {
 			command.setScheduleVisitor(visitor);
 		}
 		
-		IScheduleOwner owner = locateOwner(command.getOwnerLookup());
-		if(owner == null) {
+		ScheduleOwner owner = locateOwner(command.getOwnerLookup());
+		if (owner == null) {
 			errors.rejectValue("ownerLookup", "owner.notfound", "Schedule Owner not found");
 		} else {
 			command.setScheduleOwner(owner);
@@ -120,15 +120,15 @@ public class VisibleScheduleDebugFormBackingObjectValidator implements
 	 */
 	protected IScheduleVisitor locateVisitor(AccountLookupFormBackingObject lookupObject) {
 		ICalendarAccount account = null;
-		if(StringUtils.isNotBlank(lookupObject.getUsername())) {
+		if (StringUtils.isNotBlank(lookupObject.getUsername())) {
 			account = this.calendarAccountDao.getCalendarAccount(lookupObject.getUsername());
 			
-		} else if(StringUtils.isNotBlank(lookupObject.getCtcalxitemid())) {
+		} else if (StringUtils.isNotBlank(lookupObject.getCtcalxitemid())) {
 			account = this.calendarAccountDao.getCalendarAccountFromUniqueId(lookupObject.getCtcalxitemid());
 			
 		} 
 		
-		if(null != account) {
+		if (null != account) {
 			try {
 				return this.visitorDao.toVisitor(account);
 			} catch (NotAVisitorException e) {
@@ -142,21 +142,21 @@ public class VisibleScheduleDebugFormBackingObjectValidator implements
 	/**
 	 * 
 	 * @param lookupObject
-	 * @return the corresponding {@link IScheduleOwner}, or null if not found
+	 * @return the corresponding {@link ScheduleOwner}, or null if not found
 	 */
-	protected IScheduleOwner locateOwner(AccountLookupFormBackingObject lookupObject) {
+	protected ScheduleOwner locateOwner(AccountLookupFormBackingObject lookupObject) {
 		ICalendarAccount account = null;
-		if(StringUtils.isNotBlank(lookupObject.getUsername())) {
+		if (StringUtils.isNotBlank(lookupObject.getUsername())) {
 			account = this.calendarAccountDao.getCalendarAccount(lookupObject.getUsername());
 			
-		} else if(StringUtils.isNotBlank(lookupObject.getCtcalxitemid())) {
+		} else if (StringUtils.isNotBlank(lookupObject.getCtcalxitemid())) {
 			account = this.calendarAccountDao.getCalendarAccountFromUniqueId(lookupObject.getCtcalxitemid());
 		} else if (StringUtils.isNotBlank(lookupObject.getResourceName())) {
 			account = this.delegateCalendarAccountDao.getDelegate(lookupObject.getResourceName());
 		}
 		
-		if(null != account) {
-			IScheduleOwner owner = this.ownerDao.locateOwner(account);
+		if (null != account) {
+			ScheduleOwner owner = this.ownerDao.locateOwner(account);
 			return owner;
 		}
 		

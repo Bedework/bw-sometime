@@ -96,7 +96,7 @@ public class CalendarUserSearchFormController {
 	 */
 	@RequestMapping(method=RequestMethod.GET)
 	protected String onGet(@RequestParam(value="q",required=false) final String qValue, final ModelMap model) {
-		if(StringUtils.isBlank(qValue)) {
+		if (StringUtils.isBlank(qValue)) {
 			CalendarUserSearchFormBackingObject fbo = new CalendarUserSearchFormBackingObject();
 			model.addAttribute("command", fbo);
 			return "owner-relationships/calendaruser-search-form";
@@ -104,7 +104,7 @@ public class CalendarUserSearchFormController {
 		// if qValue isn't blank, this should be considered a search request
 		model.addAttribute("searchText", qValue);
 		List<ICalendarAccount> matches = new ArrayList<ICalendarAccount>();
-		if(null != qValue && qValue.length() > 2) {
+		if (null != qValue && qValue.length() > 2) {
 			// alter search text before submitting to calendarUserDao
 			final String searchText = StringUtils.replace(qValue, " ", "*");
 			matches = calendarAccountDao.searchForCalendarAccounts(searchText);
@@ -124,7 +124,7 @@ public class CalendarUserSearchFormController {
 	protected String search(@ModelAttribute("command") CalendarUserSearchFormBackingObject fbo, final ModelMap model) {
 		model.addAttribute("searchText", fbo.getSearchText());
 		List<ICalendarAccount> matches = new ArrayList<ICalendarAccount>();
-		if(fbo.getSearchText() != null && fbo.getSearchText().length() > 2) {
+		if (fbo.getSearchText() != null && fbo.getSearchText().length() > 2) {
 			// alter search text before submitting to calendarUserDao
 			final String searchText = StringUtils.replace(fbo.getSearchText(), " ", "*");
 			matches = calendarAccountDao.searchForCalendarAccounts(searchText);
@@ -144,7 +144,7 @@ public class CalendarUserSearchFormController {
 	protected List<ICalendarAccount> filterForEligible(List<ICalendarAccount> matches) {
 		List<ICalendarAccount> results = new ArrayList<ICalendarAccount>();
 		for(ICalendarAccount a: matches) {
-			if(a.isEligible()) {
+			if (a.isEligible()) {
 				results.add(a);
 			}
 		}

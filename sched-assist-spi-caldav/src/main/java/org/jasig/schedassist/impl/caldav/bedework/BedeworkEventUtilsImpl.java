@@ -24,7 +24,7 @@ import net.fortuna.ical4j.model.property.XProperty;
 import org.jasig.schedassist.IAffiliationSource;
 import org.jasig.schedassist.impl.caldav.CaldavEventUtilsImpl;
 import org.jasig.schedassist.model.AvailableBlock;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 
 /**
@@ -46,15 +46,15 @@ public class BedeworkEventUtilsImpl extends CaldavEventUtilsImpl {
 
 	/**
 	 * Adds an {@link XProperty} with name {@link #BEDEWORK_SUBMITTEDBY} and value as the
-	 * {@link IScheduleOwner}'s username.
+	 * {@link ScheduleOwner}'s username.
 	 * 
 	 *  (non-Javadoc)
-	 * @see org.jasig.schedassist.impl.caldav.CaldavEventUtilsImpl#constructAvailableAppointment(org.jasig.schedassist.model.AvailableBlock, org.jasig.schedassist.model.IScheduleOwner, org.jasig.schedassist.model.IScheduleVisitor, java.lang.String)
+	 * @see org.jasig.schedassist.impl.caldav.CaldavEventUtilsImpl#constructAvailableAppointment(org.jasig.schedassist.model.AvailableBlock, org.jasig.schedassist.model.ScheduleOwner, org.jasig.schedassist.model.IScheduleVisitor, java.lang.String)
 	 */
 	@Override
 	public VEvent constructAvailableAppointment(
 					final AvailableBlock block,
-					final IScheduleOwner owner,
+					final ScheduleOwner owner,
 					final IScheduleVisitor visitor,
 					final String eventDescription) {
 		final VEvent event = super.constructAvailableAppointment(

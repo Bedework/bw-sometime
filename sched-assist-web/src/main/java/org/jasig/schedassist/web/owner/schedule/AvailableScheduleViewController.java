@@ -21,7 +21,7 @@
 package org.jasig.schedassist.web.owner.schedule;
 
 import org.jasig.schedassist.impl.owner.NotRegisteredException;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * This {@link Controller} implementation simply verifies that 
- * the authenticated {@link IScheduleOwner} has been registered;
+ * the authenticated {@link ScheduleOwner} has been registered;
  * if not a {@link NotRegisteredException} is thrown.
  *  
  * @author Nicholas Blair, nblair@doit.wisc.edu

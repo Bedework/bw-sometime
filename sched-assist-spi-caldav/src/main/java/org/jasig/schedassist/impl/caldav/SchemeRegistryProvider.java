@@ -48,7 +48,7 @@ public final class SchemeRegistryProvider {
 	 */
 	public static SchemeRegistry createSchemeRegistry(String schemeName, int port, boolean useSsl) {
 		SchemeRegistry registry = SchemeRegistryFactory.createDefault();
-		if(useSsl) {
+		if (useSsl) {
 			registry.register(
 	                new Scheme(schemeName, port, SSLSocketFactory.getSocketFactory()));
 		} else {

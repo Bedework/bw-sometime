@@ -69,7 +69,7 @@ class PreemptiveAuthInterceptor implements HttpRequestInterceptor {
                 }
                 authState.setAuthScheme(authScheme);
                 authState.setCredentials(creds);
-                if(log.isTraceEnabled()) {
+                if (log.isTraceEnabled()) {
                 	log.trace("successfully set credentials " + creds + " and authScheme " + authScheme + " for request " + request);
                 }
             } else {

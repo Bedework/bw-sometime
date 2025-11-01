@@ -165,7 +165,7 @@ public class PreferencesFormBackingObject {
 	 */
 	public void setMeetingLimitValue(int meetingLimitValue) {
 		this.meetingLimitValue = meetingLimitValue;
-		if(meetingLimitValue == -1) {
+		if (meetingLimitValue == -1) {
 			setEnableMeetingLimit(false);
 		} else {
 			setEnableMeetingLimit(true);
@@ -204,7 +204,7 @@ public class PreferencesFormBackingObject {
 	public String durationPreferenceValue() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(this.meetingLength);
-		if(this.allowDoubleLength) {
+		if (this.allowDoubleLength) {
 			int duration = Integer.parseInt(this.meetingLength);
 			builder.append(COMMA);
 			builder.append(2*duration);

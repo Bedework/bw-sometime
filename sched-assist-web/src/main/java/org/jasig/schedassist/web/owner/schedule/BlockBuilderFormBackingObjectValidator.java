@@ -75,22 +75,22 @@ public class BlockBuilderFormBackingObjectValidator implements Validator {
 
 		BlockBuilderFormBackingObject fbo = (BlockBuilderFormBackingObject) command;
 
-		if(!StringUtils.isBlank(fbo.getDaysOfWeekPhrase())) {
+		if (!StringUtils.isBlank(fbo.getDaysOfWeekPhrase())) {
 			Matcher daysMatcher = DAYS_OF_WEEK_PATTERN.matcher(fbo.getDaysOfWeekPhrase());
-			if(!daysMatcher.matches()) {
+			if (!daysMatcher.matches()) {
 				errors.rejectValue("daysOfWeekPhrase", "invalid.daysOfWeekPhrase", "Days of week must contain only 'NMTWRFS' (N is Sunday, S is Saturday).");
 			}
 		}
 		
-		if(!StringUtils.isBlank(fbo.getStartDatePhrase())) {
+		if (!StringUtils.isBlank(fbo.getStartDatePhrase())) {
 			Matcher m = DATE_PATTERN.matcher(fbo.getStartDatePhrase());
-			if(!m.matches()) {
+			if (!m.matches()) {
 				errors.rejectValue("startDatePhrase", "startDatePhrase.invalidFormat", "Start Date must contain 2 digit month, 2 digit day, and 4 digit year (mm/dd/yyyy).");
 			} 
 		}
-		if(!StringUtils.isBlank(fbo.getEndDatePhrase())) {
+		if (!StringUtils.isBlank(fbo.getEndDatePhrase())) {
 			Matcher m = DATE_PATTERN.matcher(fbo.getEndDatePhrase());
-			if(!m.matches()) {
+			if (!m.matches()) {
 				errors.rejectValue("endDatePhrase", "endDatePhrase.invalidFormat", "End Date must contain 2 digit month, 2 digit day, and 4 digit year (mm/dd/yyyy).");
 			} 
 		}
@@ -98,14 +98,14 @@ public class BlockBuilderFormBackingObjectValidator implements Validator {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		Date startDate = null;
 		Date endDate = null;
-		if(!StringUtils.isBlank(fbo.getStartDatePhrase())) {
+		if (!StringUtils.isBlank(fbo.getStartDatePhrase())) {
 			try {
 				startDate = dateFormat.parse(fbo.getStartDatePhrase());
 			} catch (ParseException e) {
 				errors.rejectValue("startDatePhrase", "field.parseexception", "Start date does not match expected format (mm/dd/yyyy).");
 			}
 		}
-		if(!StringUtils.isBlank(fbo.getEndDatePhrase())) {
+		if (!StringUtils.isBlank(fbo.getEndDatePhrase())) {
 			try {
 				endDate = dateFormat.parse(fbo.getEndDatePhrase());
 			} catch (ParseException e) {
@@ -113,8 +113,8 @@ public class BlockBuilderFormBackingObjectValidator implements Validator {
 			}
 		}
 
-		if(null != startDate && null != endDate) {
-			if(CommonDateOperations.approximateDifference(startDate, endDate) > 730) {
+		if (null != startDate && null != endDate) {
+			if (CommonDateOperations.approximateDifference(startDate, endDate) > 730) {
 				errors.rejectValue("endDatePhrase", "endDatePhrase.toofarout", "End date is more than 2 years after startDate; please scale back your end date.");
 			}
 		}
@@ -122,12 +122,12 @@ public class BlockBuilderFormBackingObjectValidator implements Validator {
 		boolean startTimePhraseValid = true;
 		boolean endTimePhraseValid = true;
 		Matcher startTimeMatcher = null;
-		if(!StringUtils.isBlank(fbo.getStartTimePhrase())) {
+		if (!StringUtils.isBlank(fbo.getStartTimePhrase())) {
 			startTimeMatcher = TIME_PATTERN.matcher(fbo.getStartTimePhrase());
-			if(!startTimeMatcher.matches()) {
+			if (!startTimeMatcher.matches()) {
 				errors.rejectValue("startTimePhrase", "field.timeparseexception", "Start time does not match expected format (hh:mm am|pm).");
 				startTimePhraseValid = false;
-			} else if(Integer.parseInt(startTimeMatcher.group(1)) > 12) {
+			} else if (Integer.parseInt(startTimeMatcher.group(1)) > 12) {
 				errors.rejectValue("startTimePhrase", "field.militarytime", "Start time should start with a number between 1 and 12; do not use military time.");
 				startTimePhraseValid = false;
 			}
@@ -135,12 +135,12 @@ public class BlockBuilderFormBackingObjectValidator implements Validator {
 			startTimePhraseValid = false;
 		}
 		Matcher endTimeMatcher = null;
-		if(!StringUtils.isBlank(fbo.getEndTimePhrase())) {
+		if (!StringUtils.isBlank(fbo.getEndTimePhrase())) {
 			endTimeMatcher = TIME_PATTERN.matcher(fbo.getEndTimePhrase());
-			if(!endTimeMatcher.matches()) {
+			if (!endTimeMatcher.matches()) {
 				errors.rejectValue("endTimePhrase", "field.timeparseexception", "End time does not match expected format (hh:mm am|pm).");
 				endTimePhraseValid = false;
-			} else if(Integer.parseInt(endTimeMatcher.group(1)) > 12) {
+			} else if (Integer.parseInt(endTimeMatcher.group(1)) > 12) {
 				errors.rejectValue("endTimePhrase", "field.militarytime", "End time should start with a number between 1 and 12; do not use military time.");
 				endTimePhraseValid = false;
 			}
@@ -148,32 +148,32 @@ public class BlockBuilderFormBackingObjectValidator implements Validator {
 			endTimePhraseValid = false;
 		}
 		// TODO validate difference between start and end time phrase (>= 15 minutes)not 
-		if(startTimePhraseValid && endTimePhraseValid) {
+		if (startTimePhraseValid && endTimePhraseValid) {
 			long minutesDifference = approximateMinutesDifference(startTimeMatcher, endTimeMatcher);
-			if(minutesDifference < 15) {
+			if (minutesDifference < 15) {
 				errors.rejectValue("endTimePhrase", "endTimePhrase.tooshort", "End time has to be at least 15 minutes later than the start time.");
 			}
 		}
 
-		if(fbo.getVisitorsPerAppointment() < 1) {
+		if (fbo.getVisitorsPerAppointment() < 1) {
 			errors.rejectValue("visitorsPerAppointment", "visitors.toosmall", "Visitors per appointment must be greater than or equal to 1.");
 		}
-		if(fbo.getVisitorsPerAppointment() > 99) {
+		if (fbo.getVisitorsPerAppointment() > 99) {
 			errors.rejectValue("visitorsPerAppointment", "visitors.toosmall", "Maximum allowed value for visitors per appointment is 99.");
 		}
 		
-		if(StringUtils.isBlank(fbo.getMeetingLocation())) {
+		if (StringUtils.isBlank(fbo.getMeetingLocation())) {
 			// forcibly set to null to guarantee proper storage
 			fbo.setMeetingLocation(null);
 		} else {
-			if(fbo.getMeetingLocation().length() > 100) {
+			if (fbo.getMeetingLocation().length() > 100) {
 				errors.rejectValue("location", "location.toolong", "Location field is too long (" + fbo.getMeetingLocation().length() + "); maximum length is 100 characters.");
 			}
 		}
-		if(!errors.hasErrors()) {
+		if (!errors.hasErrors()) {
 			// try to run the block builder and report any inputformatexceptions
 			try {
-				if(null != startDate && null != endDate) {
+				if (null != startDate && null != endDate) {
 					AvailableBlockBuilder.createBlocks(fbo.getStartTimePhrase(), 
 							fbo.getEndTimePhrase(),
 							fbo.getDaysOfWeekPhrase(),
@@ -211,7 +211,7 @@ public class BlockBuilderFormBackingObjectValidator implements Validator {
 		String hourString = m.group(1);
 		int hour = Integer.parseInt(hourString);
 		String ampm = m.group(3);
-		if(hour == 12 && AM.equalsIgnoreCase(ampm)) {
+		if (hour == 12 && AM.equalsIgnoreCase(ampm)) {
 			return 0;
 		} else if (hour != 12 && PM.equalsIgnoreCase(ampm)) {
 			return hour + 12;

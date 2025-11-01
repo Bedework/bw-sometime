@@ -22,15 +22,15 @@ package org.jasig.schedassist.impl.relationship;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jasig.schedassist.ICalendarAccountDao;
-import org.jasig.schedassist.RelationshipDao;
-import org.jasig.schedassist.impl.owner.OwnerDao;
-import org.jasig.schedassist.impl.visitor.NotAVisitorException;
-import org.jasig.schedassist.impl.visitor.VisitorDao;
-import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
-import org.jasig.schedassist.model.IScheduleVisitor;
-import org.jasig.schedassist.model.Relationship;
+import org.bedework.sometime.ICalendarAccountDao;
+import org.bedework.sometime.RelationshipDao;
+import org.bedework.sometime.impl.owner.OwnerDao;
+import org.bedework.sometime.impl.visitor.NotAVisitorException;
+import org.bedework.sometime.impl.visitor.VisitorDao;
+import org.bedework.sometime.model.ICalendarAccount;
+import org.bedework.sometime.model.ScheduleOwner;
+import org.bedework.sometime.model.IScheduleVisitor;
+import org.bedework.sometime.model.Relationship;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -100,10 +100,10 @@ public class CSVRelationshipDaoImpl implements RelationshipDao {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.RelationshipDao#forOwner(org.jasig.schedassist.model.IScheduleOwner)
+	 * @see org.jasig.schedassist.RelationshipDao#forOwner(org.jasig.schedassist.model.ScheduleOwner)
 	 */
 	@Override
-	public List<Relationship> forOwner(IScheduleOwner owner) {
+	public List<Relationship> forOwner(ScheduleOwner owner) {
 		String ownerId = getIdentifyingAttribute(owner.getCalendarAccount());
 		List<CSVRelationship> csvRecords = this.simpleJdbcTemplate.query(
 				"select * from csv_relationships where owner_id = ?",
@@ -113,7 +113,7 @@ public class CSVRelationshipDaoImpl implements RelationshipDao {
 
 		for(CSVRelationship record : csvRecords) {
 			ICalendarAccount visitorCalendarAccount = calendarAccountDao.getCalendarAccount(this.identifyingAttributeName, record.getVisitorIdentifier());
-			if(null == visitorCalendarAccount) {
+			if (null == visitorCalendarAccount) {
 				LOG.debug("no visitor calendarAccount found for " + record);
 				continue;
 			}
@@ -125,7 +125,7 @@ public class CSVRelationshipDaoImpl implements RelationshipDao {
 				relationship.setVisitor(visitor);
 				relationship.setDescription(record.getRelationshipDescription());
 				results.add(relationship);
-				if(LOG.isDebugEnabled()) {
+				if (LOG.isDebugEnabled()) {
 					LOG.debug("found relationship " + relationship);
 				}			
 			} catch (NotAVisitorException e) {
@@ -149,18 +149,18 @@ public class CSVRelationshipDaoImpl implements RelationshipDao {
 		List<Relationship> results = new ArrayList<Relationship>();
 		for(CSVRelationship record : csvRecords) {
 			ICalendarAccount ownerCalendarAccount = calendarAccountDao.getCalendarAccount(this.identifyingAttributeName, record.getOwnerIdentifier());
-			if(null == ownerCalendarAccount) {
+			if (null == ownerCalendarAccount) {
 				LOG.debug("no owner calendarAccount found for " + record);
 				continue;
 			}
-			IScheduleOwner owner = ownerDao.locateOwner(ownerCalendarAccount);
-			if(null != owner) {	
+			ScheduleOwner owner = ownerDao.locateOwner(ownerCalendarAccount);
+			if (null != owner) {
 				Relationship relationship = new Relationship();
 				relationship.setOwner(owner);
 				relationship.setVisitor(visitor);
 				relationship.setDescription(record.getRelationshipDescription());
 				results.add(relationship);
-				if(LOG.isDebugEnabled()) {
+				if (LOG.isDebugEnabled()) {
 					LOG.debug("found relationship " + relationship);
 				}
 			} else {
@@ -179,7 +179,7 @@ public class CSVRelationshipDaoImpl implements RelationshipDao {
 	 */
 	protected String getIdentifyingAttribute(ICalendarAccount account) {
 		final String ownerIdentifier = account.getAttributeValue(identifyingAttributeName);
-		if(StringUtils.isBlank(ownerIdentifier)) {
+		if (StringUtils.isBlank(ownerIdentifier)) {
 			LOG.error(identifyingAttributeName + " attribute not present for calendarAccount " + account + "; this scenario suggests either a problem with the account, or a deployment configuration problem. Please set the 'users.visibleIdentifierAttributeName' appropriately.");
 			throw new IllegalStateException(identifyingAttributeName + " attribute not present for calendarAccount " + account);
 		}

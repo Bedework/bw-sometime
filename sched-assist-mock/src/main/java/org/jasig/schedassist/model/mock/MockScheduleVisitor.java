@@ -19,8 +19,8 @@
 
 package org.jasig.schedassist.model.mock;
 
-import org.jasig.schedassist.model.AbstractScheduleVisitor;
-import org.jasig.schedassist.model.ICalendarAccount;
+import org.bedework.sometime.model.AbstractScheduleVisitor;
+import org.bedework.sometime.model.ICalendarAccount;
 
 /**
  * Mock {@link AbstractScheduleVisitor} implementation.

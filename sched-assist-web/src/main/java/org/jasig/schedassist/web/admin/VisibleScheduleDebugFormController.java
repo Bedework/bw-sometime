@@ -23,7 +23,7 @@ package org.jasig.schedassist.web.admin;
 import javax.validation.Valid;
 
 import org.jasig.schedassist.impl.visitor.NotAVisitorException;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.model.VisibleSchedule;
 import org.jasig.schedassist.web.visitor.OwnerNotFoundException;
@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 /**
  * Controller that displays the {@link VisibleSchedule} for a particular
- * {@link IScheduleOwner}.
+ * {@link ScheduleOwner}.
  *  
  * @author Nicholas Blair, nblair@doit.wisc.edu
  * @version $Id: VisibleScheduleDebugFormController.java 2978 2011-01-25 19:20:51Z npblair $
@@ -97,11 +97,11 @@ public class VisibleScheduleDebugFormController {
 			@RequestParam(value="weekStart", required=false, defaultValue="0") int weekStart,
 			final ModelMap model)  {
 		
-		if(bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors()) {
 			return "admin/debug-lookup-form";
 		}
 		
-		IScheduleOwner selectedOwner = command.getScheduleOwner();
+		ScheduleOwner selectedOwner = command.getScheduleOwner();
 		IScheduleVisitor visitor = command.getScheduleVisitor();
 		
 		// redirect to the right location

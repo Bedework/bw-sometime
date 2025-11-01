@@ -32,7 +32,7 @@ import org.jasig.schedassist.impl.visitor.VisitorDao;
 import org.jasig.schedassist.model.AffiliationImpl;
 import org.jasig.schedassist.model.ICalendarAccount;
 import org.jasig.schedassist.model.IDelegateCalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.PublicProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -146,15 +146,15 @@ public class AccountDetailsController {
 	@RequestMapping(method=RequestMethod.GET)
 	protected String showDetails(@RequestParam(value="id", required=false, defaultValue="") String uniqueId, final ModelMap model) {
 		model.addAttribute("id", uniqueId);
-		if(StringUtils.isNotBlank(uniqueId)) {
+		if (StringUtils.isNotBlank(uniqueId)) {
 			ICalendarAccount account = this.calendarAccountDao.getCalendarAccountFromUniqueId(uniqueId);
-			if(null != account) {
+			if (null != account) {
 				model.addAttribute("isDelegate", account instanceof IDelegateCalendarAccount);
 				model.addAttribute("calendarAccount", account);
 				model.addAttribute("isAdvisor", affiliationSource.doesAccountHaveAffiliation(account, AffiliationImpl.ADVISOR));
 				model.addAttribute("isInstructor", affiliationSource.doesAccountHaveAffiliation(account, AffiliationImpl.INSTRUCTOR));
 				model.addAttribute("calendarAccountAttributes", account.getAttributes().entrySet());
-				if(account instanceof HasDistinguishedName) {
+				if (account instanceof HasDistinguishedName) {
 					model.addAttribute("hasDistinguishedName", "true");
 				}
 				// try to look up visitor
@@ -165,13 +165,13 @@ public class AccountDetailsController {
 					// ignore
 				}
 				// try to look up scheduleowner
-				IScheduleOwner owner = this.ownerDao.locateOwner(account);
-				if(null != owner) {
+				ScheduleOwner owner = this.ownerDao.locateOwner(account);
+				if (null != owner) {
 					model.addAttribute("owner", owner);
 					model.addAttribute("ownerPreferences", owner.getPreferences().entrySet());
 					// if a scheduleowner, try to look up public profile
 					PublicProfile profile = this.publicProfileDao.locatePublicProfileByOwner(owner);
-					if(null != profile) {
+					if (null != profile) {
 						model.addAttribute("publicProfile", profile);
 					}
 				}
@@ -189,9 +189,9 @@ public class AccountDetailsController {
 	@RequestMapping(method=RequestMethod.GET, params="resource")
 	protected String showDetailsResource(@RequestParam(value="id", required=false, defaultValue="") String uniqueId, final ModelMap model) {
 		model.addAttribute("id", uniqueId);
-		if(StringUtils.isNotBlank(uniqueId)) {
+		if (StringUtils.isNotBlank(uniqueId)) {
 			IDelegateCalendarAccount account = this.delegateCalendarAccountDao.getDelegateByUniqueId(uniqueId);
-			if(null != account) {
+			if (null != account) {
 				model.addAttribute("isDelegate", true);
 				model.addAttribute("calendarAccount", account);
 				model.addAttribute("isAdvisor", affiliationSource.doesAccountHaveAffiliation(account, AffiliationImpl.ADVISOR));
@@ -206,13 +206,13 @@ public class AccountDetailsController {
 					// ignore
 				}
 				// try to look up scheduleowner
-				IScheduleOwner owner = this.ownerDao.locateOwner(account);
-				if(null != owner) {
+				ScheduleOwner owner = this.ownerDao.locateOwner(account);
+				if (null != owner) {
 					model.addAttribute("owner", owner);
 					model.addAttribute("ownerPreferences", owner.getPreferences().entrySet());
 					// if a scheduleowner, try to look up public profile
 					PublicProfile profile = this.publicProfileDao.locatePublicProfileByOwner(owner);
-					if(null != profile) {
+					if (null != profile) {
 						model.addAttribute("publicProfile", profile);
 					}
 				}

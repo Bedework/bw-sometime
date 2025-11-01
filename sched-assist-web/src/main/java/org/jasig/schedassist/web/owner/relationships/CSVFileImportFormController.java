@@ -40,7 +40,7 @@ import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.impl.visitor.NotAVisitorException;
 import org.jasig.schedassist.impl.visitor.VisitorDao;
 import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.model.Relationship;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
@@ -62,7 +62,7 @@ import org.springframework.web.multipart.MultipartFile;
 import au.com.bytecode.opencsv.CSVReader;
 
 /**
- * {@link Controller} that allows a {@link IScheduleOwner} to upload
+ * {@link Controller} that allows a {@link ScheduleOwner} to upload
  * a CSV file containing username-relationship pairs.
  * 
  * Instead of processing the file on submission, a {@link FileImportCallable} is created
@@ -191,7 +191,7 @@ public class CSVFileImportFormController implements DisposableBean {
 	@RequestMapping(method=RequestMethod.POST)
 	protected String uploadFile(final ModelMap model, @RequestParam("file") final MultipartFile file, final HttpServletRequest request) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		FileImportCallable callable = new FileImportCallable(file, calendarAccountDao, visitorDao, owner, mutableRelationshipDao, identifyingAttributeName);
 		Future<CSVFileImportResult> f = executorService.submit(callable);
 		request.getSession(true).setAttribute(IMPORT_FUTURE_NAME, f);
@@ -214,17 +214,17 @@ public class CSVFileImportFormController implements DisposableBean {
 	protected String showForm(final ModelMap model, final HttpServletRequest request, 
 			@RequestParam(value="dismiss",required=false,defaultValue="false") final boolean dismiss) throws InterruptedException, ExecutionException, NotRegisteredException {
 		//CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		//IScheduleOwner owner = currentUser.getScheduleOwner();
+		//ScheduleOwner owner = currentUser.getScheduleOwner();
 
 		HttpSession currentSession = request.getSession();
-		if(null != currentSession) {
-			if(dismiss) {
+		if (null != currentSession) {
+			if (dismiss) {
 				// remove the future from the session
 				currentSession.setAttribute(IMPORT_FUTURE_NAME, null);
 			}
 			Future<CSVFileImportResult> f = (Future<CSVFileImportResult>) currentSession.getAttribute(IMPORT_FUTURE_NAME);
-			if(null != f) {
-				if(f.isDone()) {
+			if (null != f) {
+				if (f.isDone()) {
 					CSVFileImportResult importResult = f.get();
 					model.addAttribute("processing", false);
 					model.addAttribute("importResult", importResult);
@@ -254,7 +254,7 @@ public class CSVFileImportFormController implements DisposableBean {
 		private MultipartFile file;
 		private ICalendarAccountDao calendarAccountDao;
 		private VisitorDao visitorDao;
-		private IScheduleOwner scheduleOwner;
+		private ScheduleOwner scheduleOwner;
 		private MutableRelationshipDao mutableRelationshipDao;
 		private final ModifyAdhocRelationshipFormBackingObjectValidator validator;
 		private final String identifyingAttributeName;
@@ -263,7 +263,7 @@ public class CSVFileImportFormController implements DisposableBean {
 		 * @param fileData
 		 */
 		public FileImportCallable(final MultipartFile file, final ICalendarAccountDao calendarAccountDao,
-				final VisitorDao visitorDao, final IScheduleOwner scheduleOwner, 
+				final VisitorDao visitorDao, final ScheduleOwner scheduleOwner, 
 				final MutableRelationshipDao mutableRelationshipDao, final String identifyingAttributeName) {
 			this.file = file;
 			this.visitorDao = visitorDao;
@@ -286,10 +286,10 @@ public class CSVFileImportFormController implements DisposableBean {
 
 				Errors errors = new DirectFieldBindingResult(fbo, "command");
 				validator.validate(fbo, errors);
-				if(errors.hasErrors()) {
+				if (errors.hasErrors()) {
 					for(Object o: errors.getAllErrors()) {
 						FieldError error = (FieldError) o;
-						if("visitor.notfound".equals(error.getCode())) {
+						if ("visitor.notfound".equals(error.getCode())) {
 							result.storeFailure(lineNumber, fbo.getVisitorUsername(), error.getDefaultMessage());
 						} else {
 							result.storeFailure(lineNumber, error.getDefaultMessage());
@@ -297,14 +297,14 @@ public class CSVFileImportFormController implements DisposableBean {
 					}
 				} else {
 					ICalendarAccount visitorUser = calendarAccountDao.getCalendarAccount(identifyingAttributeName, fbo.getVisitorUsername());
-					if(null == visitorUser) {
+					if (null == visitorUser) {
 						result.storeFailure(lineNumber, fbo.getVisitorUsername(), "Account not eligible for WiscCal");
 					}
 					try {
 						IScheduleVisitor visitor = visitorDao.toVisitor(visitorUser);
 
 						Relationship r = mutableRelationshipDao.createRelationship(scheduleOwner, visitor, fbo.getRelationship());
-						if(null != r) {
+						if (null != r) {
 							result.incrementSuccess();
 						}	
 					} catch (NotAVisitorException e) {
@@ -333,8 +333,8 @@ public class CSVFileImportFormController implements DisposableBean {
 			String [] tokens = lineReader.readNext();
 			int lineNumber = 1;
 			while(null != tokens) {
-				if(tokens.length == 2) {
-					if(usernames.contains(tokens[0])) {
+				if (tokens.length == 2) {
+					if (usernames.contains(tokens[0])) {
 						importResult.storeFailure(lineNumber, tokens[0], "Duplicate username found, using latest relationship description: " + tokens[1]);
 					} else {
 						usernames.add(tokens[0]);

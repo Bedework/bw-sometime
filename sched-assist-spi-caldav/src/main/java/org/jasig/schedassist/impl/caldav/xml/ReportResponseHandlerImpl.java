@@ -83,14 +83,14 @@ public class ReportResponseHandlerImpl {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 		try {
 			InputStream localReference = inputStream;
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				capturedContent = new ByteArrayOutputStream();
 				localReference = new TeeInputStream(inputStream, capturedContent);
 			}
 			BufferedInputStream buffered = new BufferedInputStream(localReference);
 			buffered.mark(1);
 			int firstbyte = buffered.read();
-			if(-1 == firstbyte) {
+			if (-1 == firstbyte) {
 				// short circuit on empty stream
 				return results;
 			}
@@ -103,16 +103,16 @@ public class ReportResponseHandlerImpl {
 				switch(eventType) {
 				case XMLStreamConstants.START_ELEMENT:
 					QName name= parser.getName();
-					if(isWebdavHrefElement(name)) {
+					if (isWebdavHrefElement(name)) {
 						currentUri = parser.getElementText();
 					} else if (isWebdavEtagElement(name)){
 						currentEtag = parser.getElementText();
-					} else if(isCalendarDataElement(name)) {
+					} else if (isCalendarDataElement(name)) {
 						Calendar cal = extractCalendar(parser.getElementText());
-						if(cal != null) {
+						if (cal != null) {
 							CalendarWithURI withUri = new CalendarWithURI(cal, currentUri, currentEtag);
 							results.add(withUri);
-						} else if(log.isDebugEnabled()) {
+						} else if (log.isDebugEnabled()) {
 							log.debug("extractCalendar returned null for " + currentUri + ", skipping");
 						}
 					}
@@ -120,12 +120,12 @@ public class ReportResponseHandlerImpl {
 				}
 			}
 			
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				log.debug("extracted " + results.size() + " calendar from " + capturedContent.toString());
 			}
 			
 		} catch (XMLStreamException e) {
-			if(capturedContent != null) {
+			if (capturedContent != null) {
 				log.error("caught XMLStreamException in extractCalendars, captured content: " + capturedContent.toString(), e);
 			} else {
 				log.error("caught XMLStreamException in extractCalendars, no captured content available", e);
@@ -144,7 +144,7 @@ public class ReportResponseHandlerImpl {
 	 * @return true if the argument is a WebDAV 'getetag' element
 	 */
 	protected boolean isWebdavEtagElement(QName qname) {
-		if(qname == null) {
+		if (qname == null) {
 			return false;
 		} else {
 			return WEBDAV_NS.equals(qname.getNamespaceURI()) && ETAG.equals(qname.getLocalPart());
@@ -156,7 +156,7 @@ public class ReportResponseHandlerImpl {
 	 * @return true if the argument is a WebDAV 'href' element
 	 */
 	protected boolean isWebdavHrefElement(QName qname) {
-		if(qname == null) {
+		if (qname == null) {
 			return false;
 		} else {
 			return WEBDAV_NS.equals(qname.getNamespaceURI()) && HREF.equals(qname.getLocalPart());
@@ -168,7 +168,7 @@ public class ReportResponseHandlerImpl {
 	 * @return true if the argument is a CalDAV 'calendar-data' element
 	 */
 	protected boolean isCalendarDataElement(QName qname) {
-		if(qname == null) {
+		if (qname == null) {
 			return false;
 		} else {
 			return CALDAV_NS.equals(qname.getNamespaceURI()) && CALENDAR_DATA.equals(qname.getLocalPart());

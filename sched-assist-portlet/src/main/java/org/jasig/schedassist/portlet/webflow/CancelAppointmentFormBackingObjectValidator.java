@@ -43,7 +43,7 @@ public class CancelAppointmentFormBackingObjectValidator {
 	 */
 	public void validateShowCancelForm(CancelAppointmentFormBackingObject fbo, ValidationContext context) {
 		 MessageContext messages = context.getMessageContext();
-		 if(!fbo.isConfirmCancel()) {
+		 if (!fbo.isConfirmCancel()) {
 			 messages.addMessage(new MessageBuilder().error().source("confirmCancel").
 		                defaultText("Please check the box to confirm your intent to cancel this appointment.").build());
 		 }

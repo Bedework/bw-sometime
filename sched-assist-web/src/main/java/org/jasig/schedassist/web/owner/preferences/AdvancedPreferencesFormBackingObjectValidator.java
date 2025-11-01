@@ -45,14 +45,14 @@ public class AdvancedPreferencesFormBackingObjectValidator implements Validator 
 	 */
 	public void validate(Object target, Errors errors) {
 		AdvancedPreferencesFormBackingObject fbo = (AdvancedPreferencesFormBackingObject) target;
-		if(fbo.isCreatePublicProfile()) {
-			if(StringUtils.isBlank(fbo.getPublicProfileDescription())) {
+		if (fbo.isCreatePublicProfile()) {
+			if (StringUtils.isBlank(fbo.getPublicProfileDescription())) {
 				errors.rejectValue("publicProfileDescription", "publicProfileDescription.empty", "Description field is required if creating a public profile.");
-			} else if(fbo.getPublicProfileDescription().length() > 400) {
+			} else if (fbo.getPublicProfileDescription().length() > 400) {
 				errors.rejectValue("publicProfileDescription", "publicProfileDescription.length", "Description field must be 400 characters or less.");
 			}
 			
-			if(fbo.getPublicProfileTags().length() > 80) {
+			if (fbo.getPublicProfileTags().length() > 80) {
 				errors.rejectValue("publicProfileTags", "public.profile.tags.toolong", "Proposed tags content is too large, please keep to 80 characters or less. Use the description field for more elaborate content.");
 			}
 		}

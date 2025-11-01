@@ -29,7 +29,7 @@ import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.impl.visitor.NotAVisitorException;
 import org.jasig.schedassist.impl.visitor.VisitorDao;
 import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 /**
- * Form controller that invokes {@link MutableRelationshipDao#createRelationship(IScheduleOwner, IScheduleVisitor, String)}.
+ * Form controller that invokes {@link MutableRelationshipDao#createRelationship(ScheduleOwner, IScheduleVisitor, String)}.
  *  
  * @author Nicholas Blair, nblair@doit.wisc.edu
  * @version $Id: CreateAdhocRelationshipFormController.java 2049 2010-04-30 16:01:10Z npblair $
@@ -132,7 +132,7 @@ public class CreateAdhocRelationshipFormController {
 	@RequestMapping(method=RequestMethod.GET)
 	protected String setupForm(@RequestParam(value="noscript",required=false,defaultValue="false") boolean noscript, final ModelMap model) {
 		model.addAttribute("command", new ModifyAdhocRelationshipFormBackingObject());
-		if(noscript) {
+		if (noscript) {
 			return "owner-relationships/create-adhoc-relationship-form-noscript";
 		} else {
 			return "owner-relationships/create-adhoc-relationship-form";
@@ -148,13 +148,13 @@ public class CreateAdhocRelationshipFormController {
 	 */
 	@RequestMapping(method=RequestMethod.POST)
 	protected String createRelationship(@Valid @ModelAttribute("command") ModifyAdhocRelationshipFormBackingObject fbo, BindingResult bindResult, final ModelMap model) throws CalendarAccountNotFoundException, NotAVisitorException, NotRegisteredException {
-		if(bindResult.hasErrors()) {
+		if (bindResult.hasErrors()) {
 			return "owner-relationships/create-adhoc-relationship-form";
 		}
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		ICalendarAccount visitorUser = calendarAccountDao.getCalendarAccount(this.identifyingAttributeName, fbo.getVisitorUsername());
-		if(null == visitorUser) {
+		if (null == visitorUser) {
 			throw new CalendarAccountNotFoundException(fbo.getVisitorUsername() + " does not exist or is not eligible for WiscCal");
 		}
 		IScheduleVisitor visitor = visitorDao.toVisitor(visitorUser);

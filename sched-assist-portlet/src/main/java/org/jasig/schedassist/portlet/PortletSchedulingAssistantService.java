@@ -28,7 +28,7 @@ import org.jasig.schedassist.RelationshipDao;
 import org.jasig.schedassist.SchedulingAssistantService;
 import org.jasig.schedassist.SchedulingException;
 import org.jasig.schedassist.model.AvailableBlock;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.Relationship;
 import org.jasig.schedassist.model.VisibleSchedule;
 
@@ -51,7 +51,7 @@ public interface PortletSchedulingAssistantService {
 	boolean isEligible(String visitorUsername);
 	/**
 	 * 
-	 * @see SchedulingAssistantService#cancelAppointment(org.jasig.schedassist.model.IScheduleVisitor, IScheduleOwner, VEvent, AvailableBlock, String)
+	 * @see SchedulingAssistantService#cancelAppointment(org.jasig.schedassist.model.IScheduleVisitor, ScheduleOwner, VEvent, AvailableBlock, String)
 	 * @param visitorUsername
 	 * @param ownerId
 	 * @param block
@@ -64,7 +64,7 @@ public interface PortletSchedulingAssistantService {
 
 	/**
 	 * 
-	 * @see SchedulingAssistantService#getVisibleSchedule(org.jasig.schedassist.model.IScheduleVisitor, IScheduleOwner)
+	 * @see SchedulingAssistantService#getVisibleSchedule(org.jasig.schedassist.model.IScheduleVisitor, ScheduleOwner)
 	 * @param visitorUsername
 	 * @param ownerId
 	 * @return
@@ -74,7 +74,7 @@ public interface PortletSchedulingAssistantService {
 
 	/**
 	 * 
-	 * @see SchedulingAssistantService#getVisibleSchedule(org.jasig.schedassist.model.IScheduleVisitor, IScheduleOwner, Date, Date)
+	 * @see SchedulingAssistantService#getVisibleSchedule(org.jasig.schedassist.model.IScheduleVisitor, ScheduleOwner, Date, Date)
 	 * @param visitorUsername
 	 * @param ownerId
 	 * @return
@@ -84,7 +84,7 @@ public interface PortletSchedulingAssistantService {
 	
 	/**
 	 * 
-	 * @see SchedulingAssistantService#calculateVisitorConflicts(org.jasig.schedassist.model.IScheduleVisitor, IScheduleOwner, Date, Date)
+	 * @see SchedulingAssistantService#calculateVisitorConflicts(org.jasig.schedassist.model.IScheduleVisitor, ScheduleOwner, Date, Date)
 	 * @param visitorUsername
 	 * @param ownerId
 	 * @param weekStart
@@ -93,25 +93,25 @@ public interface PortletSchedulingAssistantService {
 	List<AvailableBlock> calculateVisitorConflicts(String visitorUsername, long ownerId, int weekStart);
 	/**
 	 * 
-	 * @see AvailableScheduleDao#retrieveTargetBlock(IScheduleOwner, Date)
+	 * @see AvailableScheduleDao#retrieveTargetBlock(ScheduleOwner, Date)
 	 * @param owner
 	 * @param startTime
 	 * @return
 	 */
-	AvailableBlock getTargetBlock(IScheduleOwner owner, Date startTime);
+	AvailableBlock getTargetBlock(ScheduleOwner owner, Date startTime);
 	
 	/**
 	 * 
-	 * @see AvailableScheduleDao#retrieveTargetDoubleLengthBlock(IScheduleOwner, Date)
+	 * @see AvailableScheduleDao#retrieveTargetDoubleLengthBlock(ScheduleOwner, Date)
 	 * @param owner
 	 * @param startTime
 	 * @return
 	 */
-	AvailableBlock getTargetDoubleLengthBlock(IScheduleOwner owner, Date startTime);
+	AvailableBlock getTargetDoubleLengthBlock(ScheduleOwner owner, Date startTime);
 	
 	/**
 	 * 
-	 * @see SchedulingAssistantService#scheduleAppointment(org.jasig.schedassist.model.IScheduleVisitor, IScheduleOwner, AvailableBlock, String)
+	 * @see SchedulingAssistantService#scheduleAppointment(org.jasig.schedassist.model.IScheduleVisitor, ScheduleOwner, AvailableBlock, String)
 	 * @param visitorUsername
 	 * @param ownerId
 	 * @param block

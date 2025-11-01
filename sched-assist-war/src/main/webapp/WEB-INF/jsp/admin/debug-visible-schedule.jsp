@@ -73,7 +73,7 @@ border:0;
 <rs:resourceURL var="tickPng" value="/rs/famfamfam/silk/1.3/tick.png"/>
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	if(!${ownerVisitorSamePerson} && ${visibleSchedule.size} != 0) {
+	if (!${ownerVisitorSamePerson} && ${visibleSchedule.size} != 0) {
 	
 	showChangeInProgress("#helptext", '<spring:message code="checking.for.conflicts.debug" arguments="${visitor.calendarAccount.username}"/>');
 	jQuery.getJSON('${conflictsUrl}',
@@ -82,14 +82,14 @@ jQuery(document).ready(function() {
 			$('#helptext').append('<spring:message code="complete"/>&nbsp;');
 			$('<img src="${tickPng}" alt=""/>').appendTo($('#helptext'));
 			var hasConflicts = false;
-			if(data.visitorCalendarData) {
+			if (data.visitorCalendarData) {
 				$('#visitorCalendarData').val(data.visitorCalendarData);
 			}
-			if(data.conflicts) {
+			if (data.conflicts) {
 				$('#visitorConflictsJson').val(data.conflicts);
 				jQuery.each(data.conflicts, function(i,conflict) {
 					elem = $('#' + conflict);
-					if(elem.hasClass('free')) {
+					if (elem.hasClass('free')) {
 						elem.removeClass('free');
 						elem.addClass('conflict');
 						elem.attr('title', '<spring:message code="conflict.help"/>');
@@ -99,7 +99,7 @@ jQuery(document).ready(function() {
 					}
 				});
 			} 
-			if(hasConflicts) {
+			if (hasConflicts) {
 				window.setTimeout(function() {
 					showChangeError('#helptext', '<spring:message code="conflict.block.description"/>');
 				}, 1500);

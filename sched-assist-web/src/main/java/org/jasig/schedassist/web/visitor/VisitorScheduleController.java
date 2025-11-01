@@ -28,7 +28,7 @@ import org.jasig.schedassist.impl.owner.PublicProfileDao;
 import org.jasig.schedassist.impl.visitor.NotAVisitorException;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.CommonDateOperations;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.model.PublicProfile;
 import org.jasig.schedassist.model.Relationship;
@@ -135,7 +135,7 @@ public class VisitorScheduleController {
 		CalendarAccountUserDetailsImpl currentUser = (CalendarAccountUserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		IScheduleVisitor visitor = currentUser.getScheduleVisitor();
 		
-		IScheduleOwner owner = locateOwnerFromIdentifier(ownerIdentifier, visitor);
+		ScheduleOwner owner = locateOwnerFromIdentifier(ownerIdentifier, visitor);
 		VisibleScheduleRequestConstraints requestConstraints = VisibleScheduleRequestConstraints.newInstance(owner, weekStart);
 		
 		List<AvailableBlock> visitorConflicts = this.schedulingAssistantService.calculateVisitorConflicts(visitor, 
@@ -157,19 +157,19 @@ public class VisitorScheduleController {
 	 * @return
 	 * @throws OwnerNotFoundException
 	 */
-	private IScheduleOwner locateOwnerFromIdentifier(final String ownerIdentifier, final IScheduleVisitor visitor) throws OwnerNotFoundException {
-		IScheduleOwner selectedOwner = null;
-		if(StringUtils.isNumeric(ownerIdentifier)) {
+	private ScheduleOwner locateOwnerFromIdentifier(final String ownerIdentifier, final IScheduleVisitor visitor) throws OwnerNotFoundException {
+		ScheduleOwner selectedOwner = null;
+		if (StringUtils.isNumeric(ownerIdentifier)) {
 			Long ownerId = Long.parseLong(ownerIdentifier);
 			selectedOwner = findOwnerForVisitor(visitor, ownerId);
 		} else {
 			PublicProfile profile = publicProfileDao.locatePublicProfileByKey(ownerIdentifier);
-			if(null != profile) {
+			if (null != profile) {
 				selectedOwner = ownerDao.locateOwnerByAvailableId(profile.getOwnerId());
 			}
 		}
 
-		if(null == selectedOwner) {
+		if (null == selectedOwner) {
 			throw new OwnerNotFoundException("no owner found for " + ownerIdentifier);
 		}
 
@@ -182,10 +182,10 @@ public class VisitorScheduleController {
 	 * @return
 	 * @throws OwnerNotFoundException
 	 */
-	private IScheduleOwner findOwnerForVisitor(IScheduleVisitor visitor, long ownerId) throws OwnerNotFoundException {
+	private ScheduleOwner findOwnerForVisitor(IScheduleVisitor visitor, long ownerId) throws OwnerNotFoundException {
 		List<Relationship> relationships = relationshipDao.forVisitor(visitor);
 		for(Relationship potential : relationships) {
-			if(potential.getOwner().getId() == ownerId) {
+			if (potential.getOwner().getId() == ownerId) {
 				return potential.getOwner();
 			}
 		}

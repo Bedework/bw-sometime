@@ -30,7 +30,7 @@ import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableBlockBuilder;
 import org.jasig.schedassist.model.AvailableSchedule;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.InputFormatException;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * {@link Controller} implementation that allows {@link IScheduleOwner}s
+ * {@link Controller} implementation that allows {@link ScheduleOwner}s
  * to remove a single {@link AvailableBlock} from their {@link AvailableSchedule}.
  * 
  * @author Nicholas Blair, nblair@doit.wisc.edu
@@ -102,10 +102,10 @@ public class RemoveAvailableBlockFormController {
 	protected String removeAvailableBlock(@Valid @ModelAttribute("command") AvailableBlockFormBackingObject fbo, BindingResult bindingResult, 
 			final ModelMap model) throws NotRegisteredException, InputFormatException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		
-		if(bindingResult.hasErrors()) {
-			if(fbo.isInteractive()) {
+		if (bindingResult.hasErrors()) {
+			if (fbo.isInteractive()) {
 				return "owner-schedule/remove-form";
 			} else {
 				model.addAttribute("reason", "An unexpected error occurred; refresh the page and try again.");
@@ -114,7 +114,7 @@ public class RemoveAvailableBlockFormController {
 		}
 		
 		AvailableBlock block = AvailableBlockBuilder.createSmallestAllowedBlock(fbo.getStartTimePhrase());
-		if(null != fbo.getEndTimePhrase() && !"".equals(fbo.getEndTimePhrase())) {
+		if (null != fbo.getEndTimePhrase() && !"".equals(fbo.getEndTimePhrase())) {
 			block = AvailableBlockBuilder.createBlock(fbo.getStartTimePhrase(), fbo.getEndTimePhrase());
 		}
 		availableScheduleDao.removeFromSchedule(owner, block);
@@ -124,7 +124,7 @@ public class RemoveAvailableBlockFormController {
 		model.addAttribute("blockId", formatBlockId(block.getStartTime()));
 		model.addAttribute("visitorLimit", block.getVisitorLimit());
 		
-		if(fbo.isInteractive()) {
+		if (fbo.isInteractive()) {
 			return "owner-schedule/remove-block-success";
 		} else {
 			return "jsonView";

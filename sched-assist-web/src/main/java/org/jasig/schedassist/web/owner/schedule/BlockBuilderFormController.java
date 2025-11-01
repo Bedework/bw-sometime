@@ -30,7 +30,7 @@ import org.jasig.schedassist.impl.owner.AvailableScheduleDao;
 import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableBlockBuilder;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.InputFormatException;
 import org.jasig.schedassist.model.Preferences;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
@@ -86,7 +86,7 @@ public class BlockBuilderFormController {
 	@RequestMapping(method=RequestMethod.GET)
 	protected String setupForm(final ModelMap model) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		int defaultVisitorLimit = Integer.parseInt(owner.getPreference(Preferences.DEFAULT_VISITOR_LIMIT));
 		BlockBuilderFormBackingObject fbo = new BlockBuilderFormBackingObject();
 		fbo.setVisitorsPerAppointment(defaultVisitorLimit);
@@ -106,14 +106,14 @@ public class BlockBuilderFormController {
 	@RequestMapping(method=RequestMethod.POST)
 	protected String updateSchedule(@Valid @ModelAttribute("command") BlockBuilderFormBackingObject fbo, BindingResult bindingResult) throws InputFormatException, ParseException, NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		
-		if(bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors()) {
 			return "owner-schedule/builder-form";
 		}
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		String meetingLocation = owner.getPreferredLocation();
-		if(meetingLocation.equals(fbo.getMeetingLocation())) {
+		if (meetingLocation.equals(fbo.getMeetingLocation())) {
 			meetingLocation = null;
 		}
 		Set<AvailableBlock> blocks = AvailableBlockBuilder.createBlocks(fbo.getStartTimePhrase(), 

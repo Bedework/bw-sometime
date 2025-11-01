@@ -13,7 +13,7 @@ jQuery.fn.lockSubmit = function(options) {
 	}, options);
 
 	//add CSS to this button
-	if(settings.onAddCSS) {	this.addClass(settings.onAddCSS); }
+	if (settings.onAddCSS) {	this.addClass(settings.onAddCSS); }
 
 	return this.click(function(e) {		
 
@@ -24,13 +24,13 @@ jQuery.fn.lockSubmit = function(options) {
 		targetselect.hide();
 		
 		//new buttons value
-		if(settings.submitText) { var newValue = settings.submitText; } else { var newValue = jQuery(this).val(); }
+		if (settings.submitText) { var newValue = settings.submitText; } else { var newValue = jQuery(this).val(); }
 
 		//insert hidden field with name and value of submit
 		targetselect.after("<input id='dummySubmit' disabled='disabled' type='submit' name='"+jQuery(this).attr("name")+"DUMMY' value='"+newValue+"'>");
 
 		//add onClick CSS
-		if(settings.onClickCSS) {
+		if (settings.onClickCSS) {
 			jQuery("#dummySubmit").addClass(settings.onClickCSS);
 		}
 

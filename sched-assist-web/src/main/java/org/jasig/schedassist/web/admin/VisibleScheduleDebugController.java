@@ -33,7 +33,7 @@ import org.jasig.schedassist.impl.visitor.VisitorDao;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.CommonDateOperations;
 import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.model.Preferences;
 import org.jasig.schedassist.model.VisibleSchedule;
@@ -54,7 +54,7 @@ import java.util.List;
 
 /**
  * Controller that displays the {@link VisibleSchedule} for a particular
- * {@link IScheduleOwner}.
+ * {@link ScheduleOwner}.
  *  
  * @author Nicholas Blair, nblair@doit.wisc.edu
  * @version $Id: VisibleScheduleDebugController.java 2978 2011-01-25 19:20:51Z npblair $
@@ -151,17 +151,17 @@ public class VisibleScheduleDebugController {
 			ModelMap model) throws NotAVisitorException, CalendarAccountNotFoundException {
 		
 		ICalendarAccount visitorAccount = this.calendarAccountDao.getCalendarAccount(visitorUsername);
-		if(visitorAccount == null) {
+		if (visitorAccount == null) {
 			throw new NotAVisitorException(visitorUsername + " not found");
 		}
 		IScheduleVisitor visitor = this.visitorDao.toVisitor(visitorAccount);
 		model.addAttribute("visitor", visitor);
-		IScheduleOwner selectedOwner = ownerDao.locateOwnerByAvailableId(ownerIdentifier);
-		if(selectedOwner == null) {
+		ScheduleOwner selectedOwner = ownerDao.locateOwnerByAvailableId(ownerIdentifier);
+		if (selectedOwner == null) {
 			throw new CalendarAccountNotFoundException("no owner found for id " + ownerIdentifier);
 		}
 		VisibleScheduleRequestConstraints requestConstraints = VisibleScheduleRequestConstraints.newInstance(selectedOwner, weekStart);
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("displaySchedule request, visitor: " + visitor + "; weekStart: " + weekStart + "requestConstraints " + requestConstraints);
 		}
 		
@@ -173,11 +173,11 @@ public class VisibleScheduleDebugController {
 		
 		VisibleSchedule schedule;
 
-		if(selectedOwner.hasMeetingLimit()) {
+		if (selectedOwner.hasMeetingLimit()) {
 			// we have to look at the whole visible schedule for attendings
 			schedule = schedulingAssistantService.getVisibleSchedule(
 					visitor, selectedOwner);
-			if(selectedOwner.isExceedingMeetingLimit(schedule.getAttendingCount())) {	
+			if (selectedOwner.isExceedingMeetingLimit(schedule.getAttendingCount())) {
 				// return attending only view
 				List<AvailableBlock> attendingList = schedule.getAttendingList();
 				model.addAttribute("attendingList", attendingList);
@@ -219,13 +219,13 @@ public class VisibleScheduleDebugController {
 			final ModelMap model) throws NotAVisitorException, CalendarAccountNotFoundException {
 		
 		ICalendarAccount visitorAccount = this.calendarAccountDao.getCalendarAccount(visitorUsername);
-		if(visitorAccount == null) {
+		if (visitorAccount == null) {
 			throw new NotAVisitorException(visitorUsername + " not found");
 		}
 		IScheduleVisitor visitor = this.visitorDao.toVisitor(visitorAccount);
 	
-		IScheduleOwner owner = ownerDao.locateOwnerByAvailableId(ownerIdentifier);
-		if(owner == null) {
+		ScheduleOwner owner = ownerDao.locateOwnerByAvailableId(ownerIdentifier);
+		if (owner == null) {
 			throw new CalendarAccountNotFoundException("no owner found for id " + ownerIdentifier);
 		}
 		VisibleScheduleRequestConstraints requestConstraints = VisibleScheduleRequestConstraints.newInstance(owner, weekStart);

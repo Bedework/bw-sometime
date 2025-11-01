@@ -22,9 +22,9 @@ package org.jasig.schedassist.model.mock;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jasig.schedassist.model.AbstractScheduleOwner;
-import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.Preferences;
+import org.bedework.sometime.model.AbstractScheduleOwner;
+import org.bedework.sometime.model.ICalendarAccount;
+import org.bedework.sometime.model.Preferences;
 
 /**
  * Mock {@link AbstractScheduleOwner} implementation.

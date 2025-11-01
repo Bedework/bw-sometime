@@ -110,7 +110,7 @@ public class CreateAppointmentFormBackingObject implements Serializable {
 	public List<Integer> getMeetingDurationsAsList() {
 		List<Integer> result = new ArrayList<Integer>();
 		result.add(meetingDurations.getMinLength());
-		if(meetingDurations.isDoubleLength()) {
+		if (meetingDurations.isDoubleLength()) {
 			result.add(meetingDurations.getMaxLength());
 		}
 		return result;
@@ -120,7 +120,7 @@ public class CreateAppointmentFormBackingObject implements Serializable {
 	 * @return the selectedDuration
 	 */
 	public int getSelectedDuration() {
-		if(!meetingDurations.isDoubleLength()) {
+		if (!meetingDurations.isDoubleLength()) {
 			// if meetingDurations doesn't provide doubling option, just return one of it's identical values
 			return meetingDurations.getMinLength();
 		}

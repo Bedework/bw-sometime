@@ -64,8 +64,8 @@ public abstract class WebServicesDaoSupport {
 		}  catch (SoapFaultClientException e) {
 			LOG.debug("caught exception in doSendAndReceive on " + request, e);
 			final String faultString = e.getFaultStringOrReason();
-			if(faultString != null) {
-				if(faultString.contains(INELIGIBLE_MESSAGE)) {
+			if (faultString != null) {
+				if (faultString.contains(INELIGIBLE_MESSAGE)) {
 					throw new IneligibleForServiceException(e);
 				} else if (faultString.contains(SERVICE_UNAVAILABLE_MESSAGE)){
 					LOG.warn("exception faultString translates to ServiceUnavailableExcpetion for " + request, e);

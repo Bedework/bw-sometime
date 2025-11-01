@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jasig.schedassist.model.AbstractCalendarAccount;
+import org.bedework.sometime.model.AbstractCalendarAccount;
 
 /**
  * Mock {@link AbstractCalendarAccount} implementation.

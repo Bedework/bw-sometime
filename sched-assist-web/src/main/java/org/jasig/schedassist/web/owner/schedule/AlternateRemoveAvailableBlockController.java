@@ -26,7 +26,7 @@ import org.jasig.schedassist.impl.owner.AvailableScheduleDao;
 import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableBlockBuilder;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.InputFormatException;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +77,7 @@ public class AlternateRemoveAvailableBlockController {
 	@RequestMapping(method=RequestMethod.GET)
 	public ModelAndView removeBlock(@RequestParam(value="startTime", required=true) String startTimePhrase, @RequestParam(value="endTime", required=true) String endTimePhrase) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		
 		try {
 			AvailableBlock block = AvailableBlockBuilder.createBlock(startTimePhrase, endTimePhrase);

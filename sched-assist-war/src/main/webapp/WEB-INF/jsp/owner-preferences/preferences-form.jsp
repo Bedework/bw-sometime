@@ -55,13 +55,13 @@ $(document).ready(function(){
 	});
 	
 	var originalMeetingLimitValue = $('.meetingLimitValue').val();
-	if($('.enableMeetingLimit').is(':checked')) {
+	if ($('.enableMeetingLimit').is(':checked')) {
 		displayMeetingLimit();
 	} else {
 		hideMeetingLimit();
 	}
 	$('.enableMeetingLimit').change(function() {
-		if($(this).is(':checked')) {
+		if ($(this).is(':checked')) {
 			displayMeetingLimit();
 		} else {
 			hideMeetingLimit();
@@ -73,7 +73,7 @@ $(document).ready(function(){
 		$('.meetingLimitValue').attr('disabled', 'disabled');
 	}
 	function displayMeetingLimit() {
-		if(originalMeetingLimitValue == -1) {
+		if (originalMeetingLimitValue == -1) {
 			$('.meetingLimitValue').val(1);
 		} else {
 			$('.meetingLimitValue').val(originalMeetingLimitValue);
@@ -82,13 +82,13 @@ $(document).ready(function(){
 		$('.meetingLimitValueField').show();
 	}
 
-	if($('.enableEmailReminders').is(':checked')) {
+	if ($('.enableEmailReminders').is(':checked')) {
         displayEmailReminders();
     } else {
         hideEmailReminders();
     }
     $('.enableEmailReminders').change(function() {
-        if($(this).is(':checked')) {
+        if ($(this).is(':checked')) {
             displayEmailReminders();
         } else {
             hideEmailReminders();

@@ -26,7 +26,7 @@ import org.jasig.schedassist.impl.owner.AvailableScheduleDao;
 import org.jasig.schedassist.impl.owner.OwnerDao;
 import org.jasig.schedassist.model.AvailableSchedule;
 import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -113,17 +113,17 @@ public class AvailableScheduleReflectionServiceController {
 	
 	@RequestMapping(method=RequestMethod.POST, params="action=reflect")
 	protected String reflectAvailableSchedule(@ModelAttribute("command") ScheduleOwnerFormBackingObject command) {
-		IScheduleOwner owner = null;
-		if(command.getOwnerId() != null) {
+		ScheduleOwner owner = null;
+		if (command.getOwnerId() != null) {
 			owner = this.ownerDao.locateOwnerByAvailableId(command.getOwnerId());
 		} else {
 			ICalendarAccount account = this.calendarAccountDao.getCalendarAccount(command.getUsername());
-			if(account != null) {
+			if (account != null) {
 				owner = this.ownerDao.locateOwner(account);
 			}
 		}
 		
-		if(owner == null) {
+		if (owner == null) {
 			return "owner-not-found";
 		}
 		
@@ -134,22 +134,22 @@ public class AvailableScheduleReflectionServiceController {
 	
 	@RequestMapping(method=RequestMethod.POST, params="action=purge")
 	protected String purgeReflections(ScheduleOwnerFormBackingObject command) {
-		IScheduleOwner owner = null;
-		if(command.getOwnerId() != null) {
+		ScheduleOwner owner = null;
+		if (command.getOwnerId() != null) {
 			owner = this.ownerDao.locateOwnerByAvailableId(command.getOwnerId());
 		} else {
 			ICalendarAccount account = this.calendarAccountDao.getCalendarAccount(command.getUsername());
-			if(account != null) {
+			if (account != null) {
 				owner = this.ownerDao.locateOwner(account);
 			}
 		}
 		
-		if(owner == null) {
+		if (owner == null) {
 			return "admin/owner-not-found";
 		}
 		
 		AvailableSchedule schedule = availableScheduleDao.retrieve(owner);
-		if(!schedule.isEmpty()) {
+		if (!schedule.isEmpty()) {
 			this.reflectionService.purgeReflections(owner, schedule.getScheduleStartTime(), schedule.getScheduleEndTime());
 		}
 		

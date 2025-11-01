@@ -71,11 +71,11 @@ $(document).ready(function(){
 	$('#loginline').append('<a class="noscriptlink" href="create-adhoc-relationship.html?noscript=true"><spring:message code="trouble.viewing.this.page"/></a>');
 	$(':submit').lockSubmit();
 	$('#selectedUser').hide();
-	if($('#visitorUsername').val() != '' && $('#userSearchText').val() != '') {
+	if ($('#visitorUsername').val() != '' && $('#userSearchText').val() != '') {
 		highlightSelectedUser($('#visitorUsername').val(), $('#userSearchText').val());
 	}
 	$('#userSearchText').change(function() {
-		if($('#userSearchText').val() != $('#acceptedFullName').text()) {
+		if ($('#userSearchText').val() != $('#acceptedFullName').text()) {
 			$('#submit').attr('disabled', 'disabled');
 			$('#selectedUser').hide();
 			$('#acceptedFullName').text('');

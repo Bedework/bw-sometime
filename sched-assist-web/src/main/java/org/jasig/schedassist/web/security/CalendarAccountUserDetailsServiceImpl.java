@@ -31,7 +31,7 @@ import org.jasig.schedassist.impl.owner.OwnerDao;
 import org.jasig.schedassist.impl.visitor.NotAVisitorException;
 import org.jasig.schedassist.impl.visitor.VisitorDao;
 import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -141,12 +141,12 @@ public class CalendarAccountUserDetailsServiceImpl implements
 	 */
 	public final UserDetails loadUserByUsername(final String username)
 			throws UsernameNotFoundException, DataAccessException {
-		if(NONE_PROVIDED.equals(username)) {
+		if (NONE_PROVIDED.equals(username)) {
 			LOG.debug("caught NONE_PROVIDED being passed into loadUserByUsername");
 			throw new UsernameNotFoundException(NONE_PROVIDED);
 		}
 		ICalendarAccount calendarAccount = calendarAccountDao.getCalendarAccount(this.identifyingAttributeName, username);
-		if(null == calendarAccount) {
+		if (null == calendarAccount) {
 			throw new UsernameNotFoundException("no calendar account found for " + username);
 		}
 		CalendarAccountUserDetailsImpl result = new CalendarAccountUserDetailsImpl(calendarAccount);
@@ -154,7 +154,7 @@ public class CalendarAccountUserDetailsServiceImpl implements
 		checkForVisitorAndOwner(result);
 		
 		final String id = calendarAccount.getAttributeValue(this.activeDisplayNameAttribute);
-		if(this.administrators.contains(id)) {
+		if (this.administrators.contains(id)) {
 			result.setAdministrator(true);
 		}
 		return result;
@@ -162,7 +162,7 @@ public class CalendarAccountUserDetailsServiceImpl implements
 
 	/**
 	 * Mutate the {@link CalendarAccountUserDetailsImpl} argument, calling
-	 * {@link CalendarAccountUserDetailsImpl#setScheduleOwner(IScheduleOwner)} and 
+	 * {@link CalendarAccountUserDetailsImpl#setScheduleOwner(ScheduleOwner)} and 
 	 * {@link CalendarAccountUserDetailsImpl#setScheduleVisitor(IScheduleVisitor)} where appropriate.
 	 * 
 	 * @param accountUserDetails the instance to mutate
@@ -175,7 +175,7 @@ public class CalendarAccountUserDetailsServiceImpl implements
 			LOG.debug(accountUserDetails.getUsername() + " is not a visitor");
 		}
 		
-		IScheduleOwner scheduleOwner = ownerDao.locateOwner(accountUserDetails.getCalendarAccount());
+		ScheduleOwner scheduleOwner = ownerDao.locateOwner(accountUserDetails.getCalendarAccount());
 		accountUserDetails.setScheduleOwner(scheduleOwner);
 	}
 }

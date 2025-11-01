@@ -22,7 +22,7 @@ package org.jasig.schedassist.web.admin;
 
 /**
  * Form backing object that can be used for looking up
- * {@link IScheduleOwner}s.
+ * {@link ScheduleOwner}s.
  * 
  * @author Nicholas Blair, nblair@doit.wisc.edu
  * @version $Id: ScheduleOwnerFormBackingObject.java 2978 2011-01-25 19:20:51Z npblair $

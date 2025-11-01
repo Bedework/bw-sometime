@@ -69,7 +69,7 @@ public class PublicProfileController {
 	@RequestMapping(value="/public/profiles/{profileKey}.html", method = RequestMethod.GET)
 	public String retrieveProfile(final ModelMap model, @PathVariable("profileKey") String profileKey) {
 		PublicProfile profile = publicProfileDao.locatePublicProfileByKey(profileKey);
-		if(null != profile) {
+		if (null != profile) {
 			model.addAttribute("profile", profile);
 			List<PublicProfileTag> tags = publicProfileDao.getProfileTags(profile.getPublicProfileId());
 			model.addAttribute("profileTags", tags);

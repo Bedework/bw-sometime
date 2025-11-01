@@ -32,7 +32,7 @@ import org.jasig.schedassist.impl.owner.OwnerDao;
 import org.jasig.schedassist.impl.owner.PublicProfileAlreadyExistsException;
 import org.jasig.schedassist.impl.owner.PublicProfileDao;
 import org.jasig.schedassist.model.AffiliationImpl;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.Preferences;
 import org.jasig.schedassist.model.PublicProfile;
 import org.jasig.schedassist.model.PublicProfileTag;
@@ -121,14 +121,14 @@ public class AdvancedPreferencesFormController {
 	@RequestMapping(method=RequestMethod.GET)
 	protected String setupForm(final ModelMap model) throws NotRegisteredException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 
 		AdvancedPreferencesFormBackingObject fbo = new AdvancedPreferencesFormBackingObject();
 
 		PublicProfile existingProfile = publicProfileDao.locatePublicProfileByOwner(owner);
 		fbo.setCreatePublicProfile(null != existingProfile);
 		
-		if(fbo.isCreatePublicProfile()) {
+		if (fbo.isCreatePublicProfile()) {
 			fbo.setPublicProfileDescription(existingProfile.getDescription());
 			fbo.setPublicProfileKey(existingProfile.getPublicProfileId().getProfileKey());
 			
@@ -138,13 +138,13 @@ public class AdvancedPreferencesFormController {
 
 		boolean isAdvisor = affiliationSource.doesAccountHaveAffiliation(owner.getCalendarAccount(), AffiliationImpl.ADVISOR);
 		fbo.setEligibleForAdvisor(isAdvisor);
-		if(isAdvisor) {
+		if (isAdvisor) {
 			String prefValue = owner.getPreference(Preferences.ADVISOR_SHARE_WITH_STUDENTS);
 			fbo.setAdvisorShareWithStudents(Boolean.parseBoolean(prefValue));
 		}
 		boolean isInstructor = affiliationSource.doesAccountHaveAffiliation(owner.getCalendarAccount(), AffiliationImpl.INSTRUCTOR);
 		fbo.setEligibleForInstructor(isInstructor);
-		if(isInstructor) {
+		if (isInstructor) {
 			String prefValue = owner.getPreference(Preferences.INSTRUCTOR_SHARE_WITH_STUDENTS);
 			fbo.setInstructorShareWithStudents(Boolean.parseBoolean(prefValue));
 		}
@@ -154,7 +154,7 @@ public class AdvancedPreferencesFormController {
 	
 	/**
 	 * Update preferences that reflect changes to existing
-	 * values for the current authenticated {@link IScheduleOwner}.
+	 * values for the current authenticated {@link ScheduleOwner}.
 	 * 
 	 * @param fbo
 	 * @param bindingResult
@@ -167,25 +167,25 @@ public class AdvancedPreferencesFormController {
 	protected String updateAdvancedPreferences(@Valid @ModelAttribute("command") AdvancedPreferencesFormBackingObject fbo, BindingResult bindingResult,
 			final ModelMap model) throws NotRegisteredException, PublicProfileAlreadyExistsException {
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		
-		if(bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors()) {
 			return "owner-preferences/advanced-preferences-form";
 		}
 	
-		if(affiliationSource.doesAccountHaveAffiliation(owner.getCalendarAccount(), AffiliationImpl.ADVISOR) &&
+		if (affiliationSource.doesAccountHaveAffiliation(owner.getCalendarAccount(), AffiliationImpl.ADVISOR) &&
 				!owner.getPreference(Preferences.ADVISOR_SHARE_WITH_STUDENTS).equals(String.valueOf(fbo.isAdvisorShareWithStudents()))) {
 			owner = ownerDao.updatePreference(owner, Preferences.ADVISOR_SHARE_WITH_STUDENTS, String.valueOf(fbo.isAdvisorShareWithStudents()));
-			if(fbo.isAdvisorShareWithStudents()) {
+			if (fbo.isAdvisorShareWithStudents()) {
 				model.addAttribute("advisorShareWithStudentsOn", true);
 			} else {
 				model.addAttribute("advisorShareWithStudentsOff", true);
 			}
 		}
-		if(affiliationSource.doesAccountHaveAffiliation(owner.getCalendarAccount(), AffiliationImpl.INSTRUCTOR) &&
+		if (affiliationSource.doesAccountHaveAffiliation(owner.getCalendarAccount(), AffiliationImpl.INSTRUCTOR) &&
 				!owner.getPreference(Preferences.INSTRUCTOR_SHARE_WITH_STUDENTS).equals(String.valueOf(fbo.isInstructorShareWithStudents()))) {
 			owner = ownerDao.updatePreference(owner, Preferences.INSTRUCTOR_SHARE_WITH_STUDENTS, String.valueOf(fbo.isInstructorShareWithStudents()));
-			if(fbo.isInstructorShareWithStudents()) {
+			if (fbo.isInstructorShareWithStudents()) {
 				model.addAttribute("instructorShareWithStudentsOn", true);
 			} else {
 				model.addAttribute("instructorShareWithStudentsOff", true);
@@ -195,28 +195,28 @@ public class AdvancedPreferencesFormController {
 		PublicProfile existingProfile = this.publicProfileDao.locatePublicProfileByOwner(owner);
 		
 		// set public profile preference (only if owner previously was not sharing)
-		if(fbo.isCreatePublicProfile() && null == existingProfile) {
+		if (fbo.isCreatePublicProfile() && null == existingProfile) {
 			PublicProfile newProfile = this.publicProfileDao.createPublicProfile(owner, fbo.getPublicProfileDescription());
 			model.addAttribute("createdPublicProfile", true);
 			model.addAttribute("publicProfileKey", newProfile.getPublicProfileId().getProfileKey());
-			if(StringUtils.isNotBlank(fbo.getPublicProfileTags())) {
+			if (StringUtils.isNotBlank(fbo.getPublicProfileTags())) {
 				List<String> newTags = commaSeparatedToList(fbo.getPublicProfileTags());
 				this.publicProfileDao.setProfileTags(newTags, newProfile.getPublicProfileId());
 				model.addAttribute("updatedPublicProfileTags", true);
 			}
-		} else if(!fbo.isCreatePublicProfile() && null != existingProfile) {
+		} else if (!fbo.isCreatePublicProfile() && null != existingProfile) {
 			this.publicProfileDao.removePublicProfile(existingProfile.getPublicProfileId());
 			model.put("removedPublicProfile", true);
 		} else if (fbo.isCreatePublicProfile() && null != existingProfile) {
 			// check to see if we need to update the description
-			if(!existingProfile.getDescription().equals(fbo.getPublicProfileDescription())) {
+			if (!existingProfile.getDescription().equals(fbo.getPublicProfileDescription())) {
 				// fbo is different from stored, update
 				this.publicProfileDao.updatePublicProfileDescription(existingProfile.getPublicProfileId(), fbo.getPublicProfileDescription());
 				model.addAttribute("updatedPublicProfile", true);
 			}	
 			// check to see if tags are updated
 			List<PublicProfileTag> tags = this.publicProfileDao.getProfileTags(existingProfile.getPublicProfileId());
-			if(!tagsAsString(tags).equals(fbo.getPublicProfileTags())) {
+			if (!tagsAsString(tags).equals(fbo.getPublicProfileTags())) {
 				// tags differ, persist
 				List<String> newTags = commaSeparatedToList(fbo.getPublicProfileTags());
 				this.publicProfileDao.setProfileTags(newTags, existingProfile.getPublicProfileId());
@@ -238,7 +238,7 @@ public class AdvancedPreferencesFormController {
 		for(int i = 0; i < tags.size(); i++) {
 			PublicProfileTag tag = tags.get(i);
 			tagsAsString.append(tag.getTagDisplay());
-			if(i < tags.size() - 1) {
+			if (i < tags.size() - 1) {
 				tagsAsString.append(",");
 			}
 		}
@@ -252,7 +252,7 @@ public class AdvancedPreferencesFormController {
 	 */
 	protected List<String> commaSeparatedToList(String tags) {
 		List<String> result = new ArrayList<String>();
-		if(StringUtils.isBlank(tags)) {
+		if (StringUtils.isBlank(tags)) {
 			return result;
 		}
 		

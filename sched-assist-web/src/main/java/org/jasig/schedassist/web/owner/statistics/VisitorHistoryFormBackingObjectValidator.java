@@ -46,11 +46,11 @@ public class VisitorHistoryFormBackingObjectValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "visitorUsername", "visitorUsername.blank", "No person matching your input was found.");
 		
 		VisitorHistoryFormBackingObject fbo = (VisitorHistoryFormBackingObject) target;
-		if(null == fbo.getStartTime()) {
+		if (null == fbo.getStartTime()) {
 			errors.rejectValue("startTime", "startTime.notset", "Start time must be set (format MM/dd/YYYY).");
 		}
 		
-		if(null == fbo.getEndTime()) {
+		if (null == fbo.getEndTime()) {
 			errors.rejectValue("endTime", "endTime.notset", "End time must be set (format MM/dd/YYYY).");
 		}
 	}

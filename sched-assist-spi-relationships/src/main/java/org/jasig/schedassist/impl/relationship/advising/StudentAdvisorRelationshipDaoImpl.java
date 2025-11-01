@@ -22,16 +22,16 @@ package org.jasig.schedassist.impl.relationship.advising;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jasig.schedassist.ICalendarAccountDao;
-import org.jasig.schedassist.RelationshipDao;
-import org.jasig.schedassist.impl.owner.OwnerDao;
-import org.jasig.schedassist.impl.visitor.NotAVisitorException;
-import org.jasig.schedassist.impl.visitor.VisitorDao;
-import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
-import org.jasig.schedassist.model.IScheduleVisitor;
-import org.jasig.schedassist.model.Preferences;
-import org.jasig.schedassist.model.Relationship;
+import org.bedework.sometime.ICalendarAccountDao;
+import org.bedework.sometime.RelationshipDao;
+import org.bedework.sometime.impl.owner.OwnerDao;
+import org.bedework.sometime.impl.visitor.NotAVisitorException;
+import org.bedework.sometime.impl.visitor.VisitorDao;
+import org.bedework.sometime.model.ICalendarAccount;
+import org.bedework.sometime.model.ScheduleOwner;
+import org.bedework.sometime.model.IScheduleVisitor;
+import org.bedework.sometime.model.Preferences;
+import org.bedework.sometime.model.Relationship;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -50,7 +50,7 @@ import javax.sql.DataSource;
  * This implementation is backed by the data stored in the Scheduling Assistant
  * database by the {@link AdvisorListRelationshipDataSourceImpl}.
  * 
- * The returned {@link IScheduleOwner}s have the following data stored in 
+ * The returned {@link ScheduleOwner}s have the following data stored in 
  * the "relationship" field"
  <pre>
  Advisor, academic program, term description
@@ -134,16 +134,16 @@ implements RelationshipDao {
 	}
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.RelationshipDao#forOwner(org.jasig.schedassist.model.IScheduleOwner)
+	 * @see org.jasig.schedassist.RelationshipDao#forOwner(org.jasig.schedassist.model.ScheduleOwner)
 	 */
 	@Override
-	public List<Relationship> forOwner(IScheduleOwner owner) {
-		if(LOG.isDebugEnabled()) {
+	public List<Relationship> forOwner(ScheduleOwner owner) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("enter StudentAdvisorRelationshipDaoImpl#forOwner " + owner);
 		}
 		ICalendarAccount ownerCalendarAccount = owner.getCalendarAccount();
 		String advisorEmplid = ownerCalendarAccount.getAttributeValue(this.advisorEmplidAttributeName);
-		if(StringUtils.isBlank(advisorEmplid)) {
+		if (StringUtils.isBlank(advisorEmplid)) {
 			return Collections.emptyList();
 		}
 		List<StudentAdvisorAssignment> isisRecords = this.simpleJdbcTemplate.query(
@@ -154,23 +154,23 @@ implements RelationshipDao {
 
 		for(StudentAdvisorAssignment record : isisRecords) {
 			ICalendarAccount calUser = getStudentCalendarAccount(record);
-			if(null == calUser) {
+			if (null == calUser) {
 				LOG.debug("no calendar user found for " + record);
 				continue;
 			}
 			try {
 				IScheduleVisitor visitor = visitorDao.toVisitor(calUser);
-				if(null != visitor) {			
+				if (null != visitor) {			
 					Relationship relationship = new Relationship();
 					relationship.setOwner(owner);
 					relationship.setVisitor(visitor);
 					relationship.setDescription(buildDescription(record));
 					results.add(relationship);
 
-					if(LOG.isDebugEnabled()) {
+					if (LOG.isDebugEnabled()) {
 						LOG.debug("found advisor " + owner + " for student " + visitor);
 					}
-				} else if(LOG.isDebugEnabled()) {
+				} else if (LOG.isDebugEnabled()) {
 					LOG.debug("advisor assigned, but not registered as owner " + record);
 				}
 			} catch (NotAVisitorException e) {
@@ -187,11 +187,11 @@ implements RelationshipDao {
 	 */
 	@Override
 	public List<Relationship> forVisitor(IScheduleVisitor visitor) {
-		if(LOG.isDebugEnabled()) {
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("enter StudentAdvisorRelationshipDaoImpl#forVisitor " + visitor);
 		}
 		String studentEmplid = visitor.getCalendarAccount().getAttributeValue(this.studentEmplidAttributeName);
-		if(StringUtils.isBlank(studentEmplid)) {
+		if (StringUtils.isBlank(studentEmplid)) {
 			return Collections.emptyList();
 		}
 		List<StudentAdvisorAssignment> isisRecords = this.simpleJdbcTemplate.query(
@@ -201,25 +201,25 @@ implements RelationshipDao {
 		List<Relationship> results = new ArrayList<Relationship>();
 		for(StudentAdvisorAssignment record : isisRecords) {
 			ICalendarAccount calUser = getAdvisorCalendarAccount(record);
-			if(null == calUser) {
+			if (null == calUser) {
 				LOG.debug("no calendar user found for " + record);
 				continue;
 			}
-			IScheduleOwner owner = ownerDao.locateOwner(calUser);
-			if(null != owner) {
+			ScheduleOwner owner = ownerDao.locateOwner(calUser);
+			if (null != owner) {
 				String preferenceValue = owner.getPreference(Preferences.ADVISOR_SHARE_WITH_STUDENTS);
 				boolean sharedWithStudents = Boolean.valueOf(preferenceValue);
-				if(sharedWithStudents) {
+				if (sharedWithStudents) {
 					Relationship relationship = new Relationship();
 					relationship.setOwner(owner);
 					relationship.setVisitor(visitor);
 					relationship.setDescription(buildDescription(record));
 					results.add(relationship);
 
-					if(LOG.isDebugEnabled()) {
+					if (LOG.isDebugEnabled()) {
 						LOG.debug("found advisor " + owner + " for student " + visitor);
 					}
-				} else if(LOG.isDebugEnabled()) {
+				} else if (LOG.isDebugEnabled()) {
 					LOG.debug("advisor assigned, but not sharing with students " + record);
 				}
 			} else {
@@ -264,9 +264,9 @@ implements RelationshipDao {
 	protected String buildDescription(StudentAdvisorAssignment assignment) {
 		StringBuilder description = new StringBuilder();
 		CommitteeRole committeeRole = CommitteeRole.fromValue(assignment.getCommitteeRole());
-		if(CommitteeRole.UNDEFINED.equals(committeeRole)) {
+		if (CommitteeRole.UNDEFINED.equals(committeeRole)) {
 			// do nothing with committeerole
-		} else if(CommitteeRole.CAREER.equals(committeeRole) || !committeeRole.getValue().equals(assignment.getAdvisorType())) {
+		} else if (CommitteeRole.CAREER.equals(committeeRole) || !committeeRole.getValue().equals(assignment.getAdvisorType())) {
 			// if committeeRole is "Career" or doesn't match the advisor type, inject it at the front
 			description.append(assignment.getCommitteeRole());
 			description.append(" ");

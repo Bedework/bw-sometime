@@ -54,7 +54,7 @@ public enum CommitteeRole {
 	 * @return
 	 */
 	public static CommitteeRole fromValue(String value) {
-		if(CAREER.value.equals(value) ) {
+		if (CAREER.value.equals(value) ) {
 			return CAREER;
 		} else if (ACADEMIC.value.equals(value)) {
 			return ACADEMIC;

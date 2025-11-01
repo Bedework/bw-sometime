@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.jasig.schedassist.RelationshipDao;
 import org.jasig.schedassist.impl.visitor.NotAVisitorException;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.model.Relationship;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetailsImpl;
@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * the {@link RelationshipDao}. 
  * When requested, it calls {@link RelationshipDao#forVisitor(IScheduleVisitor)}
  * for the authenticated visitor. If more than 1 result is returned, a
- * view containing links for each {@link IScheduleOwner} is displayed.
+ * view containing links for each {@link ScheduleOwner} is displayed.
  * If only 1 result is returned, the visitor is sent a redirect to the
  * display of that owners visible schedule.
  *  

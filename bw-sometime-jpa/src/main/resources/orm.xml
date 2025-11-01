@@ -1,0 +1,56 @@
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+                 version="2.0">
+  <!--
+  Put this or the equiv somewhere
+   <basic name="openjpa.jdbc.DBDictionary" value="(BooleanRepresentation=STRING_YN)"/>
+   -->
+
+  <entity class="org.bedework.sometime.model.ScheduleOwner">
+    <table name="owners">
+      <unique-constraint name="username">
+        <column-name>usernam</column-name>
+      </unique-constraint>
+    </table>
+
+    <attributes>
+      <id name="id">
+        <column name="id"/>
+        <sequence-generator name="hibernate_sequence" />
+      </id>
+
+      <basic name="calendarUniqueId">
+        <column name="calendar_unique_id" length="255" nullable="false"/>
+      </basic>
+
+      <basic name="username">
+        <column name="username"
+                nullable="false" />
+      </basic>
+
+      <one-to-many name="preferences">
+        <join-table name="owner_preferences" />
+      </one-to-many>
+      <basic name="description">
+        <column name="description"
+                length="2000" />
+      </basic>
+
+      <basic name="groupOwnerHref">
+        <column name="bw_group_owner"
+                nullable="false" />
+      </basic>
+
+      <basic name="ownerHref">
+        <column name="bw_owner"
+                nullable="false" />
+      </basic>
+
+      <version name="seq">
+        <column name="bwseq"/>
+      </version>
+    </attributes>
+  </entity>
+
+</entity-mappings>

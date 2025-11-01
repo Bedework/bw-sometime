@@ -45,16 +45,16 @@ jQuery(document).ready(function(){
 			selectedElements = jQuery('li.ui-selected:visible'); 
 			filteredSelectedElements = new Array();
 			jQuery.each(selectedElements, function(j, element) {
-				if(!$(element).hasClass('storedblock')) {
+				if (!$(element).hasClass('storedblock')) {
 					filteredSelectedElements.push(element);
 				} 
 			});
 			
-			if(filteredSelectedElements.length > 0) {
+			if (filteredSelectedElements.length > 0) {
 				// identify the elements that were selected
 				startTimeElementId = filteredSelectedElements[0].id;
 				endTimeElementId = filteredSelectedElements[0].id;
-				if(filteredSelectedElements.length != 1) {
+				if (filteredSelectedElements.length != 1) {
 					endTimeElementId = filteredSelectedElements[filteredSelectedElements.length - 1].id;
 				}
 				// convert startTimeElementId and endTimeElementId into start and end dates
@@ -78,8 +78,8 @@ jQuery(document).ready(function(){
 			xhr.setRequestHeader(csrfHeader, csrfToken);
 		},
 		"error": function(XMLHttpRequest,textStatus, errorThrown) {
-			if(null != XMLHttpRequest) {
-				if(XMLHttpRequest.status == 403) {
+			if (null != XMLHttpRequest) {
+				if (XMLHttpRequest.status == 403) {
 					showChangeError("#schedulechangestatus", '<spring:message code="session.timed.out"/>');
 				} else if (XMLHttpRequest.status == 503) {
 					showChangeError("#schedulechangestatus", '<spring:message code="service.temporarily.unavailable"/>');
@@ -108,21 +108,21 @@ function draw(statusBoxReset) {
 		$(element).empty();
 	});
 	retrieveAndRender(currentWeekStart);
-	if(statusBoxReset == true) {
+	if (statusBoxReset == true) {
 		resetStatusBox("#schedulechangestatus", '<spring:message code="availability.schedule.help.dynamic"/>');
 	}
 };
 function retrieveAndRender(date) {
 	baseDataUrl = '<c:url value="schedule-data.json" />';
 	dataUrl = baseDataUrl;
-	if(date != null) {
+	if (date != null) {
 		dataUrl = baseDataUrl + '?startDate=' + formatYearMonthDay(currentWeekStart);
 	}
 	showChangeInProgress("#schedulechangestatus", '<spring:message code="retrieving.schedule.data"/>');
 	jQuery.getJSON(dataUrl,
 			{ },
 			function(data) {
-				if(data.weekStart && data.weekEnd && data.scheduleBlocks) {
+				if (data.weekStart && data.weekEnd && data.scheduleBlocks) {
 					// 1. update currentWeekStart and currentWeekEnd
 					currentWeekStart = new Date(Date.parse(data.weekStart));
 					currentWeekEnd = new Date(Date.parse(data.weekEnd));
@@ -162,14 +162,14 @@ function retrieveAndRender(date) {
 							// build visitor limit text
 							visitorLimit = block.visitorLimit;
 							visitorLimitText = '';
-							if(visitorLimit == 1) {
+							if (visitorLimit == 1) {
 								visitorLimitText += '<spring:message code="only.one.guest"/>';
 							} else {
 								visitorLimitText += '<spring:message code="up.to"/> ' + visitorLimit + ' <spring:message code="guests"/>';
 							}
 							// locate first cell
 							cell = $('#' + blockId);
-							if(block.durationIn15Mins == 1) {
+							if (block.durationIn15Mins == 1) {
 								cell.append(jQuery('<span class="vlimit">' + visitorLimitText + '</span>'));
 								blockEnd = add15(blockId);
 								destroyHandle = 'destroyHandle-' + blockId + '-' + blockEnd;
@@ -183,7 +183,7 @@ function retrieveAndRender(date) {
 									endTime = convertElementIdToDate(idTokens[2], currentWeekStart);
 									postRemoveForm(startTime, endTime);
 								});
-							} else if(j == 0) {
+							} else if (j == 0) {
 								cell.append(jQuery('<span class="vlimit">' + visitorLimitText + '</span>'));
 								blockEnd = add15(blockIds[blockIds.length-1]);
 								destroyHandle = 'destroyHandle-' + blockId + '-' + blockEnd;
@@ -200,7 +200,7 @@ function retrieveAndRender(date) {
 							} 
 							cell.append(jQuery('<div class="clearFloats"></div>'));
 							cell.addClass('storedblock');
-							if(block.meetingLocation != null && block.meetingLocation != data.defaultMeetingLocation) {
+							if (block.meetingLocation != null && block.meetingLocation != data.defaultMeetingLocation) {
 								cell.addClass('alternatelocation');
 								cell.attr('title','Meetings have alternate location: ' + block.meetingLocation);
 							}

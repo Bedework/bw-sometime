@@ -46,7 +46,7 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>sched-assist-spi</artifactId>
+      <artifactId>bw-sometime-spi</artifactId>
       <version>${project.version}</version>
     </dependency>
 

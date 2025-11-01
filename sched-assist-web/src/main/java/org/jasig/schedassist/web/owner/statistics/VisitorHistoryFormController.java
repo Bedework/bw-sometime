@@ -34,7 +34,7 @@ import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.impl.statistics.AppointmentEvent;
 import org.jasig.schedassist.impl.statistics.StatisticsDao;
 import org.jasig.schedassist.model.ICalendarAccount;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.web.security.CalendarAccountUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +53,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 /**
  * {@link Controller} for displaying {@link IScheduleVisitor}
- * activity history with the authenticated {@link IScheduleOwner}.
+ * activity history with the authenticated {@link ScheduleOwner}.
  *  
  * @author Nicholas Blair, nblair@doit.wisc.edu
  * @version $Id: VisitorHistoryFormController.java 2608 2010-09-16 19:03:42Z npblair $
@@ -117,7 +117,7 @@ public class VisitorHistoryFormController {
 		fbo.setStartTime(sevenDaysAgo);
 		fbo.setEndTime(today);
 		model.addAttribute("command", fbo);
-		if(noscript) {
+		if (noscript) {
 			return "statistics/visitor-history-form-noscript";
 		} else {
 			return "statistics/visitor-history-form";
@@ -134,16 +134,16 @@ public class VisitorHistoryFormController {
 	 */
 	@RequestMapping(method=RequestMethod.POST)
 	protected String submit(@Valid @ModelAttribute("command") VisitorHistoryFormBackingObject fbo, BindingResult bindingResult, ModelMap model) throws NotRegisteredException {
-		if(bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors()) {
 			return "statistics/visitor-history-form";
 		}
 		
 		CalendarAccountUserDetails currentUser = (CalendarAccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		IScheduleOwner owner = currentUser.getScheduleOwner();
+		ScheduleOwner owner = currentUser.getScheduleOwner();
 		
 		ICalendarAccount visitorAccount = this.calendarAccountDao.getCalendarAccount(fbo.getVisitorUsername());
 		model.addAttribute("visitorAccount", visitorAccount);
-		if(null != visitorAccount) {
+		if (null != visitorAccount) {
 			List<AppointmentEvent> events = this.statisticsDao.getEvents(owner, fbo.getVisitorUsername(), fbo.getAdjustedStartTime(), fbo.getAdjustedEndTime());
 			Collections.sort(events);
 			model.addAttribute("events", events);

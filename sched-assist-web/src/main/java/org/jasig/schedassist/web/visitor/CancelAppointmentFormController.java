@@ -42,7 +42,7 @@ import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.AvailableBlockBuilder;
 import org.jasig.schedassist.model.AvailableVersion;
 import org.jasig.schedassist.model.CommonDateOperations;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.model.InputFormatException;
 import org.jasig.schedassist.model.PublicProfile;
@@ -65,7 +65,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 /**
  * {@link Controller} for {@link IScheduleVisitor}s to invoke
- * {@link AvailableService#cancelAppointment(IScheduleVisitor, IScheduleOwner, VEvent, AvailableBlock)}.
+ * {@link AvailableService#cancelAppointment(IScheduleVisitor, ScheduleOwner, VEvent, AvailableBlock)}.
  * 
  * @author Nicholas Blair, nblair@doit.wisc.edu
  * @version $Header: CancelAppointmentFormController.java $
@@ -178,18 +178,18 @@ public class CancelAppointmentFormController {
 		CalendarAccountUserDetailsImpl currentUser = (CalendarAccountUserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		IScheduleVisitor visitor = currentUser.getScheduleVisitor();
 
-		IScheduleOwner selectedOwner = null;
-		if(StringUtils.isNumeric(ownerIdentifier)) {
+		ScheduleOwner selectedOwner = null;
+		if (StringUtils.isNumeric(ownerIdentifier)) {
 			Long ownerId = Long.parseLong(ownerIdentifier);
 			selectedOwner = findOwnerForVisitor(visitor, ownerId);
 		} else {
 			PublicProfile profile = publicProfileDao.locatePublicProfileByKey(ownerIdentifier);
-			if(null != profile) {
+			if (null != profile) {
 				selectedOwner = ownerDao.locateOwnerByAvailableId(profile.getOwnerId());
 			}
 		}
 		
-		if(null == selectedOwner) {
+		if (null == selectedOwner) {
 			throw new OwnerNotFoundException("no owner found for " + ownerIdentifier);
 		}
 		model.put("owner", selectedOwner);
@@ -198,21 +198,21 @@ public class CancelAppointmentFormController {
 		
 		// try to get the minimum size first
 		AvailableBlock targetBlock = availableScheduleDao.retrieveTargetBlock(selectedOwner, startTime);
-		if(null == targetBlock) {
+		if (null == targetBlock) {
 			throw new SchedulingException("requested time is not available in schedule");
 		} 
 		
-		if(!targetBlock.getEndTime().equals(endTime)) {
+		if (!targetBlock.getEndTime().equals(endTime)) {
 			// the returned block doesn't match the specified end time - try grabbing doublelength
 			targetBlock = availableScheduleDao.retrieveTargetDoubleLengthBlock(selectedOwner, startTime);
 		} 
 		
-		if(null != targetBlock && targetBlock.getEndTime().equals(endTime)) {
+		if (null != targetBlock && targetBlock.getEndTime().equals(endTime)) {
 			VEvent existingEvent = schedulingAssistantService.getExistingAppointment(targetBlock, selectedOwner);
-			if(null == existingEvent) {
+			if (null == existingEvent) {
 				throw new NoAppointmentExistsException("no available appointment found in " + targetBlock);
 			}
-			if(null == existingEvent.getProperty(AvailableVersion.AVAILABLE_VERSION)) {
+			if (null == existingEvent.getProperty(AvailableVersion.AVAILABLE_VERSION)) {
 				// this is a pre-1.1 appointment, override block's visitor limit and set to 1
 				targetBlock = AvailableBlockBuilder.createBlock(targetBlock.getStartTime(), targetBlock.getEndTime(), 1);
 			}
@@ -240,28 +240,28 @@ public class CancelAppointmentFormController {
 		CalendarAccountUserDetailsImpl currentUser = (CalendarAccountUserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		IScheduleVisitor visitor = currentUser.getScheduleVisitor();
 		
-		if(bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors()) {
 			return "visitor/cancel-appointment-form";
 		}
-		IScheduleOwner selectedOwner = null;
-		if(StringUtils.isNumeric(ownerIdentifier)) {
+		ScheduleOwner selectedOwner = null;
+		if (StringUtils.isNumeric(ownerIdentifier)) {
 			Long ownerId = Long.parseLong(ownerIdentifier);
 			selectedOwner = findOwnerForVisitor(visitor, ownerId);
 		} else {
 			PublicProfile profile = publicProfileDao.locatePublicProfileByKey(ownerIdentifier);
-			if(null != profile) {
+			if (null != profile) {
 				selectedOwner = ownerDao.locateOwnerByAvailableId(profile.getOwnerId());
 			}
 		}
 		
-		if(null == selectedOwner) {
+		if (null == selectedOwner) {
 			throw new OwnerNotFoundException("no owner found for " + ownerIdentifier);
 		}
 		
 		AvailableBlock block = fbo.getTargetBlock();
 		
 		VEvent existingEvent = schedulingAssistantService.getExistingAppointment(block, selectedOwner);
-		if(null == existingEvent) {
+		if (null == existingEvent) {
 			throw new NoAppointmentExistsException("no available appointment found in " + block);
 		}
 		
@@ -278,10 +278,10 @@ public class CancelAppointmentFormController {
 	 * @return
 	 * @throws OwnerNotFoundException
 	 */
-	private IScheduleOwner findOwnerForVisitor(IScheduleVisitor visitor, long ownerId) throws OwnerNotFoundException {
+	private ScheduleOwner findOwnerForVisitor(IScheduleVisitor visitor, long ownerId) throws OwnerNotFoundException {
 		List<Relationship> relationships = relationshipDao.forVisitor(visitor);
 		for(Relationship potential : relationships) {
-			if(potential.getOwner().getId() == ownerId) {
+			if (potential.getOwner().getId() == ownerId) {
 				return potential.getOwner();
 			}
 		}

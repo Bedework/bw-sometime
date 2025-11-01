@@ -49,32 +49,32 @@ public class ProfilePageInformation {
 	 * @param requestedStartIndex
 	 */
 	public ProfilePageInformation(List<PublicProfileId> profileIds, int requestedStartIndex) {
-		if(requestedStartIndex >= profileIds.size()) {
+		if (requestedStartIndex >= profileIds.size()) {
 			requestedStartIndex = profileIds.size() - DEFAULT_RESULTS_PER_PAGE;
 			this.endIndex = profileIds.size();
 		} else {
 			int tempEndIndex = requestedStartIndex + DEFAULT_RESULTS_PER_PAGE;
-			if(tempEndIndex > profileIds.size()) {
+			if (tempEndIndex > profileIds.size()) {
 				this.endIndex = profileIds.size();
 			} else {
 				this.endIndex = tempEndIndex;
 			}
 		}
-		if(requestedStartIndex < 0) {
+		if (requestedStartIndex < 0) {
 			this.startIndex = 0;
 		} else {
 			this.startIndex = requestedStartIndex;
 		}
 		
 		
-		if(this.endIndex < profileIds.size()) {
+		if (this.endIndex < profileIds.size()) {
 			this.showNext = true;
 			this.showNextIndex = this.endIndex;
 		}
-		if(this.startIndex > 0) {
+		if (this.startIndex > 0) {
 			this.showPrev = true;
 			this.showPrevIndex = this.startIndex - DEFAULT_RESULTS_PER_PAGE;
-			if(this.showPrevIndex < 0) {
+			if (this.showPrevIndex < 0) {
 				this.showPrevIndex = 0;
 			}
 		}

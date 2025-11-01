@@ -61,7 +61,7 @@ public class DatabaseMigrationConfiguration {
 	 */
 	protected String getImplementationSpecificLocation() {
 		for(String active: environment.getActiveProfiles()) {
-			if(SUPPORTED_DATABASES.contains(active)) {
+			if (SUPPORTED_DATABASES.contains(active)) {
 				return "db/" + active;
 			}
 		}	

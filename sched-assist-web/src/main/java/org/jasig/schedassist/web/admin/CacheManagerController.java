@@ -92,7 +92,7 @@ public class CacheManagerController {
 	public String clearCache(ModelMap model, @RequestParam String cacheName) {
 		model.addAttribute("cacheName", cacheName);
 		Cache cache = this.cacheManager.getCache(cacheName);
-		if(cache != null) {
+		if (cache != null) {
 			cache.removeAll();
 			cache.clearStatistics();
 			model.addAttribute("clearCacheSuccess", cacheName);

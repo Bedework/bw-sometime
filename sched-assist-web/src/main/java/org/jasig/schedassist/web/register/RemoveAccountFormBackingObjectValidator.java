@@ -43,7 +43,7 @@ public class RemoveAccountFormBackingObjectValidator implements Validator {
 	 */
 	public void validate(Object target, Errors errors) {
 		RemoveAccountFormBackingObject fbo = (RemoveAccountFormBackingObject) target;
-		if(!fbo.isConfirmed()) {
+		if (!fbo.isConfirmed()) {
 			errors.rejectValue("confirmed", "confirmed.notselect", "You must mark the checkbox to confirm your intent to remove your account.");
 		}
 	}

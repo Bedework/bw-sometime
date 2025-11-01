@@ -77,7 +77,7 @@ import org.jasig.schedassist.model.CommonDateOperations;
 import org.jasig.schedassist.model.DefaultEventUtilsImpl;
 import org.jasig.schedassist.model.ICalendarAccount;
 import org.jasig.schedassist.model.IEventUtils;
-import org.jasig.schedassist.model.IScheduleOwner;
+import org.jasig.schedassist.model.ScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.jasig.schedassist.model.SchedulingAssistantAppointment;
 import org.jasig.schedassist.model.VisitorLimit;
@@ -114,8 +114,8 @@ import static java.lang.String.format;
  * The cancelUpdatesVisitorCalendar property can be useful for CalDAV servers that do not delete appointments in an attendee's calendar
  * when the organizer deletes the event. Oracle Communications Suite Calendar server for example will not delete the event from the visitor's
  * calendar when the event is removed from the owner's calendar; the event remains with it's STATUS property set to CANCELLED. Setting the
- * <i>caldav.cancelUpdatesVisitorCalendar property</i> to true will add behavior to {@link #cancelAppointment(IScheduleVisitor, IScheduleOwner, VEvent)}
- * and {@link #leaveAppointment(IScheduleVisitor, IScheduleOwner, VEvent)} remove the CANCELLED entries from the visitor's calendar.
+ * <i>caldav.cancelUpdatesVisitorCalendar property</i> to true will add behavior to {@link #cancelAppointment(IScheduleVisitor, ScheduleOwner, VEvent)}
+ * and {@link #leaveAppointment(IScheduleVisitor, ScheduleOwner, VEvent)} remove the CANCELLED entries from the visitor's calendar.
  * 
  * This instance constructs a DefaultCaldavEventUtilsImpl instance with a {@link NullAffiliationSourceImpl}; if you need to override the {@link IEventUtils}
  * instance, a setter is provided ({@link #setEventUtils(IEventUtils)}).
@@ -319,7 +319,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	 * @return
 	 */
 	protected AuthScheme identifyScheme(String scheme) {
-		if(new BasicScheme().getSchemeName().equalsIgnoreCase(scheme)) {
+		if (new BasicScheme().getSchemeName().equalsIgnoreCase(scheme)) {
 			return new BasicScheme();
 		} else if (new DigestScheme().getSchemeName().equalsIgnoreCase(scheme)) {
 			return new DigestScheme();
@@ -332,7 +332,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		if(isPreemptiveAuthenticationEnabled()) {
+		if (isPreemptiveAuthenticationEnabled()) {
 			// addRequestInterceptor method not visible on the HttpClient interface
 			((AbstractHttpClient) this.httpClient).addRequestInterceptor(new PreemptiveAuthInterceptor(caldavAdminAuthScope), 0);
 			this.preemptiveAuthenticationScheme = identifyScheme(caldavAdminAuthScope.getScheme());
@@ -349,13 +349,13 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 		return result;
 	}
 	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.ICalendarDataDao#getExistingAppointment(org.jasig.schedassist.model.IScheduleOwner, org.jasig.schedassist.model.AvailableBlock)
+	 * @see org.jasig.schedassist.ICalendarDataDao#getExistingAppointment(org.jasig.schedassist.model.ScheduleOwner, org.jasig.schedassist.model.AvailableBlock)
 	 */
 	@Override
-	public VEvent getExistingAppointment(IScheduleOwner owner,
+	public VEvent getExistingAppointment(ScheduleOwner owner,
 			AvailableBlock block) {
 		CalendarWithURI calendarWithUri = getExistingAppointmentInternal(owner, block.getStartTime(), block.getEndTime());
-		if(null != calendarWithUri) {
+		if (null != calendarWithUri) {
 			ComponentList componentList = calendarWithUri.getCalendar().getComponents(VEvent.VEVENT);
 			return (VEvent) componentList.get(0);
 		} else {
@@ -366,7 +366,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	@Override
 	public VEvent createAppointment(
 					final IScheduleVisitor visitor,
-					final IScheduleOwner owner,
+					final ScheduleOwner owner,
 					final AvailableBlock block,
 					final String eventDescription) {
 		final VEvent event = this.eventUtils.constructAvailableAppointment(
@@ -398,29 +398,29 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.ICalendarDataDao#cancelAppointment(org.jasig.schedassist.model.IScheduleVisitor, org.jasig.schedassist.model.IScheduleOwner, net.fortuna.ical4j.model.component.VEvent)
+	 * @see org.jasig.schedassist.ICalendarDataDao#cancelAppointment(org.jasig.schedassist.model.IScheduleVisitor, org.jasig.schedassist.model.ScheduleOwner, net.fortuna.ical4j.model.component.VEvent)
 	 */
 	@Override
-	public void cancelAppointment(IScheduleVisitor visitor, IScheduleOwner owner, VEvent appointment) {
+	public void cancelAppointment(IScheduleVisitor visitor, ScheduleOwner owner, VEvent appointment) {
 		Date startTime = appointment.getStartDate().getDate();
 		Date endTime = appointment.getEndDate(true).getDate();
 
 		// first locate event/calendar in owner's account
 		CalendarWithURI calendarWithURI = getExistingAppointmentInternal(owner, startTime, endTime);
-		if(null != calendarWithURI) {
+		if (null != calendarWithURI) {
 			VEvent event = extractSchedulingAssistantAppointment(calendarWithURI);
 			Uid eventUid = event.getUid();
 
 			int status = deleteCalendar(calendarWithURI, owner.getCalendarAccount());
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				log.debug("cancelAppointment status code " + status + " for " + owner + ", " + eventUid);
 			}
 
-			if(cancelUpdatesVisitorCalendar) {
+			if (cancelUpdatesVisitorCalendar) {
 				CalendarWithURI visitorCalendarWithURI = getExistingAppointmentInternalForVisitor(visitor, startTime, endTime, eventUid);
-				if(visitorCalendarWithURI != null) {
+				if (visitorCalendarWithURI != null) {
 					status = deleteCalendar(visitorCalendarWithURI, visitor.getCalendarAccount());
-					if(log.isDebugEnabled()) {
+					if (log.isDebugEnabled()) {
 						log.debug("cancelAppointment status code " + status + " for " + visitor + ", " + eventUid);
 					}
 				} else {
@@ -443,8 +443,8 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	protected HttpContext constructHttpContext(ICalendarAccount calendarAccount) {
 		CredentialsProvider credentialsProvider = this.credentialsProviderFactory.getCredentialsProvider(calendarAccount);
 		HttpContext context = new BasicHttpContext();
-		if(isPreemptiveAuthenticationEnabled()) {
-			if(preemptiveAuthenticationScheme == null) {
+		if (isPreemptiveAuthenticationEnabled()) {
+			if (preemptiveAuthenticationScheme == null) {
 				throw new IllegalStateException("preemptiveAuthentication is enabled, but the preemptiveAuthenticationScheme is null. Was afterPropertiesSet invoked?");
 			}
 			context.setAttribute(PreemptiveAuthInterceptor.PREEMPTIVE_AUTH, preemptiveAuthenticationScheme);
@@ -461,7 +461,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	protected int deleteCalendar(CalendarWithURI calendarWithURI, ICalendarAccount calendarAccount) {
 		URI uri = this.caldavDialect.resolveCalendarURI(calendarWithURI);
 		HttpDelete method = new HttpDelete(uri.toString());
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("deleteCalendar executing " + methodToString(method) + " for " + calendarAccount);
 		}
 		HttpRequest toExecute = methodInterceptor.doWithMethod(method, calendarAccount);
@@ -473,7 +473,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 			entity = response.getEntity();
 			int statusCode = response.getStatusLine().getStatusCode();
 			log.debug("deleteCalendar status code: " + statusCode);
-			if(statusCode == HttpStatus.SC_NO_CONTENT) {
+			if (statusCode == HttpStatus.SC_NO_CONTENT) {
 				return statusCode;
 			} else {
 				throw new CaldavDataAccessException("deleteCalendar for " + calendarAccount + ", " + calendarWithURI +" failed with unexpected status code: " + statusCode);
@@ -487,17 +487,17 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.ICalendarDataDao#joinAppointment(org.jasig.schedassist.model.IScheduleVisitor, org.jasig.schedassist.model.IScheduleOwner, net.fortuna.ical4j.model.component.VEvent)
+	 * @see org.jasig.schedassist.ICalendarDataDao#joinAppointment(org.jasig.schedassist.model.IScheduleVisitor, org.jasig.schedassist.model.ScheduleOwner, net.fortuna.ical4j.model.component.VEvent)
 	 */
 	@Override
 	public VEvent joinAppointment(IScheduleVisitor visitor,
-			IScheduleOwner owner, VEvent appointment)
+			ScheduleOwner owner, VEvent appointment)
 					throws SchedulingException {
 		Date startTime = appointment.getStartDate().getDate();
 		Date endTime = appointment.getEndDate(true).getDate();
 
 		CalendarWithURI calendarWithURI = getExistingAppointmentInternal(owner, startTime, endTime);
-		if(null != calendarWithURI) {
+		if (null != calendarWithURI) {
 			VEvent event = extractSchedulingAssistantAppointment(calendarWithURI);
 
 			Attendee attendee = this.eventUtils.constructSchedulingAssistantAttendee(visitor.getCalendarAccount(), AppointmentRole.VISITOR);
@@ -505,7 +505,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 			try {
 				int statusCode = putExistingEvent(owner.getCalendarAccount(), event, calendarWithURI.getEtag());
 				log.debug("joinAppointment status code: " + statusCode);
-				if(statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED || statusCode == HttpStatus.SC_NO_CONTENT) {
+				if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED || statusCode == HttpStatus.SC_NO_CONTENT) {
 					return event;
 				} else if (statusCode == HttpStatus.SC_PRECONDITION_FAILED) {
 					// event changed in the interim, fail fast
@@ -524,17 +524,17 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.ICalendarDataDao#leaveAppointment(org.jasig.schedassist.model.IScheduleVisitor, org.jasig.schedassist.model.IScheduleOwner, net.fortuna.ical4j.model.component.VEvent)
+	 * @see org.jasig.schedassist.ICalendarDataDao#leaveAppointment(org.jasig.schedassist.model.IScheduleVisitor, org.jasig.schedassist.model.ScheduleOwner, net.fortuna.ical4j.model.component.VEvent)
 	 */
 	@Override
 	public VEvent leaveAppointment(IScheduleVisitor visitor,
-			IScheduleOwner owner, VEvent appointment)
+			ScheduleOwner owner, VEvent appointment)
 					throws SchedulingException {
 		Date startTime = appointment.getStartDate().getDate();
 		Date endTime = appointment.getEndDate(true).getDate();
 
 		CalendarWithURI calendarWithURI = getExistingAppointmentInternal(owner, startTime, endTime);
-		if(null != calendarWithURI) {
+		if (null != calendarWithURI) {
 			VEvent event = extractSchedulingAssistantAppointment(calendarWithURI);
 			Uid eventUid = event.getUid();
 			Property attendee = this.eventUtils.getAttendeeForUserFromEvent(event, visitor.getCalendarAccount());
@@ -542,7 +542,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 			try {
 				int statusCode = putExistingEvent(owner.getCalendarAccount(), event, calendarWithURI.getEtag());
 				log.debug("leaveAppointment status code: " + statusCode);
-				if(statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED || statusCode == HttpStatus.SC_NO_CONTENT) {
+				if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED || statusCode == HttpStatus.SC_NO_CONTENT) {
 					log.debug("leaveAppointment owner calendar update successful");
 				} else if (statusCode == HttpStatus.SC_PRECONDITION_FAILED) {
 					// event changed in the interim, fail fast
@@ -555,11 +555,11 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 				throw new CaldavDataAccessException(e);
 			} 
 
-			if(cancelUpdatesVisitorCalendar) {
+			if (cancelUpdatesVisitorCalendar) {
 				CalendarWithURI visitorCalendarWithURI = getExistingAppointmentInternalForVisitor(visitor, startTime, endTime, eventUid);
-				if(visitorCalendarWithURI != null) {
+				if (visitorCalendarWithURI != null) {
 					int status = deleteCalendar(visitorCalendarWithURI, visitor.getCalendarAccount());
-					if(log.isDebugEnabled()) {
+					if (log.isDebugEnabled()) {
 						log.debug("leaveAppointment status code " + status + " for " + visitor + ", " + eventUid);
 					}
 				} else {
@@ -574,10 +574,10 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.ICalendarDataDao#checkForConflicts(org.jasig.schedassist.model.IScheduleOwner, org.jasig.schedassist.model.AvailableBlock)
+	 * @see org.jasig.schedassist.ICalendarDataDao#checkForConflicts(org.jasig.schedassist.model.ScheduleOwner, org.jasig.schedassist.model.AvailableBlock)
 	 */
 	@Override
-	public void checkForConflicts(IScheduleOwner owner, AvailableBlock block)
+	public void checkForConflicts(ScheduleOwner owner, AvailableBlock block)
 			throws ConflictExistsException {
 		// use a start and end time slightly smaller than the block to avoid events that start/end on the edge of the block
 		Date start = DateUtils.addSeconds(block.getStartTime(), 1);
@@ -587,8 +587,8 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 			ComponentList events = calendar.getCalendar().getComponents(VEvent.VEVENT);
 			for(Object component : events) {
 				VEvent event = (VEvent) component;
-				if(this.eventUtils.willEventCauseConflict(owner.getCalendarAccount(), event)) {
-					if(log.isDebugEnabled()) {
+				if (this.eventUtils.willEventCauseConflict(owner.getCalendarAccount(), event)) {
+					if (log.isDebugEnabled()) {
 						log.debug("conflict detected for " + owner + " at block " + block + ", event: " + event);
 					}
 					throw new ConflictExistsException("an appointment already exists for " + block);
@@ -598,13 +598,13 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.ICalendarDataDao#reflectAvailableSchedule(org.jasig.schedassist.model.IScheduleOwner, org.jasig.schedassist.model.AvailableSchedule)
+	 * @see org.jasig.schedassist.ICalendarDataDao#reflectAvailableSchedule(org.jasig.schedassist.model.ScheduleOwner, org.jasig.schedassist.model.AvailableSchedule)
 	 */
 	@Override
-	public void reflectAvailableSchedule(IScheduleOwner owner,
+	public void reflectAvailableSchedule(ScheduleOwner owner,
 			AvailableSchedule schedule) {
-		if(reflectionEnabled) {
-			if(schedule.isEmpty()) {
+		if (reflectionEnabled) {
+			if (schedule.isEmpty()) {
 				return;
 			}
 			Date startDate = CommonDateOperations.beginningOfDay(schedule.getScheduleStartTime());
@@ -614,11 +614,11 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 			List<Calendar> calendars = this.eventUtils.convertScheduleForReflection(schedule);
 			for(Calendar calendar: calendars) {
 				Uid uid = this.eventUtils.extractUid(calendar);
-				if(uid != null) {
+				if (uid != null) {
 					//put!
 					try {
 						int statusCode = putNewCalendar(owner.getCalendarAccount(), calendar, uid.getValue());
-						if(statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED || statusCode == HttpStatus.SC_NO_CONTENT) {
+						if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED || statusCode == HttpStatus.SC_NO_CONTENT) {
 							//success
 						} else {
 							throw new CaldavDataAccessException("reflectAvailableSchedule for " + owner  + " failed with unexpected status code: " + statusCode);
@@ -640,18 +640,18 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.ICalendarDataDao#purgeAvailableScheduleReflections(org.jasig.schedassist.model.IScheduleOwner, java.util.Date, java.util.Date)
+	 * @see org.jasig.schedassist.ICalendarDataDao#purgeAvailableScheduleReflections(org.jasig.schedassist.model.ScheduleOwner, java.util.Date, java.util.Date)
 	 */
 	@Override
-	public void purgeAvailableScheduleReflections(IScheduleOwner owner,
+	public void purgeAvailableScheduleReflections(ScheduleOwner owner,
 			Date startDate, Date endDate) {
-		if(reflectionEnabled) {
+		if (reflectionEnabled) {
 			List<CalendarWithURI> calendars = peekAtAvailableScheduleReflections(owner, startDate, endDate);
 			for(CalendarWithURI calendar: calendars) {
 				// delete!
 				URI uri = this.caldavDialect.resolveCalendarURI(calendar);
 				HttpDelete method = new HttpDelete(uri.toString());
-				if(log.isDebugEnabled()) {
+				if (log.isDebugEnabled()) {
 					log.debug("purgeAvailableScheduleReflections executing " + methodToString(method) + " for " + owner + ", " + startDate + ", " + endDate);
 				}
 				final HttpContext context = constructHttpContext(owner.getCalendarAccount());
@@ -662,7 +662,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 					entity = response.getEntity();
 					int statusCode = response.getStatusLine().getStatusCode();
 					log.debug("cancelAppointment status code: " + statusCode);
-					if(statusCode == HttpStatus.SC_NO_CONTENT) {
+					if (statusCode == HttpStatus.SC_NO_CONTENT) {
 						//success
 					} else {
 						throw new CaldavDataAccessException("purgeAvailableScheduleReflections for " + owner + ", " + startDate +  ", " + endDate +" failed with unexpected status code: " + statusCode);
@@ -686,16 +686,16 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	 * @param endDate
 	 * @return
 	 */
-	public List<CalendarWithURI> peekAtAvailableScheduleReflections(IScheduleOwner owner,
+	public List<CalendarWithURI> peekAtAvailableScheduleReflections(ScheduleOwner owner,
 			Date startDate, Date endDate){
-		if(reflectionEnabled) {
+		if (reflectionEnabled) {
 			List<CalendarWithURI> calendars = getCalendarsInternal(owner.getCalendarAccount(), startDate, endDate);
 			List<CalendarWithURI> results = new ArrayList<CalendarWithURI>();
 			for(CalendarWithURI calendar: calendars) {
 				ComponentList events = calendar.getCalendar().getComponents(VEvent.VEVENT);
 				for(Object component : events) {
 					VEvent event = (VEvent) component;
-					if(event.getProperties().contains(AvailabilityReflection.TRUE)) {
+					if (event.getProperties().contains(AvailabilityReflection.TRUE)) {
 						results.add(calendar);
 					}
 				}
@@ -709,7 +709,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	}
 	/**
 	 * This method is intended to generate a unique URI to use with the PUT method
-	 * in {@link #createAppointment(IScheduleVisitor, IScheduleOwner, AvailableBlock, String)}.
+	 * in {@link #createAppointment(IScheduleVisitor, ScheduleOwner, AvailableBlock, String)}.
 	 * 
 	 * It is implemented by the following:
 	 * <pre>
@@ -818,9 +818,9 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	 */
 	protected Calendar consolidate(List<CalendarWithURI> calendars) {
 		final int size = calendars.size();
-		if(size == 0) {
+		if (size == 0) {
 			return new Calendar();
-		} else if(size == 1) {
+		} else if (size == 1) {
 			return calendars.get(0).getCalendar();
 		} else if (size == 2) {
 			return merge(calendars.get(0).getCalendar(), calendars.get(1).getCalendar());
@@ -833,7 +833,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 				CalendarWithURI left = i.next();
 				// if there aren't any more in the iterator, merge an empty calendar
 				Calendar right = new Calendar();
-				if(i.hasNext()) {
+				if (i.hasNext()) {
 					right = i.next().getCalendar();
 				} 
 				merge(main, left.getCalendar(), right);
@@ -869,7 +869,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 		Map<String, VTimeZone> existingTimezones = new HashMap<String, VTimeZone>();
 		// first pass is through the target to id VTIMEZONEs already stored
 		for (final var c: target.getComponents()) {
-			if(VTimeZone.VTIMEZONE.equals(c.getName())) {
+			if (VTimeZone.VTIMEZONE.equals(c.getName())) {
 				VTimeZone tz = (VTimeZone) c;
 				existingTimezones.put(tz.getTimeZoneId().getValue(), tz);
 			}
@@ -877,11 +877,11 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 		// 2nd: pass through left
 		for (final var c: left.getComponents()) {
 			final boolean componentIsTimezone = VTimeZone.VTIMEZONE.equals(c.getName());
-			if(componentIsTimezone && existingTimezones.containsKey(((VTimeZone) c).getTimeZoneId().getValue())) {
+			if (componentIsTimezone && existingTimezones.containsKey(((VTimeZone) c).getTimeZoneId().getValue())) {
 				// don't add this timezone, we've already got a copy
 			} else {
 				target.getComponents().add(c);
-				if(componentIsTimezone) {
+				if (componentIsTimezone) {
 					VTimeZone tz = (VTimeZone) c;
 					existingTimezones.put(tz.getTimeZoneId().getValue(), tz);
 				}
@@ -889,7 +889,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 		}
 		// 3rd: iterate over the right
 		for (final var c: right.getComponents()) {
-			if(VTimeZone.VTIMEZONE.equals(c.getName()) && existingTimezones.containsKey(((VTimeZone) c).getTimeZoneId().getValue())) {
+			if (VTimeZone.VTIMEZONE.equals(c.getName()) && existingTimezones.containsKey(((VTimeZone) c).getTimeZoneId().getValue())) {
 				// don't add this timezone, we've already got a copy
 			} else {
 				target.getComponents().add(c);
@@ -899,15 +899,15 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 
 	/**
 	 * This method returns the {@link CalendarWithURI} containing a single {@link VEvent} that
-	 * was created with the Scheduling Assistant with the specified {@link IScheduleOwner} as the owner
+	 * was created with the Scheduling Assistant with the specified {@link ScheduleOwner} as the owner
 	 * and the specified start and end times.
 	 * 
 	 * @param owner
 	 * @param startTime
 	 * @param endTime
-	 * @return the matching Scheduling Assistant {@link VEvent}, or null if none for this {@link IScheduleOwner} at the specified times
+	 * @return the matching Scheduling Assistant {@link VEvent}, or null if none for this {@link ScheduleOwner} at the specified times
 	 */
-	protected CalendarWithURI getExistingAppointmentInternal(IScheduleOwner owner,
+	protected CalendarWithURI getExistingAppointmentInternal(ScheduleOwner owner,
 			Date startTime, Date endTime) {
 		final DateTime targetStartTime = new DateTime(startTime);
 		final DateTime targetEndTime = new DateTime(endTime);
@@ -915,7 +915,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 		List<CalendarWithURI> calendars = getCalendarsInternal(owner.getCalendarAccount(), startTime, endTime);
 		for(CalendarWithURI calendarWithUri : calendars) {
 			ComponentList componentList = calendarWithUri.getCalendar().getComponents(VEvent.VEVENT);
-			if(componentList.size() != 1) {
+			if (componentList.size() != 1) {
 				// scheduling assistant creates calendars with only a single event, short-circuit on calendars with > 1 events
 				continue;
 			}
@@ -924,7 +924,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 				Date eventStart = event.getStartDate().getDate();
 				Date eventEnd = event.getEndDate(true).getDate();
 				Property schedAssistProperty = event.getProperty(SchedulingAssistantAppointment.AVAILABLE_APPOINTMENT);
-				if(!SchedulingAssistantAppointment.TRUE.equals(schedAssistProperty)) {
+				if (!SchedulingAssistantAppointment.TRUE.equals(schedAssistProperty)) {
 					// immediately skip over non-scheduling assistant appointments
 					continue;
 				}
@@ -934,10 +934,10 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 					// event has to be (1) an available appointment
 					// with (2) owner recognized as appointment owner and
 					// (3) start and (4) end date have to match
-					if(this.eventUtils.isAttendingAsOwner(event, owner.getCalendarAccount()) &&
+					if (this.eventUtils.isAttendingAsOwner(event, owner.getCalendarAccount()) &&
 							eventStart.equals(targetStartTime) &&
 							eventEnd.equals(targetEndTime)) {
-						if(log.isDebugEnabled()) {
+						if (log.isDebugEnabled()) {
 							log.debug("getExistingAppointmentInternal found " + event);
 						}
 
@@ -963,14 +963,14 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	protected CalendarWithURI getExistingAppointmentInternalForVisitor(IScheduleVisitor visitor, Date startTime, Date endTime, Uid eventUid) {
 		final DateTime targetStartTime = new DateTime(startTime);
 		final DateTime targetEndTime = new DateTime(endTime);
-		if(eventUid == null) {
+		if (eventUid == null) {
 			log.debug("cannot call getExistingAppointmentInternal with null eventUid, visitor: " + visitor);
 			return null;
 		}
 		List<CalendarWithURI> calendars = getCalendarsInternal(visitor.getCalendarAccount(), startTime, endTime);
 		for(CalendarWithURI calendarWithUri : calendars) {
 			ComponentList componentList = calendarWithUri.getCalendar().getComponents(VEvent.VEVENT);
-			if(componentList.size() != 1) {
+			if (componentList.size() != 1) {
 				// scheduling assistant creates calendars with only a single event, short-circuit on calendars with > 1 events
 				continue;
 			}
@@ -980,7 +980,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 				Date eventEnd = event.getEndDate(true).getDate();
 
 				Uid uid = event.getUid();
-				if(uid != null && eventUid.equals(uid) 
+				if (uid != null && eventUid.equals(uid) 
 						&& Status.VEVENT_CANCELLED.equals(event.getStatus()) 
 						&& eventStart.equals(targetStartTime) &&
 						eventEnd.equals(targetEndTime)) {
@@ -1007,7 +1007,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 		method.addHeader(IF_NONE_MATCH_HEADER);
 
 		HttpRequest toExecute = this.methodInterceptor.doWithMethod(method, eventOwner);
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("putNewCalendar executing " + methodToString(method) + " for " + eventOwner);
 		}
 		final HttpContext context = constructHttpContext(eventOwner);
@@ -1016,8 +1016,8 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 		try {
 			HttpResponse response = this.httpClient.execute(httpHost, toExecute, context);
 			entity = response.getEntity();
-			if(log.isDebugEnabled()) {
-				if(entity == null) {
+			if (log.isDebugEnabled()) {
+				if (entity == null) {
 					log.debug("putNewCalendar response entity was null, statusline: " + response.getStatusLine());
 				} else {
 					InputStream content = entity.getContent();
@@ -1048,7 +1048,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 		method.addHeader(IF_NONE_MATCH_HEADER);
 
 		final HttpRequest toExecute = this.methodInterceptor.doWithMethod(method, eventOwner);
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("putNewEvent executing " + methodToString(method) + " for " + eventOwner);
 		}
 		final HttpContext context = constructHttpContext(eventOwner);
@@ -1090,7 +1090,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 		method.addHeader(IF_MATCH_HEADER, etag);
 
 		HttpRequest toExecute = this.methodInterceptor.doWithMethod(method, eventOwner);
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("putExistingEvent executing " + methodToString(method) + " for " + eventOwner);
 		}
 		final HttpContext context = constructHttpContext(eventOwner);
@@ -1099,7 +1099,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 		try {
 			HttpResponse response = this.httpClient.execute(httpHost, toExecute, context);
 			entity = response.getEntity();
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				log.debug("putExistingEvent response entity is null, response status line: " + response.getStatusLine());
 			}
 			int statusCode = response.getStatusLine().getStatusCode();
@@ -1123,28 +1123,28 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	protected CalendarWithURI purgeDeclinedAttendees(
 					CalendarWithURI calendarWithURI, ICalendarAccount owner)  {
 		ComponentList componentList = calendarWithURI.getCalendar().getComponents(VEvent.VEVENT);
-		if(componentList.size() != 1) {
+		if (componentList.size() != 1) {
 			return calendarWithURI;
 		}
 		for(Object o: componentList) {
 			VEvent event = (VEvent) o;
-			if(event.getStartDate().getDate().before(new java.util.Date())) {
+			if (event.getStartDate().getDate().before(new java.util.Date())) {
 				// short-circuit non events in the past
 				continue;
 			}
 			final boolean hasAvailableAppointmentProperty = SchedulingAssistantAppointment.TRUE.equals(event.getProperty(SchedulingAssistantAppointment.AVAILABLE_APPOINTMENT));
 			final boolean isAttendingAsOwner = this.eventUtils.isAttendingAsOwner(event, owner);
-			if(hasAvailableAppointmentProperty && isAttendingAsOwner) {
+			if (hasAvailableAppointmentProperty && isAttendingAsOwner) {
 				PropertyList attendeeList = this.eventUtils.getAttendeeListFromEvent(event);		
 				Property visitorLimitProp = event.getProperty(VisitorLimit.VISITOR_LIMIT);
 				final int visitorLimit = Integer.parseInt(visitorLimitProp.getValue());
 
 				for(Object a : attendeeList) {
 					Property attendee = (Property) a;
-					if(PartStat.DECLINED.equals(attendee.getParameter(PartStat.PARTSTAT))) {
+					if (PartStat.DECLINED.equals(attendee.getParameter(PartStat.PARTSTAT))) {
 						log.trace("found attendee that has DECLINED event: " + attendee);
 						Parameter appointmentRole = attendee.getParameter(AppointmentRole.APPOINTMENT_ROLE);
-						if(AppointmentRole.OWNER.equals(appointmentRole) ) {
+						if (AppointmentRole.OWNER.equals(appointmentRole) ) {
 							// remove whole appointment
 							deleteCalendar(calendarWithURI, owner);
 							log.warn("purgeDeclinedAttendees successfully cancelled appointment due to owner decline " + event);
@@ -1153,14 +1153,14 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 							return null;
 						} else if (AppointmentRole.VISITOR.equals(appointmentRole)) {
 							int availableVisitorCount = this.eventUtils.getScheduleVisitorCount(event);
-							if(visitorLimit > 1 && availableVisitorCount > 1) {
+							if (visitorLimit > 1 && availableVisitorCount > 1) {
 								// remove only the attendee (leave event)
 								event.getProperties().remove(attendee);
 
 								try {
 									int statusCode = putExistingEvent(owner, event, calendarWithURI.getEtag());
 									log.debug("purgeDeclinedAttendees leave status code: " + statusCode);
-									if(statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED || statusCode == HttpStatus.SC_NO_CONTENT) {
+									if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED || statusCode == HttpStatus.SC_NO_CONTENT) {
 										log.warn("purgeDeclinedAttendees successfully removed declined attendee from group appointment " + event);
 										this.applicationEventPublisher.publishEvent(new AutomaticAttendeeRemovalEvent(event, owner, attendee));
 									} else if (statusCode == HttpStatus.SC_PRECONDITION_FAILED) {
@@ -1191,9 +1191,9 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 
 
 			} else {
-				if(log.isTraceEnabled()) {
+				if (log.isTraceEnabled()) {
 					String eventUid = "not set";
-					if(event.getUid() != null) {
+					if (event.getUid() != null) {
 						eventUid = event.getUid().getValue();
 					}
 					log.trace("event (UID=" + eventUid + ") not a candidate for purge, hasAvailableAppointmentProperty=" + hasAvailableAppointmentProperty + ", isAttendingAsOwner=" + isAttendingAsOwner);

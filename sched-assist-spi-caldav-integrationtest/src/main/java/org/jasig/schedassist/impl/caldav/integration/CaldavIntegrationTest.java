@@ -41,21 +41,23 @@ import net.fortuna.ical4j.model.property.Transp;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jasig.schedassist.ICalendarDataDao;
-import org.jasig.schedassist.SchedulingException;
+import org.bedework.sometime.ICalendarDataDao;
+import org.bedework.sometime.SchedulingException;
 import org.jasig.schedassist.impl.caldav.CaldavCalendarDataDaoImpl;
 import org.jasig.schedassist.impl.caldav.CalendarWithURI;
-import org.jasig.schedassist.model.AppointmentRole;
-import org.jasig.schedassist.model.AvailabilityReflection;
-import org.jasig.schedassist.model.AvailableBlock;
-import org.jasig.schedassist.model.AvailableBlockBuilder;
-import org.jasig.schedassist.model.AvailableSchedule;
-import org.jasig.schedassist.model.CommonDateOperations;
-import org.jasig.schedassist.model.IEventUtils;
-import org.jasig.schedassist.model.InputFormatException;
-import org.jasig.schedassist.model.Preferences;
-import org.jasig.schedassist.model.SchedulingAssistantAppointment;
-import org.jasig.schedassist.model.VisitorLimit;
+import org.bedework.sometime.model.AppointmentRole;
+import org.bedework.sometime.model.AvailabilityReflection;
+import org.bedework.sometime.model.AvailableBlock;
+import org.bedework.sometime.model.AvailableBlockBuilder;
+import org.bedework.sometime.model.AvailableSchedule;
+import org.bedework.sometime.model.CommonDateOperations;
+import org.bedework.sometime.model.IEventUtils;
+import org.bedework.sometime.model.ICalendarAccount;
+import org.bedework.sometime.model.ScheduleOwner;
+import org.bedework.sometime.model.InputFormatException;
+import org.bedework.sometime.model.Preferences;
+import org.bedework.sometime.model.SchedulingAssistantAppointment;
+import org.bedework.sometime.model.VisitorLimit;
 import org.jasig.schedassist.model.mock.MockCalendarAccount;
 import org.jasig.schedassist.model.mock.MockDelegateCalendarAccount;
 import org.jasig.schedassist.model.mock.MockScheduleOwner;
@@ -109,7 +111,7 @@ public class CaldavIntegrationTest {
 	private Log log = LogFactory.getLog(this.getClass());
 
 	/**
-	 * Simple integration test to see if {@link ICalendarDataDao#getCalendar(org.jasig.schedassist.model.ICalendarAccount, Date, Date)}
+	 * Simple integration test to see if {@link ICalendarDataDao#getCalendar(ICalendarAccount, Date, Date)}
 	 * returns data.
 	 * 
 	 * Before you run this test for the first time, import the event below into ownerCalendarAccount1's personal calendar:
@@ -140,7 +142,7 @@ public class CaldavIntegrationTest {
 	 * Basic workflow integration test:
 	 * <ol>
 	 * <li>Create an individual appointment using mock owner and visitor ("owner1" and "visitor1")</li>
-	 * <li>Verify event retrieved via {@link ICalendarDataDao#getExistingAppointment(org.jasig.schedassist.model.IScheduleOwner, AvailableBlock)}</li>
+	 * <li>Verify event retrieved via {@link ICalendarDataDao#getExistingAppointment(ScheduleOwner, AvailableBlock)}</li>
 	 * <li>Verify event contains expected properties and parameters</li>
 	 * <li>Cancel appointment, verify removed</li>
 	 * </ol>
@@ -188,7 +190,7 @@ public class CaldavIntegrationTest {
 	 * Basic workflow integration test:
 	 * <ol>
 	 * <li>Create an individual appointment using mock resource and visitor ("resource1" and "visitor1")</li>
-	 * <li>Verify event retrieved via {@link ICalendarDataDao#getExistingAppointment(org.jasig.schedassist.model.IScheduleOwner, AvailableBlock)}</li>
+	 * <li>Verify event retrieved via {@link ICalendarDataDao#getExistingAppointment(ScheduleOwner, AvailableBlock)}</li>
 	 * <li>Verify event contains expected properties and parameters</li>
 	 * <li>Cancel appointment, verify removed</li>
 	 * </ol>
@@ -298,11 +300,11 @@ public class CaldavIntegrationTest {
 			Attendee attendee = (Attendee) o;
 			Parameter participationStatus = attendee.getParameter(PartStat.PARTSTAT);
 			Assert.assertEquals(PartStat.ACCEPTED, participationStatus);
-			if(AppointmentRole.OWNER.equals(attendee.getParameter(AppointmentRole.APPOINTMENT_ROLE))) {
+			if (AppointmentRole.OWNER.equals(attendee.getParameter(AppointmentRole.APPOINTMENT_ROLE))) {
 				Assert.assertEquals("mailto:" + owner1.getCalendarAccount().getEmailAddress(), attendee.getValue());
 			} else if (AppointmentRole.VISITOR.equals(attendee.getParameter(AppointmentRole.APPOINTMENT_ROLE))) {
 				String value = attendee.getValue();
-				if(value.equals("mailto:" + visitor1.getCalendarAccount().getEmailAddress()) || value.equals("mailto:"+visitor2.getCalendarAccount().getEmailAddress()) ) {
+				if (value.equals("mailto:" + visitor1.getCalendarAccount().getEmailAddress()) || value.equals("mailto:"+visitor2.getCalendarAccount().getEmailAddress()) ) {
 					// success
 				} else {
 					Assert.fail("unexpected visitor attendee value: " + value);
@@ -328,11 +330,11 @@ public class CaldavIntegrationTest {
 			Attendee attendee = (Attendee) o;
 			Parameter participationStatus = attendee.getParameter(PartStat.PARTSTAT);
 			Assert.assertEquals(PartStat.ACCEPTED, participationStatus);
-			if(AppointmentRole.OWNER.equals(attendee.getParameter(AppointmentRole.APPOINTMENT_ROLE))) {
+			if (AppointmentRole.OWNER.equals(attendee.getParameter(AppointmentRole.APPOINTMENT_ROLE))) {
 				Assert.assertEquals("mailto:" + owner1.getCalendarAccount().getEmailAddress(), attendee.getValue());
 			} else if (AppointmentRole.VISITOR.equals(attendee.getParameter(AppointmentRole.APPOINTMENT_ROLE))) {
 				String value = attendee.getValue();
-				if(value.equals("mailto:" + visitor2.getCalendarAccount().getEmailAddress())) {
+				if (value.equals("mailto:" + visitor2.getCalendarAccount().getEmailAddress())) {
 					// success
 				} else {
 					Assert.fail("unexpected visitor attendee value: " + value);
@@ -353,7 +355,7 @@ public class CaldavIntegrationTest {
 	@Test
 	public void testReflectAvailabilitySchedule() throws InputFormatException {
 		System.setProperty("org.jasig.schedassist.impl.caldav.reflectionEnabled", reflectionEnabled);
-		if(Boolean.parseBoolean(reflectionEnabled)) {
+		if (Boolean.parseBoolean(reflectionEnabled)) {
 			MockScheduleOwner owner1 = new MockScheduleOwner(ownerCalendarAccount1, 1);
 
 			Date start = CommonDateOperations.parseDatePhrase("20110919");

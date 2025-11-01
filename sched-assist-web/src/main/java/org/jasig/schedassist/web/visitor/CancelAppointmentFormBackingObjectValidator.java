@@ -45,10 +45,10 @@ public class CancelAppointmentFormBackingObjectValidator implements Validator {
 	public void validate(Object command, Errors errors) {
 		CancelAppointmentFormBackingObject fbo = (CancelAppointmentFormBackingObject) command;
 
-		if(!fbo.isConfirmCancel()) {
+		if (!fbo.isConfirmCancel()) {
 			errors.rejectValue("confirmCancel", "confirmCancel.false", "Please mark the checkbox to confirm you wish to cancel/leave the appointment.");
 		}
-		if(!fbo.isMultipleVisitors()) {
+		if (!fbo.isMultipleVisitors()) {
 			//TODO check reason field
 		} 
 	}
